@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Sign Up</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/reg_style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header_inner">
+            <div id="logo">
+                <a href="#"><img th:src="@{/images/logo.png}" alt="Logo"></a>
+            </div>
+            <nav class="navbar">
+                <a class="nav_link" href="#">Главная</a>
+                <a class="nav_link" href="#">Об авторе</a>
+                <a class="nav_link" href="#">Корзина</a>
+                <a class="nav_link" href="#">Вход</a>
+            </nav>
+        </div>
+    </div>
+</header>
+<div class="signup-container">
+    <h2>Sign Up</h2>
+    <form th:method="POST" th:action="@{/auth/signup}" th:object="${user}" >
+        <input type="text" th:field="*{username}" placeholder="Nickname">
+        <div  class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+        <input type="text" th:field="*{email}" placeholder="Email">
+        <div  class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        <input type="password" th:field="*{password}" placeholder="Password">
+        <div  class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        <button type="submit">Sign Up</button>
+    </form>
+</div>
+</body>
+</html>

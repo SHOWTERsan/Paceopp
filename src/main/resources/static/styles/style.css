@@ -1,0 +1,95 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(to bottom, black, #003300);
+    font-size: 14px;
+    line-height: 1.6;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+
+header {
+    padding-top: 5px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+
+header::after {
+    content: "";
+    display: block;
+    height: 1px; /* Adjust thickness of the line */
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.5); /* Adjust color of the line */
+    position: absolute;
+    bottom: 0;
+}
+
+.header_inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar {
+    font-size: 16px;
+}
+@media (max-width: 600px) {
+    .navbar {
+        font-size: 22px;
+    }
+}
+
+.nav_link {
+    color: white;
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 20px;
+    padding: 5px 10px;
+    text-decoration: none;
+    transition: all 0.2s linear;
+    position: relative;
+}
+
+
+.nav_link:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: limegreen;
+    transition: all 0.2s linear;
+}
+
+.nav_link:hover:after {
+    width: 100%;
+    left: 0;
+}
+
+#logo a, .nav_link {
+    text-shadow: 0 0 10px #00ff00; /* Adjust color and blur radius as needed */
+}
+#logo img {
+    width: 50px;
+}
+
+
+.container {
+    width:100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+footer {
+    margin-top: auto;
+}
+

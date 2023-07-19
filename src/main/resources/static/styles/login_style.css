@@ -1,0 +1,55 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: black;
+    font-family: Arial, sans-serif;
+}
+
+.login-container {
+    width: 300px;
+    padding: 20px;
+    background-color: #0F0F0F;
+    color: limegreen;
+    box-shadow: 0 0 10px limegreen;
+    border-radius: 10px;
+}
+
+
+
+.login-container h2 {
+    text-align: center;
+    color: limegreen;
+    font-size: 2em;
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container form input {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #262626;
+    color: limegreen;
+    font-size: 1.2em;
+}
+
+.login-container form button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: limegreen;
+    color: #0F0F0F;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.login-container form button:hover {
+    background-color: lightgreen;
+}
