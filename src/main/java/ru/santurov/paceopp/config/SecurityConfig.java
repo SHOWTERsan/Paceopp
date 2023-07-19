@@ -36,14 +36,11 @@ public class SecurityConfig {
                         .failureUrl("/auth/login?error"))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/auth/login"));;
+                        .logoutSuccessUrl("/auth/login"));
 
         return http.build();
     }
 
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder());
-    }
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
