@@ -1,22 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <title>Sign Up</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/styles/reg_style.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/reg_style.css}">
+    <link rel="icon" type="image/png" th:src="@{images/logo.png}">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <meta name="viewport" content="width=device-width" />
 </head>
 <body>
 <header>
     <div class="container">
-        <div class="header_inner">
-            <div id="logo">
+        <div class="header_inner_paceopp">
+            <figure id="logo">
                 <a href="#"><img th:src="@{/images/logo.png}" alt="Logo"></a>
-            </div>
-            <nav class="navbar">
-                <a class="nav_link" href="#">Главная</a>
-                <a class="nav_link" href="#">Об авторе</a>
-                <a class="nav_link" href="#">Корзина</a>
-                <a class="nav_link" href="#">Вход</a>
+            </figure>
+            <nav class="navbar_paceopp">
+                <a class="nav_link_paceopp" href="#">Home</a>
+                <a class="nav_link_paceopp" href="#">About</a>
+                <a class="nav_link_paceopp" href="#">Services</a>
+                <a class="nav_link_paceopp" href="#">Products</a>
+                <a class="nav_link_paceopp" href="#">Contact</a>
+                <a class="nav_link_paceopp" href="#">Cart</a>
+                <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/login}">Login</a>
+                <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" th:href="@{/logout}">Logout</a>
             </nav>
         </div>
     </div>
@@ -24,14 +31,15 @@
 <div class="signup-container">
     <h2>Sign Up</h2>
     <form th:method="POST" th:action="@{/auth/signup}" th:object="${user}" >
-        <input type="text" th:field="*{username}" placeholder="Nickname">
+        <input type="text" onfocus="hideError(this)" th:field="*{username}" placeholder="Nickname">
         <div  class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
-        <input type="text" th:field="*{email}" placeholder="Email">
+        <input type="text" onfocus="hideError(this)" th:field="*{email}" placeholder="Email">
         <div  class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-        <input type="password" th:field="*{password}" placeholder="Password">
+        <input type="password" onfocus="hideError(this)" th:field="*{password}" placeholder="Password">
         <div  class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
         <button type="submit">Sign Up</button>
     </form>
 </div>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

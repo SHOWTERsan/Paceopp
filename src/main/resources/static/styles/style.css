@@ -1,13 +1,12 @@
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
     margin: 0;
     background: linear-gradient(to bottom, black, #003300);
     font-size: 14px;
     line-height: 1.6;
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 
@@ -21,33 +20,22 @@ header {
     z-index: 1000;
 }
 
-
-header::after {
-    content: "";
-    display: block;
-    height: 1px; /* Adjust thickness of the line */
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.5); /* Adjust color of the line */
-    position: absolute;
-    bottom: 0;
-}
-
-.header_inner {
+.header_inner_paceopp {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.navbar {
+.navbar_paceopp {
     font-size: 16px;
 }
 @media (max-width: 600px) {
-    .navbar {
+    .navbar_paceopp {
         font-size: 22px;
     }
 }
 
-.nav_link {
+.nav_link_paceopp {
     color: white;
     display: inline-block;
     vertical-align: top;
@@ -59,7 +47,7 @@ header::after {
 }
 
 
-.nav_link:after {
+.nav_link_paceopp:after {
     content: "";
     position: absolute;
     width: 0;
@@ -70,19 +58,23 @@ header::after {
     transition: all 0.2s linear;
 }
 
-.nav_link:hover:after {
+.nav_link_paceopp:hover:after {
     width: 100%;
     left: 0;
 }
 
-#logo a, .nav_link {
-    text-shadow: 0 0 10px #00ff00; /* Adjust color and blur radius as needed */
+#logo a, .nav_link_paceopp {
+    text-shadow: 0 0 10px #00ff00;
 }
 #logo img {
     width: 50px;
 }
-
-
+main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+}
 .container {
     width:100%;
     max-width: 1100px;

@@ -5,7 +5,7 @@ body {
     height: 100vh;
     margin: 0;
     background-color: black;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .login-container {
@@ -16,8 +16,6 @@ body {
     box-shadow: 0 0 10px limegreen;
     border-radius: 10px;
 }
-
-
 
 .login-container h2 {
     text-align: center;
@@ -39,7 +37,10 @@ body {
     color: limegreen;
     font-size: 1.2em;
 }
-
+#error-message {
+    margin-bottom: 10px;
+    color: #ff4040;
+}
 .login-container form button {
     padding: 10px;
     border: none;

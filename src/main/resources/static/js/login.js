@@ -1,0 +1,3 @@
+function hideAbstractError() {
+    $("#errorMessage").hide();
+}
