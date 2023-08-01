@@ -1,6 +1,7 @@
 package ru.santurov.paceopp.serives;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.santurov.paceopp.models.User;
@@ -21,8 +22,10 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username.toLowerCase());
+
         if (user.isEmpty()) throw new UsernameNotFoundException("Пользователь не найден!");
+        if (!user.get().isVerified()) throw new DisabledException("Пользователь не подтвержден!");
         return new UserDetails(user.get());
 
     }

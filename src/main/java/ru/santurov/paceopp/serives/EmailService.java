@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.santurov.paceopp.repositories.UserRepository;
 
+
 @Service
 public class EmailService {
     private final JavaMailSender mailSender;
@@ -21,6 +22,7 @@ public class EmailService {
         this.repo = repo;
     }
 
+    //TODO Как то обработать не вошедшего пользователя
     public void sendMessage(String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("transferpaceopp@gmail.com");
@@ -30,6 +32,19 @@ public class EmailService {
         String username = auth.getName();
         String email = repo.findByUsername(username).get().getEmail();
         message.setText("Пользователь: " + username + " с почтой: " + email + "\nОтправил сообщение: " + text);
+        try {
+            mailSender.send(message);
+        } catch (MailException e){
+            throw new MailSendException("Ошибка отправки письма!");
+        }
+    }
+
+    public void sendValidateMessage(String email, String uuid) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("transferpaceopp@gmail.com");
+        message.setTo(email);
+        message.setSubject("Подтверждение почты");
+        message.setText("Подтвердите почту перейдя по ссылке: http://localhost:8080/auth/confirm?uuid=" + uuid);
         try {
             mailSender.send(message);
         } catch (MailException e){

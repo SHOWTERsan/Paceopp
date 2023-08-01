@@ -7,7 +7,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -41,11 +42,19 @@ public class User {
     @Column(name = "role")
     private String role;
 
+    @Column(name = "auth_token", unique=true)
+    private String uuid;
+
+    @Column(name = "is_verified")
+    private boolean isVerified;
+
+    @Column(name = "verification_expire_time",columnDefinition = "TIMESTAMP")
+    private LocalDateTime verificationExpireTime;
 
     public User() {
     }
 
-    public User(int id,String username, String email, String password, int social_id, String social_name, String role) {
+    public User(int id, String username, String email, String password, int social_id, String social_name, String role, String uuid, boolean isVerified) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -53,5 +62,7 @@ public class User {
         this.social_id = social_id;
         this.social_name = social_name;
         this.role = role;
+        this.uuid = uuid;
+        this.isVerified = isVerified;
     }
 }

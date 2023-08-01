@@ -11,6 +11,7 @@ body {
 
 
 header {
+    visibility: hidden;
     padding-top: 5px;
     width: 100%;
     position: absolute;
@@ -29,11 +30,7 @@ header {
 .navbar_paceopp {
     font-size: 16px;
 }
-@media (max-width: 600px) {
-    .navbar_paceopp {
-        font-size: 22px;
-    }
-}
+
 
 .nav_link_paceopp {
     color: white;
@@ -85,3 +82,8 @@ footer {
     margin-top: auto;
 }
 
+@media (max-width: 600px) {
+    .navbar_paceopp {
+        font-size: 22px;
+    }
+}

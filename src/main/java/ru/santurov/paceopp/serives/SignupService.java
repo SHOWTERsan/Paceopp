@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.repositories.UserRepository;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Service
 public class SignupService {
     private final PasswordEncoder passwordEncoder;
@@ -23,6 +26,9 @@ public class SignupService {
         else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRole("ROLE_USER");
+            user.setUuid(UUID.randomUUID().toString());
+            user.setUsername(user.getUsername().toLowerCase());
+            user.setVerificationExpireTime(LocalDateTime.now().plusSeconds(10));
             userRepository.save(user);
         }
     }

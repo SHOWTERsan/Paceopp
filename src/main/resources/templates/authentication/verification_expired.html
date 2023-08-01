@@ -1,12 +1,50 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 <head>
-    <title>Login</title>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/styles/login_style.css}">
-    <link rel="icon" type="image/png" th:href="@{images/logo.png}">
-    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification expired</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            text-align: center;
+            max-width: 600px;
+        }
+        .register-button {
+            display: inline-block;
+            font-size: 18px;
+            color: black;
+            background-color: limegreen;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease 0s;
+        }
+        .register-button:hover {
+            background-color: lightgreen;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -30,22 +68,9 @@
         </div>
     </div>
 </header>
-<div class="login-container">
-    <h2>Login</h2>
-    <form method="post" th:action="@{/process_login}" >
-        <label>
-            <input type="text" name="username" onfocus="hideAbstractError()" placeholder="Nickname">
-        </label>
-        <label>
-            <input type="password" name="password" onfocus="hideAbstractError()" placeholder="Password">
-        </label>
-        <button type="submit">Login</button>
-        <div th:if="${param.error}" id="errorMessage">
-            Incorrect data entered!
-        </div>
-    </form>
-</div>
+<h1>Your verification link has expired</h1>
+<p>Your verification link has expired. Please register again to receive a new link.</p>
+<a href="/auth/signup" class="register-button">Register again</a>
 <script th:src="@{/js/main.js}"></script>
-<script th:src="@{/js/login.js}"></script>
 </body>
 </html>
