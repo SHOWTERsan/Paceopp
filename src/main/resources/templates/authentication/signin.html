@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 <head>
-    <title>Sign Up</title>
+    <title>Sign In</title>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/styles/reg_style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/signin_style.css}">
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
     <meta name="viewport" content="width=device-width" />
 </head>
@@ -13,10 +13,10 @@
     <div class="container">
         <div class="header_inner_paceopp">
             <figure id="logo">
-                <a href="#"><img th:src="@{/images/logo.png}" alt="Logo"></a>
+                <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
             </figure>
             <nav class="navbar_paceopp">
-                <a class="nav_link_paceopp" href="#">Home</a>
+                <a class="nav_link_paceopp" href="/">Home</a>
                 <a class="nav_link_paceopp" href="#">About</a>
                 <a class="nav_link_paceopp" href="#">Services</a>
                 <a class="nav_link_paceopp" href="#">Products</a>
@@ -29,22 +29,26 @@
         </div>
     </div>
 </header>
-<div class="signup-container">
-    <h2>Sign Up</h2>
-    <form th:method="POST" th:action="@{/auth/signup}" th:object="${user}" >
-        <input type="text" onfocus="hideError(this)" th:field="*{username}" placeholder="Nickname">
-        <div  class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
-        <input type="text" onfocus="hideError(this)" th:field="*{email}" placeholder="Email">
-        <div  class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-        <input type="password" onfocus="hideError(this)" th:field="*{password}" placeholder="Password">
-        <div  class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+<div class="login-container">
+    <h2>Login</h2>
+    <form method="post" th:action="@{/process_signin}" >
+        <input type="text" name="username" onfocus="hideAbstractError()" placeholder="Nickname">
+        <input type="password" name="password" onfocus="hideAbstractError()" placeholder="Password">
         <div class="account-text">
-            Already have an account?
-            <a th:href="@{/auth/signin}">Log In</a>
+            Don't have an account?
+            <a th:href="@{/auth/signup}">Sign Up</a>
         </div>
-        <button type="submit">Sign Up</button>
+        <button type="submit">Login</button>
+        <div class="forgot-text">
+            Forgot your password?
+            <a th:href="@{/auth/forgot_password}">Click here</a>
+        </div>
+        <div th:if="${param.error}" id="errorMessage">
+            Incorrect data entered!
+        </div>
     </form>
 </div>
 <script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/signin.js}"></script>
 </body>
 </html>

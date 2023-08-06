@@ -19,13 +19,13 @@ public class SecurityConfig {
                         .requestMatchers("/","/auth/**","/error", "/styles/**", "/images/**","/js/**").permitAll()
                         .anyRequest().hasAnyRole("USER", "ADMIN"))
                 .formLogin(form -> form
-                        .loginPage("/auth/login")
-                        .loginProcessingUrl("/process_login")
+                        .loginPage("/auth/signin")
+                        .loginProcessingUrl("/process_signin")
                         .defaultSuccessUrl("/",true)
-                        .failureUrl("/auth/login?error"))
+                        .failureUrl("/auth/signin?error"))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/auth/login"));
+                        .logoutSuccessUrl("/auth/singin"));
 
         return http.build();
     }

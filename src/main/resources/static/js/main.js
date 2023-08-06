@@ -1,6 +1,3 @@
-window.onload = function() {
-    document.querySelector('header').style.visibility = 'visible';
-};
 $(document).ready(function() {
 
     let showModal = document.querySelector('#showSuccessModal').value === 'true';

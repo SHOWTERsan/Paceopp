@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 <head>
-    <title>Sign Up</title>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/styles/reg_style.css}">
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad Request</title>
 </head>
 <body>
 <header>
@@ -29,21 +28,9 @@
         </div>
     </div>
 </header>
-<div class="signup-container">
-    <h2>Sign Up</h2>
-    <form th:method="POST" th:action="@{/auth/signup}" th:object="${user}" >
-        <input type="text" onfocus="hideError(this)" th:field="*{username}" placeholder="Nickname">
-        <div  class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
-        <input type="text" onfocus="hideError(this)" th:field="*{email}" placeholder="Email">
-        <div  class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-        <input type="password" onfocus="hideError(this)" th:field="*{password}" placeholder="Password">
-        <div  class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-        <div class="account-text">
-            Already have an account?
-            <a th:href="@{/auth/signin}">Log In</a>
-        </div>
-        <button type="submit">Sign Up</button>
-    </form>
+<div>
+    <h1 style="font-size: 3em">400 Bad Request</h1>
+    <p style="font-size: 2em">Your request could not be processed. Please check your input and try again.</p>
 </div>
 <script th:src="@{/js/main.js}"></script>
 </body>

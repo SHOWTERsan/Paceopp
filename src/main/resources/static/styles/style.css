@@ -1,37 +1,32 @@
 body {
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
     margin: 0;
     background: linear-gradient(to bottom, black, #003300);
     font-size: 14px;
+    height: 100vh;
     line-height: 1.6;
     color: white;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
-
 header {
-    visibility: hidden;
     padding-top: 5px;
     width: 100%;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
 }
-
 .header_inner_paceopp {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-
 .navbar_paceopp {
     font-size: 16px;
 }
-
-
 .nav_link_paceopp {
     color: white;
     display: inline-block;
@@ -42,8 +37,6 @@ header {
     transition: all 0.2s linear;
     position: relative;
 }
-
-
 .nav_link_paceopp:after {
     content: "";
     position: absolute;
@@ -54,15 +47,14 @@ header {
     background-color: limegreen;
     transition: all 0.2s linear;
 }
-
 .nav_link_paceopp:hover:after {
     width: 100%;
     left: 0;
 }
-
 #logo a, .nav_link_paceopp {
     text-shadow: 0 0 10px #00ff00;
 }
+
 #logo img {
     width: 50px;
 }
@@ -77,11 +69,9 @@ main{
     max-width: 1100px;
     margin: 0 auto;
 }
-
 footer {
     margin-top: auto;
 }
-
 @media (max-width: 600px) {
     .navbar_paceopp {
         font-size: 22px;

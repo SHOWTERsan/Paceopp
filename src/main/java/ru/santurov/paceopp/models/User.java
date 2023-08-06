@@ -4,21 +4,19 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 
-@Getter
-@Setter
+@Data
 @Entity
-@Table(name="\"user\"")
+@Table(name="users")
 public class User {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Size(min = 2,max = 30,message = "Имя должно иметь от 2 до 30 символов")
     @Column(name = "username")
@@ -42,27 +40,12 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    @Column(name = "auth_token", unique=true)
+    @Column(name = "uuid", unique=true)
     private String uuid;
 
     @Column(name = "is_verified")
     private boolean isVerified;
 
-    @Column(name = "verification_expire_time",columnDefinition = "TIMESTAMP")
-    private LocalDateTime verificationExpireTime;
-
-    public User() {
-    }
-
-    public User(int id, String username, String email, String password, int social_id, String social_name, String role, String uuid, boolean isVerified) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.social_id = social_id;
-        this.social_name = social_name;
-        this.role = role;
-        this.uuid = uuid;
-        this.isVerified = isVerified;
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<VerificationToken> tokens;
 }

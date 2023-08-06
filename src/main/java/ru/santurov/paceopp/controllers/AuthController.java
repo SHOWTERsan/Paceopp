@@ -4,40 +4,49 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.santurov.paceopp.models.User;
-import ru.santurov.paceopp.repositories.UserRepository;
+import ru.santurov.paceopp.models.VerificationToken;
 import ru.santurov.paceopp.serives.EmailService;
 import ru.santurov.paceopp.serives.SignupService;
+import ru.santurov.paceopp.serives.TokenService;
+import ru.santurov.paceopp.serives.UserService;
 import ru.santurov.paceopp.utils.UserValidator;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final UserValidator userValidator;
     private final SignupService signupService;
     private final EmailService emailService;
+    private final TokenService tokenService;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Autowired
-    public AuthController(UserRepository userRepository, UserValidator userValidator, SignupService signupService, EmailService emailService) {
-        this.userRepository = userRepository;
+    public AuthController(UserService userService, UserValidator userValidator, SignupService signupService, EmailService emailService, TokenService tokenService) {
+        this.userService = userService;
         this.userValidator = userValidator;
         this.signupService = signupService;
         this.emailService = emailService;
+        this.tokenService = tokenService;
     }
 
-    @GetMapping("/login")
+    @GetMapping("/signin")
     public String loginPage() {
-        return "authentication/login";
+        return "authentication/signin";
     }
 
     @GetMapping("/signup")
@@ -56,64 +65,89 @@ public class AuthController {
         if (bindingResult.hasErrors()) return "authentication/signup";
 
         signupService.createUser(user);
-        emailService.sendValidateMessage(user.getEmail(), user.getUuid());
+        String token = emailService.sendValidateMessage(user);
 
         session.setAttribute("canAccessWaitingForVerification", true);
 
-        return "redirect:/auth/waiting_for_verification?uuid=" + user.getUuid();
+        return "redirect:/auth/waiting_for_verification?token=" + token;
+    }
+
+    @GetMapping("/forgot_password")
+    public String forgotPasswordPage() {
+        return "authentication/forgot_password";
+    }
+
+    @PostMapping("/forgot_password")
+    public String forgotPasswordProcess(@RequestParam("email") String email) {
+        Optional<User> userOptional = userService.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            emailService.sendResetPasswordMessage(user);
+        }
+        return "redirect:/auth/password_reset_sent";
     }
 
     @GetMapping("/confirm")
-    public ResponseEntity<Void> confirmEmail(@RequestParam("uuid") String uuid) {
-        Optional<User> user = userRepository.findByUuid(uuid);
-        if (user.isPresent()) {
-            user.get().setVerified(true);
-            userRepository.save(user.get());
+    public String confirmEmail(@RequestParam("token") Optional<String> token) {
+        if (token.isEmpty()) return "bad_request";
 
-            return ResponseEntity.ok().build();
+        Optional<VerificationToken> optionalToken = tokenService.findByToken(token.get());
+        if (optionalToken.isPresent()) {
+            VerificationToken verificationToken = optionalToken.get();
+            User user = verificationToken.getUser();
+
+            if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+                userService.delete(user);
+                return "authentication/verification_expired";
+            }
+
+            user.setVerified(true);
+            scheduler.schedule(() -> tokenService.delete(verificationToken), 5100, TimeUnit.MILLISECONDS);
+            userService.save(user);
+
+            return "authentication/confirm";
         }
         else {
-            return ResponseEntity.notFound().build();
+            return "bad_request";
         }
     }
 
     @GetMapping("/waiting_for_verification")
-    public String waitingForVerification(@RequestParam("uuid") Optional<String> uuid,
+    public String waitingForVerification(@RequestParam("token") Optional<String> token,
                                          Model model,
                                          HttpSession session) {
         if (session.getAttribute("canAccessWaitingForVerification") == null ||
-                uuid.isEmpty()) {
-            return "redirect:/auth/login";
-        }
+                token.isEmpty()) throw new AccessDeniedException("Access denied!");
+
         session.removeAttribute("canAccessWaitingForVerification");
-        Optional<User> user = userRepository.findByUuid(uuid.get());
-        if (user.isPresent()) {
-            model.addAttribute("uuid", uuid.get());
+        Optional<VerificationToken> optionalToken = tokenService.findByToken(token.get());
+        if (optionalToken.isPresent()) {
+            model.addAttribute("token", token.get());
             return "authentication/waiting_for_verification";
         }
         else {
+            //TODO Page
             return "redirect:/auth/signup";
         }
     }
 
     @GetMapping("/check_verification")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> checkVerification(@RequestParam("uuid") String uuid) {
-        Optional<User> userOptional = userRepository.findByUuid(uuid);
+    public ResponseEntity<Map<String, String>> checkVerification(@RequestParam("token") String token) {
+        Optional<VerificationToken> optionalToken = tokenService.findByToken(token);
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            if (user.getVerificationExpireTime().isBefore(LocalDateTime.now()))
+        if (optionalToken.isPresent()) {
+            VerificationToken vtoken = optionalToken.get();
+            if (vtoken.getExpiryDate().isBefore(LocalDateTime.now()))
             {
-                userRepository.delete(user);
+                userService.delete(vtoken.getUser());
                 return ResponseEntity.ok(Collections.singletonMap("status", "expired"));
             }
             else
-            if (userOptional.get().isVerified())
+            if (vtoken.getUser().isVerified())
                 return ResponseEntity.ok(Collections.singletonMap("status", "verified"));
         }
 
         return ResponseEntity.ok(Collections.singletonMap("status", "not_verified"));
     }
-
 }

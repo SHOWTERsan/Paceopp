@@ -7,29 +7,29 @@ import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.repositories.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class SignupService {
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public SignupService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public SignupService(PasswordEncoder passwordEncoder, UserService userService) {
         this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public void createUser(User user) {
         if (user.getPassword().isEmpty() || user.getPassword().length() < 6 || user.getPassword().length() > 255)
-            userRepository.save(user);
+            userService.save(user);
         else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRole("ROLE_USER");
             user.setUuid(UUID.randomUUID().toString());
             user.setUsername(user.getUsername().toLowerCase());
-            user.setVerificationExpireTime(LocalDateTime.now().plusSeconds(10));
-            userRepository.save(user);
+            userService.save(user);
         }
     }
 }
