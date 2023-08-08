@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.santurov.paceopp.models.EmailMessage;
+import ru.santurov.paceopp.DTO.EmailMessageDTO;
 import ru.santurov.paceopp.serives.EmailService;
 
 @Controller
@@ -21,17 +21,17 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String index(@ModelAttribute("EmailMessage") EmailMessage emailMessage) {
+    public String index(@ModelAttribute("EmailMessage") EmailMessageDTO emailMessageDTO) {
         return "index";
     }
 
     @PostMapping("/contact")
-    public String sendEmail(@ModelAttribute("EmailMessage") @Valid EmailMessage emailMessage,
+    public String sendEmail(@ModelAttribute("EmailMessage") @Valid EmailMessageDTO emailMessageDTO,
                             BindingResult bindingResult,
                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "index";
 
-        emailService.sendMessage(emailMessage.getSubject(),emailMessage.getMessage());
+        emailService.sendMessage(emailMessageDTO.getSubject(), emailMessageDTO.getMessage());
         redirectAttributes.addFlashAttribute("showSuccessModal", true);
 
         return "redirect:/";

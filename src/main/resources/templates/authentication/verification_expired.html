@@ -44,10 +44,10 @@
     <div class="container">
         <div class="header_inner_paceopp">
             <figure id="logo">
-                <a href="#"><img th:src="@{/images/logo.png}" alt="Logo"></a>
+                <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
             </figure>
             <nav class="navbar_paceopp">
-                <a class="nav_link_paceopp" href="#">Home</a>
+                <a class="nav_link_paceopp" href="/">Home</a>
                 <a class="nav_link_paceopp" href="#">About</a>
                 <a class="nav_link_paceopp" href="#">Services</a>
                 <a class="nav_link_paceopp" href="#">Products</a>
@@ -60,9 +60,9 @@
         </div>
     </div>
 </header>
-<h1>Your verification link has expired</h1>
-<p>Your verification link has expired. Please register again to receive a new link.</p>
-<a href="/auth/signup" class="register-button">Register again</a>
-<script th:src="@{/js/main.js}"></script>
+    <h1>Your verification link has expired</h1>
+    <p>Your verification link has expired. Please register again to receive a new link.</p>
+    <a href="/auth/signup" class="register-button">Register again</a>
+    <script th:src="@{/js/main.js}"></script>
 </body>
 </html>

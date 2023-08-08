@@ -1,6 +1,9 @@
-.body_paceopp {
+body {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     margin: 0;
     background: linear-gradient(to bottom, black, #003300);
     font-size: 14px;
@@ -119,17 +122,17 @@ footer {
 }
 
 .form_paceopp {
+    display: flex;
+    justify-content: center;
     width: 50%;
     margin: 0 auto;
     border: none;
     padding: 20px;
     color: white;
-    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
 }
-form .error-message {
+.form_paceopp .error-message {
     color: #ff4040;
     padding-bottom: 10px;
     align-self: flex-start;
@@ -174,6 +177,9 @@ form .error-message {
 .btn_paceopp:hover:after {
     transform: scale(0);
 }
+#contact_h1 {
+     font-size: 2em;
+ }
 @media (max-width: 600px) {
     .navbar_paceopp {
         font-size: 20px;
@@ -183,7 +189,5 @@ form .error-message {
     }
 }
 
-#contact_h1 {
-    font-size: 2em;
-}
+
 

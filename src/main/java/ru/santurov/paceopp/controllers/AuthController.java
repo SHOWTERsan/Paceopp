@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.santurov.paceopp.DTO.ResetPasswordRequestDTO;
 import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.models.VerificationToken;
 import ru.santurov.paceopp.serives.EmailService;
@@ -72,16 +73,26 @@ public class AuthController {
         return "redirect:/auth/waiting_for_verification?token=" + token;
     }
 
+    @GetMapping("/password_reset_sent")
+    public String passwordResetSent() {
+        return "authentication/password_reset_sent";
+    }
+
     @GetMapping("/forgot_password")
-    public String forgotPasswordPage() {
+    public String forgotPasswordPage(Model model) {
+        model.addAttribute("resetPasswordRequest", new ResetPasswordRequestDTO());
         return "authentication/forgot_password";
     }
 
     @PostMapping("/forgot_password")
-    public String forgotPasswordProcess(@RequestParam("email") String email) {
+    public String forgotPasswordProcess(@ModelAttribute("resetPasswordRequest") @Valid ResetPasswordRequestDTO resetPasswordRequest,
+                                        BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) return "authentication/forgot_password";
+        String email = resetPasswordRequest.getEmail();
         Optional<User> userOptional = userService.findByEmail(email);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+            if (userService.findByEmail(email).isEmpty()) return "redirect:/auth/password_reset_sent";
             emailService.sendResetPasswordMessage(user);
         }
         return "redirect:/auth/password_reset_sent";
@@ -98,7 +109,7 @@ public class AuthController {
 
             if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
                 userService.delete(user);
-                return "authentication/verification_expired";
+                return "redirect:/auth/verification_expired";
             }
 
             user.setVerified(true);
@@ -126,8 +137,7 @@ public class AuthController {
             return "authentication/waiting_for_verification";
         }
         else {
-            //TODO Page
-            return "redirect:/auth/signup";
+            return "redirect:/auth/verification_expired";
         }
     }
 

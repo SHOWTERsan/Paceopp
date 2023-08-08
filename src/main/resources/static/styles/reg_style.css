@@ -1,17 +1,29 @@
+.input-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 25px;
+}
 .error-message {
-    margin-bottom: 10px;
+    position: absolute;
     color: #ff4040;
 }
 .signup-container {
-    width: 300px;
+    width: 350px;
     padding: 20px;
     background-color: #0F0F0F;
     color: limegreen;
     box-shadow: 0 0 10px limegreen;
     border-radius: 10px;
+    animation: appear 1s ease-out forwards;
+}
+
+@keyframes appear {
+    from {opacity: 0; transform: translateY(50px);}
+    to {opacity: 1; transform: translateY(0);}
 }
 
 .signup-container h2 {
+    margin-top: 5px;
     text-align: center;
     color: limegreen;
     font-size: 2em;
@@ -23,28 +35,14 @@
 }
 
 .signup-container form input {
-    margin-bottom: 10px;
-    padding: 10px;
+    padding: 15px;
     border: none;
     border-radius: 5px;
     background-color: #262626;
     color: limegreen;
     font-size: 1.2em;
-}
-
-.signup-container form button {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: limegreen;
-    color: #0F0F0F;
-    cursor: pointer;
-    font-size: 20px;
-    transition: all 0.3s ease 0s;
-}
-
-.signup-container form button:hover {
-    background-color: lightgreen;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .account-text {
@@ -60,4 +58,23 @@
 .account-text a:hover {
     text-decoration: underline;
     color: #FFA500;
+}
+
+@media (max-width: 600px) {
+    .input-container {
+        margin-bottom: 15px;
+    }
+    .signup-container {
+        padding: 10px;
+        width: 90%;
+        box-sizing: border-box;
+        margin-bottom: 150px;
+    }
+    .signup-container h2 {
+        font-size: 1.5em;
+    }
+    .signup-container form input {
+        font-size: 1em;
+        padding: 7px;
+    }
 }
