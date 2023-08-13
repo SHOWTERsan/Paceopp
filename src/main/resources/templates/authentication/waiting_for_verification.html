@@ -7,18 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Waiting for Verification</title>
     <style>
-        body {
-            background-color: black;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
         h1 {
             font-size: 2.5rem;
         }
@@ -92,9 +80,12 @@
         </div>
     </div>
 </header>
+<div class="flex-container">
     <h1>Waiting for Email Verification</h1>
     <p>Please check your email and click on the confirmation link to verify your account.</p>
-<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+</div>
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     var token = /*[[${token}]]*/ 'default';
@@ -112,6 +103,9 @@
                 }
                 if (data.status === "expired") {
                     window.location.href = "/auth/verificationExpired";
+                }
+                if (data.status === "token_not_found") {
+                    window.location.href = "/bad_request";
                 }
             });
     }

@@ -32,9 +32,12 @@
 <div class="flex-container">
     <div class="login-container">
         <h2>Login</h2>
-        <form method="post" th:action="@{/process_signin}" >
+        <form method="post" th:action="@{/auth/signin_process}" >
             <input type="text" name="username" onfocus="hideAbstractError()" placeholder="Nickname">
-            <input type="password" name="password" onfocus="hideAbstractError()" placeholder="Password">
+            <div class="input-login-container">
+                <input id="password-input" type="password" name="password" onfocus="hideAbstractError()" placeholder="Password">
+                <div th:if="${error}" th:text="${error}" id="error-message"></div>
+            </div>
             <div class="account-text">
                 Don't have an account?
                 <a th:href="@{/auth/signup}">Sign Up</a>
@@ -43,9 +46,6 @@
             <div class="forgot-text">
                 Forgot your password?
                 <a th:href="@{/auth/forgot_password}">Click here</a>
-            </div>
-            <div th:if="${param.error}" id="errorMessage">
-                Incorrect data entered!
             </div>
         </form>
     </div>

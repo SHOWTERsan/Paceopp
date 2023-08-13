@@ -1,4 +1,4 @@
-package ru.santurov.paceopp.serives;
+package ru.santurov.paceopp.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
@@ -29,5 +29,4 @@ public class UserDetailsService implements org.springframework.security.core.use
         return new UserDetails(user.get());
 
     }
-
 }

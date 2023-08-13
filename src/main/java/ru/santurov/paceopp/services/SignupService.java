@@ -1,13 +1,10 @@
-package ru.santurov.paceopp.serives;
+package ru.santurov.paceopp.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.santurov.paceopp.models.User;
-import ru.santurov.paceopp.repositories.UserRepository;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

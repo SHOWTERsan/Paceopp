@@ -8,7 +8,7 @@
     <title>Confirm Email</title>
     <style>
         #countdown {
-            font-size: 2.5em;
+            font-size: 2.2em;
         }
     </style>
     <script>
@@ -48,7 +48,9 @@
             </div>
         </div>
     </header>
-    <p style="font-size: 2em">Verification successful. Redirecting in <span id="countdown"></span> seconds...</p>
-    <script th:src="@{/js/main.js}"></script>
+    <div class="flex-container">
+        <p style="font-size: 2em">Verification successful. Redirecting in <span id="countdown"></span> seconds...</p>
+    </div>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

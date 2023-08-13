@@ -1,21 +1,20 @@
 package ru.santurov.paceopp.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.santurov.paceopp.DTO.ResetPasswordRequestDTO;
+import ru.santurov.paceopp.models.TokenType;
 import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.models.VerificationToken;
-import ru.santurov.paceopp.serives.EmailService;
-import ru.santurov.paceopp.serives.SignupService;
-import ru.santurov.paceopp.serives.TokenService;
-import ru.santurov.paceopp.serives.UserService;
+import ru.santurov.paceopp.services.*;
 import ru.santurov.paceopp.utils.UserValidator;
 
 import java.time.LocalDateTime;
@@ -46,12 +45,19 @@ public class AuthController {
     }
 
     @GetMapping("/signin")
-    public String loginPage() {
+    public String signInPage(HttpServletRequest request, Model model) {
+        if (request.getSession().getAttribute("error") != null) {
+            model.addAttribute("error", request.getSession().getAttribute("error"));
+            request.getSession().removeAttribute("error");
+        }
         return "authentication/signin";
     }
 
     @GetMapping("/signup")
-    public String signUpPage(@ModelAttribute("user")User user) {
+    public String signUpPage(Model model) {
+        if (!model.containsAttribute("user")) {
+            model.addAttribute("user", new User());
+        }
         return "authentication/signup";
     }
     @GetMapping("verificationExpired")
@@ -59,14 +65,25 @@ public class AuthController {
         return "authentication/verification_expired";
     }
 
-    @PostMapping("/signup")
-    public String signupProcess(@ModelAttribute("user") @Valid User user,
-                                BindingResult bindingResult, HttpSession session) {
-        userValidator.validate(user,bindingResult);
-        if (bindingResult.hasErrors()) return "authentication/signup";
+    @GetMapping("/bad_request")
+    public String badRequest() {
+        return "bad_request";
+    }
 
+    @PostMapping("/signup_process")
+    public String signupProcess(@ModelAttribute("user") @Valid User user,
+                                BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                                HttpSession session) {
+        userValidator.validate(user,bindingResult);
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
+            redirectAttributes.addFlashAttribute("user", user);
+            return "redirect:/auth/signup";
+        }
         signupService.createUser(user);
-        String token = emailService.sendValidateMessage(user);
+        String token = tokenService.generateToken(user, TokenType.EMAIL_VERIFICATION);
+        emailService.sendValidateMessage(user, token);
+
 
         session.setAttribute("canAccessWaitingForVerification", true);
 
@@ -100,7 +117,7 @@ public class AuthController {
 
     @GetMapping("/confirm")
     public String confirmEmail(@RequestParam("token") Optional<String> token) {
-        if (token.isEmpty()) return "bad_request";
+        if (token.isEmpty()) return "redirect:/bad_request";
 
         Optional<VerificationToken> optionalToken = tokenService.findByToken(token.get());
         if (optionalToken.isPresent()) {
@@ -119,7 +136,7 @@ public class AuthController {
             return "authentication/confirm";
         }
         else {
-            return "bad_request";
+            return "redirect:/bad_request";
         }
     }
 
@@ -128,7 +145,7 @@ public class AuthController {
                                          Model model,
                                          HttpSession session) {
         if (session.getAttribute("canAccessWaitingForVerification") == null ||
-                token.isEmpty()) throw new AccessDeniedException("Access denied!");
+                token.isEmpty()) return "redirect:/bad_request";
 
         session.removeAttribute("canAccessWaitingForVerification");
         Optional<VerificationToken> optionalToken = tokenService.findByToken(token.get());
@@ -156,6 +173,9 @@ public class AuthController {
             else
             if (vtoken.getUser().isVerified())
                 return ResponseEntity.ok(Collections.singletonMap("status", "verified"));
+        }
+        else {
+            return ResponseEntity.ok(Collections.singletonMap("status", "token_not_found"));
         }
 
         return ResponseEntity.ok(Collections.singletonMap("status", "not_verified"));

@@ -32,12 +32,22 @@
     background-color: #262626;
     color: limegreen;
     font-size: 1.2em;
+    width: 100%;
+    box-sizing: border-box;
+}
+#password-input {
+    margin-bottom: 5px;
 }
 #error-message {
+    position: absolute;
     margin-bottom: 10px;
     color: #ff4040;
 }
-
+.input-login-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+}
 
 .account-text {
     text-align: center;

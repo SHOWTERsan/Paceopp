@@ -32,7 +32,7 @@
 <div class="flex-container">
     <div class="signup-container">
         <h2>Sign Up</h2>
-        <form th:method="POST" th:action="@{/auth/signup}" th:object="${user}" >
+        <form id="signup-form" th:method="POST" th:action="@{/auth/signup_process}" th:object="${user}" >
             <div class="input-container">
                 <input type="text" onfocus="hideError(this)" th:field="*{username}" placeholder="Nickname">
                 <div  class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
@@ -43,9 +43,9 @@
             </div>
             <div class="input-container">
                 <input type="password" onfocus="hideError(this)" id="password" th:field="*{password}" placeholder="Password">
-                <div  class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                <div id="password-error" class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
-            <div class="input-container">
+            <div class="input-container confirm-password">
                 <input type="password" id="confirm-password" placeholder="Confirm Password">
                 <div id="password-message"></div>
             </div>

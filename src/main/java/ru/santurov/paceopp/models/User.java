@@ -27,7 +27,7 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Size(min = 6,max = 255,message = "Пароль должен содержать от 6 символов.")
+    @Size(min = 6,max = 255,message = "Пароль должен содержать от 8 символов до 255 символов.")
     @Column(name = "password")
     private String password;
 

@@ -6,6 +6,10 @@
 .error-message {
     position: absolute;
     color: #ff4040;
+    word-break: break-word;
+}
+.move-down {
+    margin-top: 20px;
 }
 .signup-container {
     width: 350px;

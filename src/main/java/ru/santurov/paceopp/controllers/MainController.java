@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.santurov.paceopp.DTO.EmailMessageDTO;
-import ru.santurov.paceopp.serives.EmailService;
+import ru.santurov.paceopp.services.EmailService;
 
 @Controller
 public class MainController {

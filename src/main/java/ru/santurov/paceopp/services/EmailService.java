@@ -1,31 +1,31 @@
-package ru.santurov.paceopp.serives;
+package ru.santurov.paceopp.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.santurov.paceopp.models.TokenType;
 import ru.santurov.paceopp.models.User;
-import ru.santurov.paceopp.models.VerificationToken;
 import ru.santurov.paceopp.repositories.UserRepository;
 
-import java.util.NoSuchElementException;
+import java.util.concurrent.CompletableFuture;
 
 
 @Service
 public class EmailService {
     private final JavaMailSender mailSender;
-    private final UserRepository repo;
+    private final UserService userService;
     private final TokenService token;
 
     @Autowired
-    public EmailService(JavaMailSender mailSender, UserRepository repo, TokenService token) {
+    public EmailService(JavaMailSender mailSender, UserService userService, TokenService token) {
         this.mailSender = mailSender;
-        this.repo = repo;
+        this.userService = userService;
         this.token = token;
     }
 
@@ -36,7 +36,7 @@ public class EmailService {
         message.setSubject(subject);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        String email = repo.findByUsername(username).get().getEmail();
+        String email = userService.findByUsername(username).get().getEmail();
         message.setText("Пользователь: " + username + " с почтой: " + email + "\nОтправил сообщение: " + text);
         try {
             mailSender.send(message);
@@ -45,21 +45,23 @@ public class EmailService {
         }
     }
 
-    public String sendValidateMessage(User user) {
+
+    @Async
+    public void sendValidateMessage(User user, String token) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("transferpaceopp@gmail.com");
         message.setTo(user.getEmail());
         message.setSubject("Подтверждение почты");
-        String vtoken = token.generateToken(user, TokenType.EMAIL_VERIFICATION);
-        message.setText("Подтвердите почту перейдя по ссылке: http://localhost:8080/auth/confirm?token=" + vtoken +
+        message.setText("Подтвердите почту перейдя по ссылке: http://localhost:8080/auth/confirm?token=" + token +
                 "\nСсылка будет активна в течении 30 минут.");
         try {
             mailSender.send(message);
-            return vtoken;
+            CompletableFuture.completedFuture(token);
         } catch (MailException e){
             throw new MailSendException("Ошибка отправки письма!");
         }
     }
+
 
     public void sendResetPasswordMessage(User user) {
         SimpleMailMessage message = new SimpleMailMessage();
