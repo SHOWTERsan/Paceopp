@@ -31,7 +31,7 @@ public class TokenService {
         tokenRepository.deleteAllByExpiryDateBeforeAndType(LocalDateTime.now(), TokenType.PASSWORD_RESET);
     }
 
-    public void deleteAllExpiredTokensByVerification() {
+    public void deleteAllUsersByVerification() {
         List<VerificationToken> expiredTokens = tokenRepository.findAllByExpiryDateBeforeAndType(LocalDateTime.now(), TokenType.EMAIL_VERIFICATION);
         List<User> usersToDelete = expiredTokens
                 .stream()
@@ -40,6 +40,9 @@ public class TokenService {
                 .toList();
 
         usersToDelete.forEach(userService::delete);
+    }
+    public void deleteExpiredTokens() {
+        tokenRepository.deleteAllByExpired(true);
     }
 
     public String generateToken(User user, TokenType type) {
@@ -52,6 +55,11 @@ public class TokenService {
         tokenRepository.save(verificationToken);
 
         return token;
+    }
+
+    public void setExpired(VerificationToken verificationToken) {
+        verificationToken.setExpired(true);
+        tokenRepository.save(verificationToken);
     }
 
     public void delete(VerificationToken verificationToken) {

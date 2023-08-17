@@ -17,4 +17,5 @@ public interface TokenRepository extends JpaRepository<VerificationToken, Long> 
     void deleteAllByExpiryDateBeforeAndType(LocalDateTime expiryDate, TokenType type);
     List<VerificationToken> findAllByExpiryDateBeforeAndType(LocalDateTime expiryDate, TokenType type);
 
+    void deleteAllByExpired(boolean b);
 }

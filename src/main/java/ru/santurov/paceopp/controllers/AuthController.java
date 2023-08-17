@@ -3,7 +3,9 @@ package ru.santurov.paceopp.controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,11 +13,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.santurov.paceopp.DTO.ResetPasswordRequestDTO;
+import ru.santurov.paceopp.DTO.SignupFormDTO;
 import ru.santurov.paceopp.models.TokenType;
 import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.models.VerificationToken;
 import ru.santurov.paceopp.services.*;
-import ru.santurov.paceopp.utils.UserValidator;
+import ru.santurov.paceopp.utils.SignUpValidator;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -29,21 +32,30 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/auth")
 public class AuthController {
     private final UserService userService;
-    private final UserValidator userValidator;
+    private final SignUpValidator signUpValidator;
     private final SignupService signupService;
     private final EmailService emailService;
     private final TokenService tokenService;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public AuthController(UserService userService, UserValidator userValidator, SignupService signupService, EmailService emailService, TokenService tokenService) {
+    public AuthController(UserService userService, SignUpValidator signUpValidator, SignupService signupService, EmailService emailService, TokenService tokenService, ModelMapper modelMapper) {
         this.userService = userService;
-        this.userValidator = userValidator;
+        this.signUpValidator = signUpValidator;
         this.signupService = signupService;
         this.emailService = emailService;
         this.tokenService = tokenService;
+        this.modelMapper = modelMapper;
+    }
+    @GetMapping("verificationExpired")
+    public String verificationExpired() {
+        return "authentication/verification_expired";
     }
 
+    @GetMapping("/bad_request")
+    public String badRequest() {
+        return "bad_request";
+    }
     @GetMapping("/signin")
     public String signInPage(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("error") != null) {
@@ -55,31 +67,26 @@ public class AuthController {
 
     @GetMapping("/signup")
     public String signUpPage(Model model) {
-        if (!model.containsAttribute("user")) {
-            model.addAttribute("user", new User());
+        if (!model.containsAttribute("signupForm")) {
+            model.addAttribute("signupForm", new SignupFormDTO());
         }
         return "authentication/signup";
     }
-    @GetMapping("verificationExpired")
-    public String verificationExpired() {
-        return "authentication/verification_expired";
-    }
-
-    @GetMapping("/bad_request")
-    public String badRequest() {
-        return "bad_request";
-    }
 
     @PostMapping("/signup_process")
-    public String signupProcess(@ModelAttribute("user") @Valid User user,
+    public String signupProcess(@ModelAttribute("signupForm") @Valid SignupFormDTO signupForm,
                                 BindingResult bindingResult, RedirectAttributes redirectAttributes,
                                 HttpSession session) {
-        userValidator.validate(user,bindingResult);
+        signUpValidator.validate(signupForm,bindingResult);
+        if (!signupForm.getPassword().equals(signupForm.getPasswordConfirm())) {
+            bindingResult.rejectValue("passwordConfirm", "error.passwordConfirm", "Passwords do not match");
+        }
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
-            redirectAttributes.addFlashAttribute("user", user);
+            redirectAttributes.addFlashAttribute("signupForm", signupForm);
             return "redirect:/auth/signup";
         }
+        User user = toUser(signupForm);
         signupService.createUser(user);
         String token = tokenService.generateToken(user, TokenType.EMAIL_VERIFICATION);
         emailService.sendValidateMessage(user, token);
@@ -88,6 +95,10 @@ public class AuthController {
         session.setAttribute("canAccessWaitingForVerification", true);
 
         return "redirect:/auth/waiting_for_verification?token=" + token;
+    }
+
+    private User toUser(Object futureUser) {
+        return modelMapper.map(futureUser, User.class);
     }
 
     @GetMapping("/password_reset_sent")
@@ -130,7 +141,7 @@ public class AuthController {
             }
 
             user.setVerified(true);
-            scheduler.schedule(() -> tokenService.delete(verificationToken), 5100, TimeUnit.MILLISECONDS);
+            tokenService.setExpired(verificationToken);
             userService.save(user);
 
             return "authentication/confirm";

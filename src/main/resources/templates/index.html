@@ -37,10 +37,14 @@
         <div class="container">
             <form class="form_paceopp" method="post" th:action="@{/contact}" th:object="${EmailMessage}">
                 <h1 id="contact_h1">CONTACT</h1>
-                <input class="contact_input" type="text" onfocus="hideError(this)" th:field="*{subject}" placeholder="ТЕМА">
-                <div class="error-message"  th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
-                <textarea class="contact_textarea" onfocus="hideError(this)" th:field="*{message}" placeholder="СООБЩЕНИЕ" rows="4"></textarea>
-                <div class="error-message" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>
+                <div class="input-message-container">
+                    <input class="contact_input" type="text" onfocus="hideError(this)" th:field="*{subject}" placeholder="ТЕМА">
+                    <div class="error-message"  th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
+                </div>
+                <div class="input-message-container">
+                    <textarea class="contact_textarea" onfocus="hideError(this)" th:field="*{message}" placeholder="СООБЩЕНИЕ" rows="4"></textarea>
+                    <div class="error-message" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>
+                </div>
                 <button class="btn_paceopp" type="submit"></button>
             </form>
         </div>
@@ -68,6 +72,7 @@
     </div>
 </div>
 <input type="hidden" th:value="${showSuccessModal}" id="showSuccessModal">
+<script th:src="@{/js/main.js}"></script>
 <script>
     $(document).ready(function() {
         let showModal = document.querySelector('#showSuccessModal').value === 'true';

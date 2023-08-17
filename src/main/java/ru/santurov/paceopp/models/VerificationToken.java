@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "verification_token")
 public class VerificationToken {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -23,6 +24,9 @@ public class VerificationToken {
 
     @Column(name = "expiry_date",nullable = false)
     private LocalDateTime expiryDate;
+
+    @Column(name = "is_expired",nullable = false)
+    private boolean isExpired;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type",nullable = false)

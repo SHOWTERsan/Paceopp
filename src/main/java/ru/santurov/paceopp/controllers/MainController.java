@@ -3,6 +3,7 @@ package ru.santurov.paceopp.controllers;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,7 +22,10 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String index(@ModelAttribute("EmailMessage") EmailMessageDTO emailMessageDTO) {
+    public String index(Model model) {
+        if (!model.containsAttribute("EmailMessage")) {
+            model.addAttribute("EmailMessage", new EmailMessageDTO());
+        }
         return "index";
     }
 
@@ -29,7 +33,11 @@ public class MainController {
     public String sendEmail(@ModelAttribute("EmailMessage") @Valid EmailMessageDTO emailMessageDTO,
                             BindingResult bindingResult,
                             RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) return "index";
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.EmailMessage", bindingResult);
+            redirectAttributes.addFlashAttribute("EmailMessage", emailMessageDTO);
+            return "redirect:/";
+        }
 
         emailService.sendMessage(emailMessageDTO.getSubject(), emailMessageDTO.getMessage());
         redirectAttributes.addFlashAttribute("showSuccessModal", true);

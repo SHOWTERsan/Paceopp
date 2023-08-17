@@ -109,11 +109,6 @@ main{
     justify-content: center;
     min-height: 100vh;
 }
-.container {
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-}
 
 footer {
     margin-top: auto;
@@ -124,7 +119,7 @@ footer {
     width: 100%;
     border: none;
     background: transparent;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid rgb(128, 128, 128);
     outline: none;
     padding: 5px 10px;
     color: white;
@@ -132,20 +127,24 @@ footer {
     max-width: 100%;
     min-height: 30px;
     font-size: 18px;
-    margin-bottom: 15px;
 }
 
+.input-message-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 25px;
+}
 
 .contact_textarea {
     resize: none;
-    border: 1px solid gray;
+    border: 1px solid rgb(128, 128, 128);
 }
 
-.contact_input:focus {
+.contact_input:focus, .contact_input:hover {
     border-bottom: 1px solid limegreen;
 }
 
-.contact_textarea:focus {
+.contact_textarea:focus, .contact_textarea:hover {
     border: 1px solid limegreen;
 }
 
@@ -163,7 +162,7 @@ footer {
 .form_paceopp .error-message {
     color: #ff4040;
     padding-bottom: 10px;
-    align-self: flex-start;
+    position: absolute;
 }
 .btn_paceopp {
     width: fit-content;
@@ -228,4 +227,48 @@ footer {
     .form_paceopp {
         width: 85%;
     }
+}
+
+.modal-content {
+    background-color: #282828;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 1rem;
+    border-bottom: none;
+}
+
+.modal-header .close {
+    color: limegreen;
+    opacity: 1;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: limegreen;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    border-top: none;
+    justify-content: flex-end;
+}
+
+.btn-secondary {
+    background-color: limegreen;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+}
+
+.btn-secondary:hover {
+    background-color: #2c5d2c;
 }

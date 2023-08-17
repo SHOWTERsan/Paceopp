@@ -18,16 +18,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 2,max = 30,message = "Имя должно иметь от 2 до 30 символов")
     @Column(name = "username")
     private String username;
 
-    @NotEmpty(message = "Почту нужно ввести обязательно")
-    @Email(message = "Неверный формат почты")
     @Column(name = "email")
     private String email;
 
-    @Size(min = 6,max = 255,message = "Пароль должен содержать от 8 символов до 255 символов.")
     @Column(name = "password")
     private String password;
 
