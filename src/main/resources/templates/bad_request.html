@@ -12,17 +12,17 @@
     <div class="container">
         <div class="header_inner_paceopp">
             <figure id="logo">
-                <a href="#"><img th:src="@{/images/logo.png}" alt="Logo"></a>
+                <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
             </figure>
             <nav class="navbar_paceopp">
-                <a class="nav_link_paceopp" href="#">Home</a>
+                <a class="nav_link_paceopp" href="/">Home</a>
                 <a class="nav_link_paceopp" href="#">About</a>
                 <a class="nav_link_paceopp" href="#">Services</a>
                 <a class="nav_link_paceopp" href="#">Products</a>
                 <a class="nav_link_paceopp" href="#">Contact</a>
                 <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Sign in / Sign up</a>
                 <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
-                    <button type="submit" class="nav_link_paceopp" style="background: none; border: none; cursor:pointer; padding: 5px 10px;">Logout</button>
+                    <button type="submit" class="nav_link_paceopp logout-btn">Logout</button>
                 </form>
             </nav>
         </div>

@@ -5,8 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,12 +20,7 @@ import ru.santurov.paceopp.services.*;
 import ru.santurov.paceopp.utils.SignUpValidator;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("/auth")
@@ -37,25 +31,24 @@ public class AuthController {
     private final EmailService emailService;
     private final TokenService tokenService;
     private final ModelMapper modelMapper;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
-    public AuthController(UserService userService, SignUpValidator signUpValidator, SignupService signupService, EmailService emailService, TokenService tokenService, ModelMapper modelMapper) {
+    public AuthController(UserService userService, SignUpValidator signUpValidator, SignupService signupService, EmailService emailService, TokenService tokenService, ModelMapper modelMapper, SimpMessagingTemplate simpMessagingTemplate) {
         this.userService = userService;
         this.signUpValidator = signUpValidator;
         this.signupService = signupService;
         this.emailService = emailService;
         this.tokenService = tokenService;
         this.modelMapper = modelMapper;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
     @GetMapping("verificationExpired")
     public String verificationExpired() {
         return "authentication/verification_expired";
     }
 
-    @GetMapping("/bad_request")
-    public String badRequest() {
-        return "bad_request";
-    }
+
     @GetMapping("/signin")
     public String signInPage(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("error") != null) {
@@ -90,7 +83,6 @@ public class AuthController {
         signupService.createUser(user);
         String token = tokenService.generateToken(user, TokenType.EMAIL_VERIFICATION);
         emailService.sendValidateMessage(user, token);
-
 
         session.setAttribute("canAccessWaitingForVerification", true);
 
@@ -144,6 +136,8 @@ public class AuthController {
             tokenService.setExpired(verificationToken);
             userService.save(user);
 
+            simpMessagingTemplate.convertAndSend("/topic/statusUpdate", "updated");
+
             return "authentication/confirm";
         }
         else {
@@ -167,28 +161,5 @@ public class AuthController {
         else {
             return "redirect:/auth/verification_expired";
         }
-    }
-
-    @GetMapping("/check_verification")
-    @ResponseBody
-    public ResponseEntity<Map<String, String>> checkVerification(@RequestParam("token") String token) {
-        Optional<VerificationToken> optionalToken = tokenService.findByToken(token);
-
-        if (optionalToken.isPresent()) {
-            VerificationToken vtoken = optionalToken.get();
-            if (vtoken.getExpiryDate().isBefore(LocalDateTime.now()))
-            {
-                userService.delete(vtoken.getUser());
-                return ResponseEntity.ok(Collections.singletonMap("status", "expired"));
-            }
-            else
-            if (vtoken.getUser().isVerified())
-                return ResponseEntity.ok(Collections.singletonMap("status", "verified"));
-        }
-        else {
-            return ResponseEntity.ok(Collections.singletonMap("status", "token_not_found"));
-        }
-
-        return ResponseEntity.ok(Collections.singletonMap("status", "not_verified"));
     }
 }

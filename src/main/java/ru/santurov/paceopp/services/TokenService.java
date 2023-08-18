@@ -1,5 +1,6 @@
 package ru.santurov.paceopp.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.santurov.paceopp.models.TokenType;
@@ -41,8 +42,10 @@ public class TokenService {
 
         usersToDelete.forEach(userService::delete);
     }
+
+    @Transactional
     public void deleteExpiredTokens() {
-        tokenRepository.deleteAllByExpired(true);
+        tokenRepository.deleteAllByIsExpired(true);
     }
 
     public String generateToken(User user, TokenType type) {
@@ -51,7 +54,7 @@ public class TokenService {
         verificationToken.setToken(token);
         verificationToken.setUser(user);
         verificationToken.setType(type);
-        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
+        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(2));
         tokenRepository.save(verificationToken);
 
         return token;

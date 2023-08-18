@@ -77,6 +77,60 @@
     text-decoration: underline;
     color: #FFA500;
 }
+/* Hide the default checkbox */
+.remember-me input[type="checkbox"] {
+    display: none;
+}
+.submit-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.checkbox-row {
+    align-self: flex-end;
+    display: flex; /* Added this line */
+    align-items: flex-end; /* Added this line */
+}
+.remember-me {
+    margin: 0; /* remove any default margins */
+    padding: 0; /* remove any default paddings */
+    line-height: 1; /* adjust accordingly */
+    margin-bottom: 10px;
+}
+/* Create a custom checkbox */
+.remember-me input[type="checkbox"] + label::before {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 2px solid limegreen;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+/* Add a checkmark when checked */
+.remember-me input[type="checkbox"]:checked + label::before {
+    background-color: limegreen;
+}
+
+/* Style the label text */
+.remember-me input[type="checkbox"] + label {
+    color: limegreen;
+    font-size: 1.2em;
+}
+.remember-me label {
+    user-select: none;
+}
+.login-container form input {
+    border: 1px solid transparent;
+}
+
+.login-container form input:focus, .login-container form input:hover {
+    border: 1px solid limegreen;
+    outline: none;
+}
 @media (max-width: 600px) {
     .login-container {
         padding: 10px;

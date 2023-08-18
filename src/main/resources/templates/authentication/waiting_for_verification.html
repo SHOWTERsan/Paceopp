@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
@@ -74,7 +76,7 @@
                 <a class="nav_link_paceopp" href="#">Contact</a>
                 <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Sign in / Sign up</a>
                 <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
-                    <button type="submit" class="nav_link_paceopp" style="background: none; border: none; cursor:pointer; padding: 5px 10px;">Logout</button>
+                    <button type="submit" class="nav_link_paceopp logout-btn">Logout</button>
                 </form>
             </nav>
         </div>
@@ -89,28 +91,40 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     var token = /*[[${token}]]*/ 'default';
-    var checkUrl = "/auth/check_verification?token=" + token;
 
-    function checkVerification() {
-        fetch(checkUrl, {
-            method: 'GET',
-            credentials: 'include',
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "verified") {
+    var checkStatus = function() {
+        var socket = new SockJS('/auth/stompEndpoint');
+        var stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function(frame) {
+            stompClient.subscribe('/topic/statusUpdate', function(message) {
+                var status = message.body;
+
+                if (status === "verified") {
                     window.location.href = "/auth/signin";
                 }
-                if (data.status === "expired") {
-                    window.location.href = "/auth/verificationExpired";
+                if (status === "expired") {
+                    window.location.href = "/auth/verification_expired";
                 }
-                if (data.status === "token_not_found") {
+                if (status === "token_not_found") {
                     window.location.href = "/bad_request";
                 }
             });
-    }
 
-    setInterval(checkVerification, 5000);
+            stompClient.send("/app/checkVerification", {}, token);
+        });
+    };
+
+    var socket = new SockJS('/websocket');
+    var stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function(frame) {
+        stompClient.subscribe('/topic/statusUpdate', function(message) {
+            // When a status updated message comes from server, it triggers checkStatus
+            checkStatus();
+        });
+    });
+    setTimeout(checkStatus, 1800000);
     /*]]>*/
 </script>
 <script th:src="@{/js/main.js}"></script>

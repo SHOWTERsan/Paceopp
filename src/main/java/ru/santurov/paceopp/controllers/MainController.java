@@ -28,7 +28,10 @@ public class MainController {
         }
         return "index";
     }
-
+    @GetMapping("/bad_request")
+    public String badRequest() {
+        return "bad_request";
+    }
     @PostMapping("/contact")
     public String sendEmail(@ModelAttribute("EmailMessage") @Valid EmailMessageDTO emailMessageDTO,
                             BindingResult bindingResult,

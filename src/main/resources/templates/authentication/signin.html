@@ -23,7 +23,7 @@
                 <a class="nav_link_paceopp" href="#">Contact</a>
                 <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Sign in / Sign up</a>
                 <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
-                    <button type="submit" class="nav_link_paceopp" style="background: none; border: none; cursor:pointer; padding: 5px 10px;">Logout</button>
+                    <button type="submit" class="nav_link_paceopp logout-btn">Logout</button>
                 </form>
             </nav>
         </div>
@@ -42,7 +42,15 @@
                 Don't have an account?
                 <a th:href="@{/auth/signup}">Sign Up</a>
             </div>
-            <button class="btn" type="submit">Login</button>
+            <div class="submit-block">
+                <div class="checkbox-row">
+                    <div class="remember-me">
+                        <input type="checkbox" name="remember-me" id="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+                </div>
+                <button class="btn" type="submit">Login</button>
+            </div>
             <div class="forgot-text">
                 Forgot your password?
                 <a th:href="@{/auth/forgot_password}">Click here</a>

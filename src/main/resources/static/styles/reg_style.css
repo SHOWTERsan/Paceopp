@@ -63,8 +63,16 @@
     text-decoration: underline;
     color: #FFA500;
 }
+.signup-container form input {
+    border: 1px solid transparent;
+}
 
-@media (max-width: 600px) {
+.signup-container form input:focus, .signup-container form input:hover {
+    border: 1px solid limegreen;
+    outline: none;
+}
+
+    @media (max-width: 600px) {
     .input-container {
         margin-bottom: 15px;
     }

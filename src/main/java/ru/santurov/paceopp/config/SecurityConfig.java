@@ -1,5 +1,6 @@
 package ru.santurov.paceopp.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,30 +8,51 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import ru.santurov.paceopp.security.CustomAuthenticationFailureHandler;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig  {
+    private final DataSource dataSource;
+
+    public SecurityConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize
+        http
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/websocket/**"))
+                .authorizeHttpRequests(authorize -> authorize
 //                        .requestMatchers("/SOME ROUTE").hasRole("ADMIN")
-                        .requestMatchers("/","/auth/**","/bad_request","/error", "/styles/**", "/images/**","/js/**").permitAll()
+                        .requestMatchers("/","/auth/**","/bad_request","/error","/websocket/**", "/images/**", "/js/**", "/styles/**").permitAll()
                         .anyRequest().hasAnyRole("USER", "ADMIN"))
                 .formLogin(form -> form
                         .loginPage("/auth/signin")
                         .loginProcessingUrl("/auth/signin_process")
                         .defaultSuccessUrl("/",true)
                         .failureHandler(new CustomAuthenticationFailureHandler()))
+                .rememberMe(rememberMe -> rememberMe
+                        .rememberMeParameter("remember-me")
+                        .tokenRepository(jdbcTokenRepository())
+                        .tokenValiditySeconds(30 * 24 * 60 * 60))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/auth/signin"));
 
         return http.build();
     }
-
+    @Bean
+    public PersistentTokenRepository jdbcTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        return jdbcTokenRepository;
+    }
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();

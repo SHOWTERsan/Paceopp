@@ -101,19 +101,6 @@ footer {
     opacity: 0.7;
 }
 
-
-
-main{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 100vh;
-}
-
-footer {
-    margin-top: auto;
-}
-
 .contact_input, .contact_textarea {
     font-weight: bold;
     width: 100%;
@@ -271,4 +258,18 @@ footer {
 
 .btn-secondary:hover {
     background-color: #2c5d2c;
+}
+a, button {
+    box-sizing: border-box;
+}
+.logout-btn {
+    background: none;
+    border: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    cursor:pointer;
+    padding: 5px 12px;
+    font-weight: normal;
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
 }
