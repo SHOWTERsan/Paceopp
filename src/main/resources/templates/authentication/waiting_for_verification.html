@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
@@ -90,41 +90,32 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var token = /*[[${token}]]*/ 'default';
+    var uuid = /*[[${uuid}]]*/ 'default';
 
-    var checkStatus = function() {
-        var socket = new SockJS('/auth/stompEndpoint');
-        var stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, function(frame) {
-            stompClient.subscribe('/topic/statusUpdate', function(message) {
-                var status = message.body;
-
-                if (status === "verified") {
-                    window.location.href = "/auth/signin";
-                }
-                if (status === "expired") {
-                    window.location.href = "/auth/verification_expired";
-                }
-                if (status === "token_not_found") {
-                    window.location.href = "/bad_request";
-                }
-            });
-
-            stompClient.send("/app/checkVerification", {}, token);
-        });
-    };
-
-    var socket = new SockJS('/websocket');
+    var socket = new SockJS('/auth/stompEndpoint');
     var stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function(frame) {
-        stompClient.subscribe('/topic/statusUpdate', function(message) {
-            // When a status updated message comes from server, it triggers checkStatus
-            checkStatus();
+        stompClient.subscribe('/topic/statusUpdate/'+uuid, function(message) {
+            var status = message.body;
+
+            if (status === "verified") {
+                window.location.href = "/auth/signin";
+            }
+            if (status === "expired") {
+                window.location.href = "/auth/verificationExpired";
+            }
+            if (status === "token_not_found") {
+                window.location.href = "/bad_request";
+            }
         });
+
+        stompClient.subscribe('/topic/checkVerificationStatus/'+uuid, function(message) {
+            stompClient.send("/app/checkVerification", {}, uuid);
+        })
+
+        stompClient.send("/app/checkVerification", {}, uuid);
     });
-    setTimeout(checkStatus, 1800000);
     /*]]>*/
 </script>
 <script th:src="@{/js/main.js}"></script>

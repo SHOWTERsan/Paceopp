@@ -19,6 +19,7 @@ import javax.sql.DataSource;
 public class SecurityConfig  {
     private final DataSource dataSource;
 
+    @Autowired
     public SecurityConfig(DataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -27,7 +28,7 @@ public class SecurityConfig  {
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/websocket/**"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/auth/stompEndpoint/**"))
                 .authorizeHttpRequests(authorize -> authorize
 //                        .requestMatchers("/SOME ROUTE").hasRole("ADMIN")
                         .requestMatchers("/","/auth/**","/bad_request","/error","/websocket/**", "/images/**", "/js/**", "/styles/**").permitAll()

@@ -1,10 +1,8 @@
 package ru.santurov.paceopp.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class User {
 
     @Column(name = "is_verified")
     private boolean isVerified;
-
+    @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<VerificationToken> tokens;
 }

@@ -3,7 +3,6 @@ package ru.santurov.paceopp.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.santurov.paceopp.models.User;
-import ru.santurov.paceopp.repositories.TokenRepository;
 import ru.santurov.paceopp.repositories.UserRepository;
 
 import java.util.Optional;
@@ -22,7 +21,7 @@ public class UserService {
     }
 
     public Optional<User> findByUuid(String uuid) {
-        return userRepository.findByUuid(uuid);
+        return userRepository.findByUuidAndFetchTokensEagerly(uuid);
     }
 
     public Optional<User> findByEmail(String email) {

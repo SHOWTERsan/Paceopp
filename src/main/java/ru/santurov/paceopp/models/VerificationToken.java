@@ -2,6 +2,7 @@ package ru.santurov.paceopp.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ public class VerificationToken {
     @Column(name = "id")
     private Long id;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
@@ -26,7 +28,7 @@ public class VerificationToken {
     private LocalDateTime expiryDate;
 
     @Column(name = "is_expired",nullable = false)
-    private boolean isExpired;
+    private boolean expired;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type",nullable = false)

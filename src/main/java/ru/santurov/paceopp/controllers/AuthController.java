@@ -86,7 +86,7 @@ public class AuthController {
 
         session.setAttribute("canAccessWaitingForVerification", true);
 
-        return "redirect:/auth/waiting_for_verification?token=" + token;
+        return "redirect:/auth/waiting_for_verification?uuid=" + user.getUuid();
     }
 
     private User toUser(Object futureUser) {
@@ -133,10 +133,9 @@ public class AuthController {
             }
 
             user.setVerified(true);
-            tokenService.setExpired(verificationToken);
             userService.save(user);
 
-            simpMessagingTemplate.convertAndSend("/topic/statusUpdate", "updated");
+            simpMessagingTemplate.convertAndSend("/topic/checkVerificationStatus/"+user.getUuid(), "updated");
 
             return "authentication/confirm";
         }
@@ -146,16 +145,18 @@ public class AuthController {
     }
 
     @GetMapping("/waiting_for_verification")
-    public String waitingForVerification(@RequestParam("token") Optional<String> token,
+    public String waitingForVerification(@RequestParam("uuid") Optional<String> uuid,
                                          Model model,
                                          HttpSession session) {
         if (session.getAttribute("canAccessWaitingForVerification") == null ||
-                token.isEmpty()) return "redirect:/bad_request";
+                uuid.isEmpty()) return "redirect:/bad_request";
 
         session.removeAttribute("canAccessWaitingForVerification");
-        Optional<VerificationToken> optionalToken = tokenService.findByToken(token.get());
+        Optional<User> user = userService.findByUuid(uuid.get());
+        Optional<VerificationToken> optionalToken = tokenService.getTokenByUserAndType(user, TokenType.EMAIL_VERIFICATION);
+
         if (optionalToken.isPresent()) {
-            model.addAttribute("token", token.get());
+            model.addAttribute("uuid", uuid.get());
             return "authentication/waiting_for_verification";
         }
         else {

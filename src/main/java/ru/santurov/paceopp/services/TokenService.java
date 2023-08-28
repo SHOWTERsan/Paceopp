@@ -28,12 +28,30 @@ public class TokenService {
         return tokenRepository.findByToken(token);
     }
 
-    public void deleteAllExpiredTokensByPasswordReset() {
+    public void deleteAllExpiredByPasswordReset() {
         tokenRepository.deleteAllByExpiryDateBeforeAndType(LocalDateTime.now(), TokenType.PASSWORD_RESET);
     }
+    @Transactional
+    public Optional<VerificationToken> getTokenByUserAndType(Optional<User> user, TokenType type) {
+        return user.flatMap(value -> value.getTokens()
+                .stream()
+                .filter(p -> p.getType() == type)
+                .findFirst());
+    }
 
-    public void deleteAllUsersByVerification() {
-        List<VerificationToken> expiredTokens = tokenRepository.findAllByExpiryDateBeforeAndType(LocalDateTime.now(), TokenType.EMAIL_VERIFICATION);
+    public List<VerificationToken> findAllExpiredByEmailVerification() {
+        return tokenRepository.findAllByExpiryDateBeforeAndType(LocalDateTime.now(), TokenType.EMAIL_VERIFICATION);
+    }
+
+    public List<VerificationToken> findExpiredTokens() {
+        return tokenRepository.findAllByExpired(true);
+    }
+    public List<VerificationToken> findAllByExpiryDateBeforeNow() {
+        return tokenRepository.findAllByExpiryDateBefore(LocalDateTime.now());
+    }
+
+    public void deleteAllUnverifiedUsersWithExpiredTokens() {
+        List<VerificationToken> expiredTokens = tokenRepository.findAllByExpiredAndType(true,TokenType.EMAIL_VERIFICATION);
         List<User> usersToDelete = expiredTokens
                 .stream()
                 .map(VerificationToken::getUser)
@@ -45,7 +63,7 @@ public class TokenService {
 
     @Transactional
     public void deleteExpiredTokens() {
-        tokenRepository.deleteAllByIsExpired(true);
+        tokenRepository.deleteAllByExpired(true);
     }
 
     public String generateToken(User user, TokenType type) {
@@ -54,7 +72,7 @@ public class TokenService {
         verificationToken.setToken(token);
         verificationToken.setUser(user);
         verificationToken.setType(type);
-        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(2));
+        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
         tokenRepository.save(verificationToken);
 
         return token;

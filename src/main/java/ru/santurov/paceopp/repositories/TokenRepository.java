@@ -13,9 +13,12 @@ import java.util.Optional;
 public interface TokenRepository extends JpaRepository<VerificationToken, Long> {
 
     Optional<VerificationToken> findByToken(String token);
+    List<VerificationToken> findAllByExpired(boolean b);
+    List<VerificationToken> findAllByExpiryDateBefore(LocalDateTime expiryDate);
 
     void deleteAllByExpiryDateBeforeAndType(LocalDateTime expiryDate, TokenType type);
-    List<VerificationToken> findAllByExpiryDateBeforeAndType(LocalDateTime expiryDate, TokenType type);
+    List<VerificationToken> findAllByExpiredAndType(boolean b,TokenType type);
+    List<VerificationToken> findAllByExpiryDateBeforeAndType(LocalDateTime expiryDate,TokenType type);
 
-    void deleteAllByIsExpired(boolean b);
+    void deleteAllByExpired(boolean b);
 }
