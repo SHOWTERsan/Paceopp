@@ -47,23 +47,24 @@ public class EmailService {
 
 
     @Async
-    public void sendValidateMessage(User user, String token) {
+    public void sendValidateMessage(User user) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("transferpaceopp@gmail.com");
         message.setTo(user.getEmail());
         message.setSubject("Подтверждение почты");
-        message.setText("Подтвердите почту перейдя по ссылке: http://localhost:8080/auth/confirm?token=" + token +
+        String vtoken = token.generateToken(user, TokenType.EMAIL_VERIFICATION);
+        message.setText("Подтвердите почту перейдя по ссылке: http://localhost:8080/auth/confirm?token=" + vtoken +
                 "\nСсылка будет активна в течении 30 минут.");
         try {
             mailSender.send(message);
-            CompletableFuture.completedFuture(token);
         } catch (MailException e){
             throw new MailSendException("Ошибка отправки письма!");
         }
     }
 
 
-    public void sendResetPasswordMessage(User user) {
+    @Async
+    public void sendForgotPasswordMessage(User user) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("transferpaceopp@gmail.com");
         message.setTo(user.getEmail());

@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.santurov.paceopp.DTO.ResetPasswordRequestDTO;
+import ru.santurov.paceopp.DTO.ForgotPasswordRequestDTO;
 import ru.santurov.paceopp.DTO.SignupFormDTO;
 import ru.santurov.paceopp.models.TokenType;
 import ru.santurov.paceopp.models.User;
@@ -81,8 +81,7 @@ public class AuthController {
         }
         User user = toUser(signupForm);
         signupService.createUser(user);
-        String token = tokenService.generateToken(user, TokenType.EMAIL_VERIFICATION);
-        emailService.sendValidateMessage(user, token);
+        emailService.sendValidateMessage(user);
 
         session.setAttribute("canAccessWaitingForVerification", true);
 
@@ -100,20 +99,26 @@ public class AuthController {
 
     @GetMapping("/forgot_password")
     public String forgotPasswordPage(Model model) {
-        model.addAttribute("resetPasswordRequest", new ResetPasswordRequestDTO());
+        if (!model.containsAttribute("forgotPasswordRequest")) {
+            model.addAttribute("resetPasswordRequest", new ForgotPasswordRequestDTO());
+        }
         return "authentication/forgot_password";
     }
 
-    @PostMapping("/forgot_password")
-    public String forgotPasswordProcess(@ModelAttribute("resetPasswordRequest") @Valid ResetPasswordRequestDTO resetPasswordRequest,
-                                        BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) return "authentication/forgot_password";
-        String email = resetPasswordRequest.getEmail();
+    @PostMapping("/forgot_password_process")
+    public String forgotPasswordProcess(@ModelAttribute("forgotPasswordRequest") @Valid ForgotPasswordRequestDTO forgotPasswordRequest,
+                                        BindingResult bindingResult,
+                                        RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.forgotPasswordRequest", bindingResult);
+            redirectAttributes.addFlashAttribute("forgotPasswordRequest", forgotPasswordRequest);
+            return "authentication/forgot_password";
+        }
+        String email = forgotPasswordRequest.getEmail();
         Optional<User> userOptional = userService.findByEmail(email);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (userService.findByEmail(email).isEmpty()) return "redirect:/auth/password_reset_sent";
-            emailService.sendResetPasswordMessage(user);
+            emailService.sendForgotPasswordMessage(user);
         }
         return "redirect:/auth/password_reset_sent";
     }

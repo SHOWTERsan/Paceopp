@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
-public class ResetPasswordRequestDTO {
+public class ForgotPasswordRequestDTO {
     @NotEmpty(message = "Почту нужно ввести обязательно")
     @Email(message = "Неверный формат почты")
     private String email;
