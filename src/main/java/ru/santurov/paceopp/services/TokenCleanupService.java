@@ -23,6 +23,7 @@ public class TokenCleanupService {
     public void cleanupExpiredTokens() {
         tokenService.deleteAllUnverifiedUsersWithExpiredTokens();
         tokenService.deleteExpiredTokens();
+        tokenService.deleteExpiredTokensByTime();
         List<VerificationToken> expiredTokens = tokenService.findAllExpiredByEmailVerification();
 
         for (VerificationToken token : expiredTokens) {

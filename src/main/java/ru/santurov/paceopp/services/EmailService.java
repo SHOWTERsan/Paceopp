@@ -53,7 +53,7 @@ public class EmailService {
         message.setTo(user.getEmail());
         message.setSubject("Подтверждение почты");
         String vtoken = token.generateToken(user, TokenType.EMAIL_VERIFICATION);
-        message.setText("Подтвердите почту перейдя по ссылке: http://localhost:8080/auth/confirm?token=" + vtoken +
+        message.setText("Подтвердите почту перейдя по ссылке: http://localhost:8080/auth/confirmEmail?token=" + vtoken +
                 "\nСсылка будет активна в течении 30 минут.");
         try {
             mailSender.send(message);
@@ -70,7 +70,7 @@ public class EmailService {
         message.setTo(user.getEmail());
         message.setSubject("Сброс пароля");
         String vtoken = token.generateToken(user, TokenType.PASSWORD_RESET);
-        message.setText("Сбросьте пароль перейдя по ссылке: http://localhost:8080/auth/reset_password?token=" + vtoken +
+        message.setText("Сбросьте пароль перейдя по ссылке: http://localhost:8080/auth/resetPassword?token=" + vtoken +
                 "\nЕсли вы не запрашивали сброс пароля, то просто проигнорируйте это письмо.");
         try {
             mailSender.send(message);

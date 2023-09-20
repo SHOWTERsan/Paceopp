@@ -7,17 +7,16 @@ import org.springframework.validation.Validator;
 import ru.santurov.paceopp.DTO.SignupFormDTO;
 import ru.santurov.paceopp.services.UserService;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 @Component
 public class SignUpValidator implements Validator {
 
     private final UserService userService;
+    private final PasswordValidator passwordValidator;
 
     @Autowired
-    public SignUpValidator(UserService userService) {
+    public SignUpValidator(UserService userService, PasswordValidator passwordValidator) {
         this.userService = userService;
+        this.passwordValidator = passwordValidator;
     }
 
     @Override
@@ -28,12 +27,8 @@ public class SignUpValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         SignupFormDTO signupFormDTO =(SignupFormDTO) target;
-        Pattern pattern = Pattern.compile("(?=.*[a-z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}");
-        Matcher matcher = pattern.matcher(signupFormDTO.getPassword());
 
-        if (!matcher.matches()){
-            errors.rejectValue("password", "", "Пароль должен содержать не менее 8 символов, включая 1 цифру и 1 спецсимвол");
-        }
+        passwordValidator.validate("password", signupFormDTO.getPassword(), errors);
         if (userService.findByUsername(signupFormDTO.getUsername()).isPresent())
             errors.rejectValue("username","","Человек с таким имене уже существует");
         if (userService.findByEmail(signupFormDTO.getEmail()).isPresent())

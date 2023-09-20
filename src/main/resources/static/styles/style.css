@@ -1,7 +1,7 @@
 html, body {
     height: 100%;
     margin: 0;
-    overflow: hidden;
+    overflow: auto;
     background: linear-gradient(to bottom, black, #003300);
     font-size: 14px;
     line-height: 1.6;
@@ -250,6 +250,100 @@ a, button {
     color: white;
     font-size: 16px;
     text-decoration: none;
+}
+
+.section-title {
+    text-align: center;
+    width: 100%;
+    padding-top: 2rem;
+}
+
+.services-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.service-item {
+    width: 220px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid limegreen;
+    background-color: black;
+    border-radius: 10px;
+    padding: 2rem;
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    cursor: pointer;
+}
+
+.service-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 250, 0, 0.2);
+    background: limegreen;
+}
+
+.service-title {
+    font-size: 1.5rem;
+    color: limegreen;
+    transition: color 0.3s ease;
+}
+
+.service-item:hover .service-title {
+    color: black;
+}
+.service-item:hover .service-cost{
+    color: black;
+}
+
+.service-modal-dialog {
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+}
+
+.service-modal-content {
+    background-color: black; /* light gray */
+    border-radius: 10px; /* rounded corners */
+    padding: 20px; /* some padding */
+}
+.service-modal-title {
+    color:limegreen;
+    font-size: 2em;
+}
+
+.service-modal-body {
+    color:limegreen;
+    margin-top: 10px;
+    font-size: 1.2em; /* larger text */
+    line-height: 1.5; /* more space between lines */
+}
+.modal-body ul {
+    padding-left: 20px; /* adds indentation to the bullet list */
+}
+
+.modal-body ul li {
+    margin-bottom: 10px; /* adds margin at the bottom of each list item */
+}
+.service-btn-primary {
+    background-color: limegreen;
+    border: none;
+}
+.service-btn-primary:hover {
+    background-color: darkgreen;
+}
+
+.service-cost {
+    font-size: 1rem; /* Adjust as needed */
+    color: limegreen; /* Adjust as needed */
+    margin-top: 10px; /* Adjust as needed */
 }
 @media (max-width: 600px) {
     .navbar_paceopp {

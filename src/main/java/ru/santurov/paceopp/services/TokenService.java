@@ -66,6 +66,11 @@ public class TokenService {
         tokenRepository.deleteAllByExpired(true);
     }
 
+    @Transactional
+    public void deleteExpiredTokensByTime() {
+        tokenRepository.deleteAllByExpiryDateBefore(LocalDateTime.now());
+    }
+
     public String generateToken(User user, TokenType type) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
