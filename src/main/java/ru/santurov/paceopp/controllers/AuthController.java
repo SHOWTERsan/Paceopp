@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,9 +37,10 @@ public class AuthController {
     private final ModelMapper modelMapper;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ResetPasswordValidator resetPasswordValidator;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthController(UserService userService, SignUpValidator signUpValidator, SignupService signupService, EmailService emailService, TokenService tokenService, ModelMapper modelMapper, SimpMessagingTemplate simpMessagingTemplate, ResetPasswordValidator resetPasswordValidator) {
+    public AuthController(UserService userService, SignUpValidator signUpValidator, SignupService signupService, EmailService emailService, TokenService tokenService, ModelMapper modelMapper, SimpMessagingTemplate simpMessagingTemplate, ResetPasswordValidator resetPasswordValidator, BCryptPasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.signUpValidator = signUpValidator;
         this.signupService = signupService;
@@ -47,6 +49,7 @@ public class AuthController {
         this.modelMapper = modelMapper;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.resetPasswordValidator = resetPasswordValidator;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("verificationExpired")
@@ -174,7 +177,7 @@ public class AuthController {
         if (optionalToken.isPresent()) {
             VerificationToken verificationToken = optionalToken.get();
             User user = verificationToken.getUser();
-            user.setPassword(resetPasswordRequest.getNewPassword());
+            user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
             userService.save(user);
             tokenService.delete(verificationToken);
         }

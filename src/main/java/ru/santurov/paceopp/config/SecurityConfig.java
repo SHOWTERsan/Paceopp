@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,11 +25,14 @@ public class SecurityConfig  {
         this.dataSource = dataSource;
     }
 
-
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/auth/stompEndpoint/**"))
+                .csrf(csrf -> csrf
+                                .ignoringRequestMatchers("/auth/stompEndpoint/**"))
+                .headers(headersConfigurer ->
+                        headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authorize -> authorize
 //                        .requestMatchers("/SOME ROUTE").hasRole("ADMIN")
                         .requestMatchers("/","/auth/**","/bad_request","/error","/websocket/**", "/images/**", "/js/**", "/styles/**").permitAll()

@@ -12,6 +12,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.santurov.paceopp.DTO.EmailMessageDTO;
 import ru.santurov.paceopp.services.EmailService;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 public class MainController {
     private final EmailService emailService;
@@ -23,8 +28,8 @@ public class MainController {
 
     @GetMapping("/")
     public String index(Model model) {
-        if (!model.containsAttribute("EmailMessage")) {
-            model.addAttribute("EmailMessage", new EmailMessageDTO());
+        if (!model.containsAttribute("emailMessage")) {
+            model.addAttribute("emailMessage", new EmailMessageDTO());
         }
         return "index";
     }
@@ -33,12 +38,12 @@ public class MainController {
         return "bad_request";
     }
     @PostMapping("/contact")
-    public String sendEmail(@ModelAttribute("EmailMessage") @Valid EmailMessageDTO emailMessageDTO,
+    public String sendEmail(@ModelAttribute("emailMessage") @Valid EmailMessageDTO emailMessageDTO,
                             BindingResult bindingResult,
                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.EmailMessage", bindingResult);
-            redirectAttributes.addFlashAttribute("EmailMessage", emailMessageDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.emailMessage", bindingResult);
+            redirectAttributes.addFlashAttribute("emailMessage", emailMessageDTO);
             return "redirect:/";
         }
 

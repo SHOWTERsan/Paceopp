@@ -11,10 +11,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAsync
 public class PaceoppApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(PaceoppApplication.class, args);
     }
+
 
     @Bean
     public ModelMapper modelMapper() {
