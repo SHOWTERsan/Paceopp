@@ -1,5 +1,6 @@
 package ru.santurov.paceopp.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -16,7 +17,6 @@ public class VerificationToken {
     @Column(name = "id")
     private Long id;
 
-    @ToString.Exclude
     @ManyToOne
     @JoinColumn(nullable = false, name = "user_id")
     private User user;

@@ -18,12 +18,12 @@
                 <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
             </figure>
             <nav class="navbar_paceopp">
-                <a class="nav_link_paceopp" href="/">Home</a>
-                <a class="nav_link_paceopp" href="#">About</a>
-                <a class="nav_link_paceopp" href="#">Services</a>
-                <a class="nav_link_paceopp" href="#">Products</a>
-                <a class="nav_link_paceopp" href="#">Contact</a>
-                <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Sign in / Sign up</a>
+                <a class="nav_link_paceopp" href="/">Главная</a>
+                <a class="nav_link_paceopp" href="#">О нас</a>
+                <a class="nav_link_paceopp" href="#">Услуги</a>
+                <a class="nav_link_paceopp" href="#">Киты</a>
+                <a class="nav_link_paceopp" href="#">Написать нам</a>
+                <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>
                 <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
                     <button type="submit" class="nav_link_paceopp logout-btn">Logout</button>
                 </form>
@@ -33,31 +33,31 @@
 </header>
 <div class="flex-container">
     <div class="signup-container">
-        <h2>Sign Up</h2>
+        <h2>Регистрация</h2>
         <form id="signup-form" th:method="POST" th:action="@{/auth/signup_process}" th:object="${signupForm}" >
             <div class="input-container">
-                <input type="text" onfocus="hideError(this)" th:field="*{username}" placeholder="Nickname">
+                <input type="text" onfocus="hideError(this)" th:field="*{username}" placeholder="Никнейм">
                 <div  class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
             </div>
             <div class="input-container">
-                <input type="text" onfocus="hideError(this)" th:field="*{email}" placeholder="Email">
+                <input type="text" onfocus="hideError(this)" th:field="*{email}" placeholder="Емаил">
                 <div  class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
             </div>
             <div class="input-container">
-                <input type="password" onfocus="hideError(this)" id="password" th:field="*{password}" placeholder="Password">
+                <input type="password" onfocus="hideError(this)" id="password" th:field="*{password}" placeholder="Пароль">
                 <span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
                 <div id="password-error" class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
             <div class="input-container confirm-password">
-                <input type="password" id="confirm-password" th:field="*{passwordConfirm}" placeholder="Confirm Password">
+                <input type="password" id="confirm-password" th:field="*{passwordConfirm}" placeholder="Подтвердите пароль">
                 <span toggle="#confirm-password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
                 <div id="password-message"></div>
             </div>
             <div class="account-text">
-                Already have an account?
-                <a th:href="@{/auth/signin}">Log In</a>
+                Уже есть аккаунт?
+                <a th:href="@{/auth/signin}">Войти</a>
             </div>
-            <button class="btn" type="submit">Sign Up</button>
+            <button class="btn" type="submit">Зарегистрироваться</button>
         </form>
     </div>
 </div>

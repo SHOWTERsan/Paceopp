@@ -3,8 +3,6 @@
 <head>
     <title>Paceopp</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
@@ -18,12 +16,12 @@
                 <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
             </figure>
             <nav class="navbar_paceopp">
-                <a class="nav_link_paceopp" href="/">Home</a>
-                <a class="nav_link_paceopp" href="#">About</a>
-                <a class="nav_link_paceopp" href="#">Services</a>
-                <a class="nav_link_paceopp" href="#">Products</a>
-                <a class="nav_link_paceopp" href="#">Contact</a>
-                <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Sign in / Sign up</a>
+                <a class="nav_link_paceopp" href="/">Главная</a>
+                <a class="nav_link_paceopp" href="#">О нас</a>
+                <a class="nav_link_paceopp" href="#">Услуги</a>
+                <a class="nav_link_paceopp" href="#">Киты</a>
+                <a class="nav_link_paceopp" href="#">Написать нам</a>
+                <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>
                 <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
                     <button type="submit" class="nav_link_paceopp logout-btn">Logout</button>
                 </form>
@@ -35,17 +33,14 @@
 <main>
     <div class="container">
         <div class="services-container" >
-            <h1 class="section-title">SERVICES</h1>
+            <h1 class="section-title">Услуги</h1>
 
-            <div class="services-container" id="services">
+            <div class="services-container" id="services"></div>
 
-            </div>
-
-            <!-- The Modal Template -->
             <script type="text/template" id="modalTemplate">
                 <div class="service-item" data-bs-toggle="modal" data-bs-target="#modalService{id}">
                     <h3 class="service-title">{title}</h3>
-                    <div class="service-cost">${cost}</div>
+                    <div class="service-cost">₽{cost}</div>
                 </div>
                 <div class="modal fade" id="modalService{id}">
                     <div class="modal-dialog service-modal-dialog">
@@ -59,114 +54,64 @@
                                 <ul>
                                     {items}
                                 </ul>
-                                <div class="service-cost">${cost}</div>
+                                <div class="service-cost">₽{cost}</div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary service-btn-primary">Order</button>
-                                <button type="button" class="btn btn-secondary service-btn-primary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary service-btn-primary">Оформить</button>
+                                <button type="button" class="btn btn-secondary service-btn-primary" data-bs-dismiss="modal">Закрыть</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </script>
-
-            <script>
-                const services = [
-                    {
-                        id: 1,
-                        title: 'WAV leasing',
-                        cost: 100,
-                        items: [
-                            'Бит в формате WAV и MP3 с 1 тегом',
-                            'Право выкладывать трек в любые цифровые магазины',
-                            'Коммерческое использование',
-                            'Коммерческие живые выступления',
-                            'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
-                        ],
-                    },
-                    {
-                        id: 2,
-                        title: 'Mp3 leasing',
-                        cost: 150,
-                        items: [
-                            'Бит в формате WAV и MP3 с 1 тегом',
-                            'Право выкладывать трек в любые цифровые магазины',
-                            'Коммерческое использование',
-                            'Коммерческие живые выступления',
-                            'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
-                        ],
-                    },
-                    {
-                        id: 3,
-                        title: 'Trackout',
-                        cost: 200,
-                        items: [
-                            'Бит в формате WAV и MP3 с 1 тегом',
-                            'Право выкладывать трек в любые цифровые магазины',
-                            'Коммерческое использование',
-                            'Коммерческие живые выступления',
-                            'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
-                        ],
-                    },
-                    {
-                        id: 4,
-                        title: 'Exclusive',
-                        cost: 300,
-                        items: [
-                            'Бит в формате WAV и MP3 с 1 тегом',
-                            'Право выкладывать трек в любые цифровые магазины',
-                            'Коммерческое использование',
-                            'Коммерческие живые выступления',
-                            'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
-                        ],
-                    },
-                    {
-                        id: 5,
-                        title: 'Beat on order',
-                        cost: 100,
-                        items: [
-                            'Бит в формате WAV и MP3 с 1 тегом',
-                            'Право выкладывать трек в любые цифровые магазины',
-                            'Коммерческое использование',
-                            'Коммерческие живые выступления',
-                            'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
-                        ],
-                    },
-                ];
-
-                const serviceContainer = document.getElementById('services');
-                const modalTemplate = document.getElementById('modalTemplate').innerText;
-
-                let generatedHTML = ""; // We'll store all generated HTML here
-
-                services.forEach(service => {
-                    const items = service.items.map(item => `<li>${item}</li>`).join('');
-                    const modalHTML = modalTemplate
-                        .replace(/{id}/g, service.id)
-                        .replace(/{title}/g, service.title)  // use RegExp to replace all occurrences
-                        .replace(/{cost}/g, service.cost)  // use RegExp to replace all occurrences
-                        .replace('{items}', items);
-                    generatedHTML += modalHTML;
-                });
-
-                // Now we update the innerHTML only once.
-                serviceContainer.innerHTML = generatedHTML;
-            </script>
-
         </div>
-    </div>
 
+        <div class="container drumkits-container">
+            <h1 class="section-title">Киты</h1>
+            <div class="row">
+                <div th:each="drumkit : ${drumkits}" class="col-lg-4 col-md-6 mb-4">
+                    <div class="drumkit-card" data-toggle="modal"
+                         data-target="#drumkitModal"
+                         th:data-title="${drumkit.title}"
+                         th:data-cost="${drumkit.cost}"
+                         th:data-description="${drumkit.description}">
+<!--                        <img th:src="${drumkit.imageUrl}" class="img-fluid" alt="Drumkit image" />-->
+                        <h3 class="drumkit-title" th:text="${drumkit.title}">Drumkit Title</h3>
+                        <div class="drumkit-cost" th:text="${'₽' + drumkit.cost}">₽Cost</div>
+                    </div>
+                </div>
 
+            </div>
+        </div>
 
-    <div class="container">
+        <div class="modal fade" id="drumkitModal" tabindex="-1" aria-labelledby="drumkitModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="drumkitModalLabel">Drumkit Title</h3>
+                        <button type="button" class="modal-close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Drumkit Description
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-buy">Buy</button>
+                        <button type="button" class="btn btn-dismiss" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <form class="form_paceopp" th:method="post"  th:object="${emailMessage}" th:action="@{/contact}">
-            <h1>CONTACT</h1>
+            <h1 class="section-title">Написать нам</h1>
             <div class="input-message-container">
-                <input class="contact_input" type="text" onfocus="hideError(this)" th:field="*{subject}" placeholder="Topic">
+                <input class="contact_input" type="text" onfocus="hideError(this)" th:field="*{subject}" placeholder="Тема">
                 <div class="error-message"  th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
             </div>
             <div class="input-message-container">
-                <textarea class="contact_textarea" onfocus="hideError(this)" th:field="*{message}" placeholder="Message" rows="4"></textarea>
+                <textarea class="contact_textarea" onfocus="hideError(this)" th:field="*{message}" placeholder="Сообщение" rows="4"></textarea>
                 <div class="error-message" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>
             </div>
             <button class="btn_paceopp" type="submit"></button>
@@ -174,7 +119,37 @@
     </div>
 </main>
 <footer>
-    <p>&copy; 2023 Paceopp</p>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section about">
+                <h2 class="footer-title">О нас</h2>
+                <p>Наша компания предлагает лучшие услуги в своей области. Мы стремимся к качеству и удовлетворению потребностей наших клиентов.</p>
+            </div>
+            <div class="footer-section links">
+                <h2 class="footer-title">Ссылки</h2>
+                <ul>
+                    <li><a href="#">Главная</a></li>
+                    <li><a href="#">О нас</a></li>
+                    <li><a href="#">Услуги</a></li>
+                    <li><a href="#">Контакты</a></li>
+                </ul>
+            </div>
+            <div class="footer-section social">
+                <h2 class="footer-title">Социальные сети</h2>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/paceopp" target="_blank">
+                        <img src="/images/instagram-icon.ico" alt="Instagram">
+                    </a>
+                    <a href="https://www.vk.com/paceoppbeats" target="_blank">
+                        <img src="/images/vk-icon.ico" alt="VK">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Paceopp</p>
+        </div>
+    </div>
 </footer>
 <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -195,15 +170,110 @@
     </div>
 </div>
 <input type="hidden" th:value="${showSuccessModal}" id="showSuccessModal">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const services = [
+        {
+            id: 15,
+            title: 'WAV leasing',
+            cost: 850,
+            items: [
+                'Бит в формате WAV и MP3 с 1 тегом',
+                'Право выкладывать трек в любые цифровые магазины',
+                'Коммерческое использование',
+                'Коммерческие живые выступления',
+                'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
+            ],
+        },
+        {
+            id: 16,
+            title: 'Mp3 leasing',
+            cost: 450,
+            items: [
+                'MP3 Leasing предусматривает коммерческое использование с ограничениями',
+                'Право выкладывать трек в любые цифровые магазины',
+                'После оплаты вы получаете бит в формате MP3 с 1 тегом',
+                'Коммерческие живые выступления',
+                'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
+            ],
+        },
+        {
+            id: 17,
+            title: 'Trackout',
+            cost: 1500,
+            items: [
+                'После оплаты вы получаете бит в формате WAV, TRACK OUT с 1 тегом',
+                'Право выкладывать трек в любые цифровые магазины',
+                'Коммерческое использование',
+                'Коммерческие живые выступления',
+                'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
+            ],
+        },
+        {
+            id: 18,
+            title: 'Exclusive',
+            cost: 5000,
+            items: [
+                'После оплаты вы получаете бит в формате MP3, WAV и TRACKOUT',
+                'Право выкладывать трек в любые цифровые магазины',
+                'Коммерческое использование',
+                'Коммерческие живые выступления',
+                'Права переходят вам',
+                'Авторство остается за мной',
+                'Бит снимается с продажи',
+            ],
+        },
+        {
+            id: 19,
+            title: 'Custom beat',
+            cost: 1500,
+            items: [
+                'После оплаты вы получаете бит в форматах MP3, WAV или TRACKOUT',
+                'Право выкладывать трек в любые цифровые магазины',
+                'Коммерческое использование',
+                'Коммерческие живые выступления',
+                'Права переходят вам',
+                'Авторство остается за мной',
+            ],
+        },
+    ];
+
+    const serviceContainer = document.getElementById('services');
+    const modalTemplate = document.getElementById('modalTemplate').innerText;
+    let generatedHTML = "";
+
+    services.forEach(service => {
+        const items = service.items.map(item => `<li>${item}</li>`).join('');
+        const modalHTML = modalTemplate
+            .replace(/{id}/g, service.id)
+            .replace(/{title}/g, service.title)
+            .replace(/{cost}/g, service.cost)
+            .replace('{items}', items);
+        generatedHTML += modalHTML;
+    });
+
+    serviceContainer.innerHTML = generatedHTML;
+</script>
+
 <script th:src="@{/js/main.js}"></script>
 <script>
     $(document).ready(function() {
-        let showModal = document.querySelector('#showSuccessModal').value === 'true';
+        $('.drumkit-card').click(function() {
+            let title = $(this).data('title');
+            let cost = $(this).data('cost');
+            let description = $(this).data('description');
+            $('#drumkitModalLabel').text(title);
+            $('.modal-body').text(description);
+            $('.btn-buy').text('Buy for ' + cost);
+        });
 
+        let showModal = document.querySelector('#showSuccessModal').value === 'true';
         if (showModal) {
             $('#successModal').modal('show');
         }
     });
 </script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

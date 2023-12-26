@@ -347,6 +347,81 @@ a, button {
     color: limegreen; /* Adjust as needed */
     margin-top: 10px; /* Adjust as needed */
 }
+
+
+
+.drumkits-container {
+    padding: 2rem;
+}
+
+.drumkit-card {
+    width: 100%;
+    background-color: black;
+    border: 1px solid limegreen;
+    border-radius: 10px;
+    padding: 1rem;
+    color: limegreen;
+    transition: transform 0.3s, color 0.3s;
+    cursor: pointer;
+}
+
+.drumkit-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.drumkit-card:hover {
+    transform: scale(1.05);
+}
+
+.drumkit-card:hover .drumkit-title,
+.drumkit-card:hover .drumkit-cost {
+    color: black;
+}
+
+.drumkit-title {
+    font-size: 18px;
+    margin-bottom: 0.5rem;
+}
+
+.drumkit-cost {
+    font-size: 14px;
+}
+
+.modal-content {
+    background-color: black;
+    color: limegreen;
+    transition: color 0.3s;
+}
+
+.modal-header .modal-title {
+    font-size: 22px;
+    color: limegreen;
+}
+
+.modal-footer .btn-buy {
+    background-color: limegreen;
+    border: none;
+    color: black;
+}
+
+.modal-header, .modal-body, .modal-footer {
+    border: none;
+}
+
+.modal-header .modal-close {
+    background: none;
+    border: none;
+    color: limegreen;
+    opacity: 1;
+}
+
+.modal-header .modal-close:hover {
+    color: white;
+}
 @media (max-width: 600px) {
     .navbar_paceopp {
         font-size: 16px;
@@ -368,4 +443,60 @@ a, button {
         width: 85%;
     }
 }
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
 
+.social-links a {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+}
+
+.social-links img {
+    width: 100%;
+    height: 100%;
+}
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+}
+
+.footer-content .footer-section {
+    flex: 1;
+    padding: 0 20px;
+}
+
+.footer-content .footer-section h2 {
+    color: limegreen;
+    margin-bottom: 20px;
+}
+
+.footer-content .footer-section p,
+.footer-content .footer-section ul li {
+    color: white;
+    line-height: 1.6;
+}
+
+.footer-content .footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-content .footer-section ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer-content .footer-section ul li a:hover {
+    color: limegreen;
+}
+
+.footer-bottom {
+    text-align: center;
+    background: transparent;
+    color: #686868;
+    padding: 10px 0;
+}

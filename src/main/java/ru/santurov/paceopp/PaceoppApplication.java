@@ -21,4 +21,6 @@ public class PaceoppApplication {
         return new ModelMapper();
     }
 
+    //todo Большой баг на главной кофнликт индексов в бд и в Js
+    //todo Не работает модальное окно на главной у китов
 }

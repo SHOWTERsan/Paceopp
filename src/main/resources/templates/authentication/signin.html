@@ -17,12 +17,12 @@
                 <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
             </figure>
             <nav class="navbar_paceopp">
-                <a class="nav_link_paceopp" href="/">Home</a>
-                <a class="nav_link_paceopp" href="#">About</a>
-                <a class="nav_link_paceopp" href="#">Services</a>
-                <a class="nav_link_paceopp" href="#">Products</a>
-                <a class="nav_link_paceopp" href="#">Contact</a>
-                <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Sign in / Sign up</a>
+                <a class="nav_link_paceopp" href="/">Главная</a>
+                <a class="nav_link_paceopp" href="#">О нас</a>
+                <a class="nav_link_paceopp" href="#">Услуги</a>
+                <a class="nav_link_paceopp" href="#">Киты</a>
+                <a class="nav_link_paceopp" href="#">Написать нам</a>
+                <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>
                 <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
                     <button type="submit" class="nav_link_paceopp logout-btn">Logout</button>
                 </form>
@@ -32,29 +32,29 @@
 </header>
 <div class="flex-container">
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>Вход</h2>
         <form method="post" th:action="@{/auth/signin_process}" >
-            <input type="text" name="username" onfocus="hideAbstractError()" placeholder="Nickname">
+            <input type="text" name="username" onfocus="hideAbstractError()" placeholder="Никнейм">
             <div class="input-login-container">
-                <input id="password-input" type="password" name="password" onfocus="hideAbstractError()" placeholder="Password">
+                <input id="password-input" type="password" name="password" onfocus="hideAbstractError()" placeholder="Пароль">
                 <div th:if="${error}" th:text="${error}" id="error-message"></div>
             </div>
             <div class="account-text">
-                Don't have an account?
-                <a th:href="@{/auth/signup}">Sign Up</a>
+                Нет аккаунта?
+                <a th:href="@{/auth/signup}">Зарегистрироватсься</a>
             </div>
             <div class="submit-block">
                 <div class="checkbox-row">
                     <div class="remember-me">
                         <input type="checkbox" name="remember-me" id="remember-me">
-                        <label for="remember-me">Remember me</label>
+                        <label for="remember-me">Запомнить меня</label>
                     </div>
                 </div>
-                <button class="btn" type="submit">Login</button>
+                <button class="btn" type="submit">Войти</button>
             </div>
             <div class="forgot-text">
-                Forgot your password?
-                <a th:href="@{/auth/forgot_password}">Click here</a>
+                Забыли пароль?
+                <a th:href="@{/auth/forgot_password}">Найжмите сюда</a>
             </div>
         </form>
     </div>

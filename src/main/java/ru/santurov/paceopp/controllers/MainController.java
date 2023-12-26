@@ -1,7 +1,8 @@
 package ru.santurov.paceopp.controllers;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,30 +10,39 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.santurov.paceopp.DTO.DrumkitDTO;
 import ru.santurov.paceopp.DTO.EmailMessageDTO;
+import ru.santurov.paceopp.models.Drumkit;
+import ru.santurov.paceopp.services.DrumkitService;
 import ru.santurov.paceopp.services.EmailService;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class MainController {
     private final EmailService emailService;
-
-    @Autowired
-    public MainController(EmailService emailService) {
-        this.emailService = emailService;
-    }
+    private final ModelMapper modelMapper;
+    private final DrumkitService drumkitService;
 
     @GetMapping("/")
     public String index(Model model) {
         if (!model.containsAttribute("emailMessage")) {
             model.addAttribute("emailMessage", new EmailMessageDTO());
         }
+        List<DrumkitDTO> drumkits = drumkitService.findAll()
+                .stream()
+                .map(this::toDrumkitDTO)
+                .toList();
+        model.addAttribute("drumkits", drumkits);
+
         return "index";
     }
+
+    private DrumkitDTO toDrumkitDTO(Drumkit drumkit) {
+        return modelMapper.map(drumkit, DrumkitDTO.class);
+    }
+
     @GetMapping("/bad_request")
     public String badRequest() {
         return "bad_request";

@@ -1,5 +1,8 @@
 package ru.santurov.paceopp.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -39,7 +42,7 @@ public class User {
 
     @Column(name = "is_verified")
     private boolean isVerified;
-    @ToString.Exclude
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<VerificationToken> tokens;
 }
