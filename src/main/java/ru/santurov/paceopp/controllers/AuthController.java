@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,7 @@ public class AuthController {
     private final ResetPasswordValidator resetPasswordValidator;
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("verificationExpired")
+    @GetMapping("/verificationExpired")
     public String verificationExpired() {
         return "authentication/verification_expired";
     }
@@ -205,4 +206,6 @@ public class AuthController {
             return "redirect:/auth/verification_expired";
         }
     }
+    //TODO add resend email verification
+    //TODO add delete account after second time verification expired
 }

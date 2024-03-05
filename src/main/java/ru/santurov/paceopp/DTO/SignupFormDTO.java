@@ -14,7 +14,6 @@ public class SignupFormDTO {
     @Email(message = "Неверный формат почты")
     private String email;
 
-    @Size(min = 6,max = 255,message = "Пароль должен содержать от 8 символов до 255 символов.")
-    private String password; //TODO Тут пизда в версте при удалении ошибки
+    private String password;
     private String passwordConfirm;
 }

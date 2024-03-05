@@ -45,12 +45,10 @@
             </div>
             <div class="input-container">
                 <input type="password" onfocus="hideError(this)" id="password" th:field="*{password}" placeholder="Пароль">
-                <span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
                 <div id="password-error" class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
             <div class="input-container confirm-password">
                 <input type="password" id="confirm-password" th:field="*{passwordConfirm}" placeholder="Подтвердите пароль">
-                <span toggle="#confirm-password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
                 <div id="password-message"></div>
             </div>
             <div class="account-text">

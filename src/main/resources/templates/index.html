@@ -172,88 +172,48 @@
 <input type="hidden" th:value="${showSuccessModal}" id="showSuccessModal">
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    const services = [
-        {
-            id: 15,
-            title: 'WAV leasing',
-            cost: 850,
-            items: [
-                'Бит в формате WAV и MP3 с 1 тегом',
-                'Право выкладывать трек в любые цифровые магазины',
-                'Коммерческое использование',
-                'Коммерческие живые выступления',
-                'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
-            ],
-        },
-        {
-            id: 16,
-            title: 'Mp3 leasing',
-            cost: 450,
-            items: [
-                'MP3 Leasing предусматривает коммерческое использование с ограничениями',
-                'Право выкладывать трек в любые цифровые магазины',
-                'После оплаты вы получаете бит в формате MP3 с 1 тегом',
-                'Коммерческие живые выступления',
-                'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
-            ],
-        },
-        {
-            id: 17,
-            title: 'Trackout',
-            cost: 1500,
-            items: [
-                'После оплаты вы получаете бит в формате WAV, TRACK OUT с 1 тегом',
-                'Право выкладывать трек в любые цифровые магазины',
-                'Коммерческое использование',
-                'Коммерческие живые выступления',
-                'Покупатель должен указать (prod. by Pace opp) в названии поста или произведения',
-            ],
-        },
-        {
-            id: 18,
-            title: 'Exclusive',
-            cost: 5000,
-            items: [
-                'После оплаты вы получаете бит в формате MP3, WAV и TRACKOUT',
-                'Право выкладывать трек в любые цифровые магазины',
-                'Коммерческое использование',
-                'Коммерческие живые выступления',
-                'Права переходят вам',
-                'Авторство остается за мной',
-                'Бит снимается с продажи',
-            ],
-        },
-        {
-            id: 19,
-            title: 'Custom beat',
-            cost: 1500,
-            items: [
-                'После оплаты вы получаете бит в форматах MP3, WAV или TRACKOUT',
-                'Право выкладывать трек в любые цифровые магазины',
-                'Коммерческое использование',
-                'Коммерческие живые выступления',
-                'Права переходят вам',
-                'Авторство остается за мной',
-            ],
-        },
-    ];
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    // Get services and items from the model attributes
+    var services = /*[[${services}]]*/ [];
+    var items = /*[[${items}]]*/ [];
 
     const serviceContainer = document.getElementById('services');
     const modalTemplate = document.getElementById('modalTemplate').innerText;
     let generatedHTML = "";
 
     services.forEach(service => {
-        const items = service.items.map(item => `<li>${item}</li>`).join('');
+        // Filter items for the current service
+        const serviceItems = items.filter(item => item.service.id === service.id);
+        const itemsHTML = serviceItems.map(item => `<li>${item.item}</li>`).join('');
         const modalHTML = modalTemplate
             .replace(/{id}/g, service.id)
-            .replace(/{title}/g, service.title)
-            .replace(/{cost}/g, service.cost)
-            .replace('{items}', items);
+            .replace(/{title}/g, service.name)
+            .replace(/{cost}/g, service.price)
+            .replace('{items}', itemsHTML);
         generatedHTML += modalHTML;
     });
 
     serviceContainer.innerHTML = generatedHTML;
+
+    // Add event listener for each service item
+    const serviceItems = document.querySelectorAll('.service-item');
+    serviceItems.forEach(serviceItem => {
+        serviceItem.addEventListener('click', function() {
+            // Get the service id from the clicked service item
+            const serviceId = this.dataset.id;
+
+            // Filter the items that belong to the clicked service
+            const filteredItems = items.filter(services => services.id === Number(serviceId));
+
+            // Update the modal content with the filtered items
+            const modalBody = document.querySelector('#modalService' + serviceId + ' .modal-body ul');
+            modalBody.innerHTML = filteredItems.map(item => `<li>${item.item}</li>`).join('');
+        });
+    });
+
+    /*]]>*/
 </script>
 
 <script th:src="@{/js/main.js}"></script>
