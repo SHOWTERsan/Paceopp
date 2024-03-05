@@ -1,11 +1,7 @@
 package ru.santurov.paceopp.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.List;
 
