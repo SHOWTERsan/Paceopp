@@ -2,8 +2,8 @@ html, body {
     height: 100%;
     margin: 0;
     overflow: auto;
+    overflow-x: hidden;
     background: linear-gradient(to bottom, black , #003300);
-    font-size: 14px;
     line-height: 1.6;
     color: white;
     font-family: 'Roboto', sans-serif;
@@ -30,18 +30,30 @@ header {
     align-items: center;
 }
 .navbar_paceopp {
-    font-size: 16px;
+    font-size: 18px;
 }
 .nav_link_paceopp {
     color: white;
     display: inline-block;
     vertical-align: top;
-    margin: 0 20px;
+    margin: 0 5px;
     padding: 5px 10px;
     text-decoration: none;
     transition: all 0.2s linear;
     position: relative;
 }
+
+.navbar_left {
+    display: flex;
+}
+.navbar_right {
+    display: flex;
+    margin-left: auto;
+}
+.navbar_right .nav_link_paceopp:first-child {
+    margin-left: auto;
+}
+
 .nav_link_paceopp:after {
     content: "";
     position: absolute;
@@ -66,7 +78,7 @@ header {
     width: 50px;
 }
 #logo {
-    margin: 14px 40px;
+    margin: 14px 14px;
 }
 *, ::after, ::before {
     box-sizing: content-box;
@@ -81,6 +93,7 @@ main{
     width:100%;
     max-width: 1100px;
     margin: 0 auto;
+    padding: 0 0px;
 }
 footer {
     margin-top: auto;
@@ -193,7 +206,7 @@ footer {
     transform: scale(0);
 }
 #contact_h1 {
-    font-size: 2em;
+    font-size: 2rem;
 }
 .modal-content {
      background-color: #282828;
@@ -256,7 +269,7 @@ a, button {
 .section-title {
     text-align: center;
     width: 100%;
-    padding-top: 2rem;
+    padding-top: 1.6rem;
 }
 
 .services-container {
@@ -429,10 +442,6 @@ a, button {
     .nav_link_paceopp {
         margin: 0 10px;
     }
-    .header_inner_paceopp {
-        flex-direction: column;
-        text-align: center;
-    }
     #logo img {
         width: 40px;
     }
@@ -500,3 +509,74 @@ a, button {
     color: #686868;
     padding: 10px 0;
 }
+
+
+.dropbtn {
+    display: none;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: limegreen;
+    min-width: 160px;
+    z-index: 1;
+    right: 0;
+    top: calc(100% + 5px); /* Place dropdown below the menu icon */
+    transform-origin: top right;
+}
+
+.dropdown.show .dropdown-content {
+    right: auto;
+    left: 0;
+    transform-origin: top left;
+}
+
+
+.show {
+    display: block;
+}
+
+.dropdown {
+    position: relative;
+}
+
+
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: white;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.menu-icon {
+    display: none;
+}
+
+@media screen and (max-width: 600px) {
+    .navbar_left {
+        display: none;
+    }
+    .dropbtn {
+        display: block;
+    }
+    .navbar_right {
+        position: relative;
+    }
+    .menu-icon {
+        margin: 0 10px 0 0;
+        padding: 5px 10px;
+        font-size: 18px;
+        display: inline-block;
+    }
+}
+

@@ -15,26 +15,36 @@
             <figure id="logo">
                 <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
             </figure>
-            <nav class="navbar_paceopp">
-                <a class="nav_link_paceopp" href="/">Главная</a>
-                <a class="nav_link_paceopp" href="#">О нас</a>
+            <div class="navbar_left">
                 <a class="nav_link_paceopp" href="#">Услуги</a>
+                <a class="nav_link_paceopp" href="#">Биты</a>
                 <a class="nav_link_paceopp" href="#">Киты</a>
                 <a class="nav_link_paceopp" href="#">Написать нам</a>
+            </div>
+            <div class="navbar_right">
                 <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>
                 <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
                     <button type="submit" class="nav_link_paceopp logout-btn">Logout</button>
                 </form>
-            </nav>
+                <div class="menu-icon">&#9776;</div>
+                <div class="dropdown" id="dropdown">
+                    <div class="dropdown-content">
+                        <a href="#">Услуги</a>
+                        <a href="#">Биты</a>
+                        <a href="#">Киты</a>
+                        <a href="#">Написать нам</a>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </header>
 
 <main>
     <div class="container">
-        <div class="services-container" >
-            <h1 class="section-title">Услуги</h1>
-
+        <h2 class="section-title">Услуги</h2>
+        <div class="services-container">
             <div class="services-container" id="services"></div>
 
             <script type="text/template" id="modalTemplate">
@@ -65,9 +75,8 @@
                 </div>
             </script>
         </div>
-
+        <h2 class="section-title">Киты</h2>
         <div class="container drumkits-container">
-            <h1 class="section-title">Киты</h1>
             <div class="row">
                 <div th:each="drumkit : ${drumkits}" class="col-lg-4 col-md-6 mb-4">
                     <div class="drumkit-card" data-toggle="modal"
@@ -103,9 +112,8 @@
                 </div>
             </div>
         </div>
-
+        <h2 class="section-title">Написать нам</h2>
         <form class="form_paceopp" th:method="post"  th:object="${emailMessage}" th:action="@{/contact}">
-            <h1 class="section-title">Написать нам</h1>
             <div class="input-message-container">
                 <input class="contact_input" type="text" onfocus="hideError(this)" th:field="*{subject}" placeholder="Тема">
                 <div class="error-message"  th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
@@ -128,10 +136,7 @@
             <div class="footer-section links">
                 <h2 class="footer-title">Ссылки</h2>
                 <ul>
-                    <li><a href="#">Главная</a></li>
-                    <li><a href="#">О нас</a></li>
                     <li><a href="#">Услуги</a></li>
-                    <li><a href="#">Контакты</a></li>
                 </ul>
             </div>
             <div class="footer-section social">
@@ -170,8 +175,8 @@
     </div>
 </div>
 <input type="hidden" th:value="${showSuccessModal}" id="showSuccessModal">
+<script th:src="@{/js/main.js}"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
 
@@ -215,8 +220,6 @@
 
     /*]]>*/
 </script>
-
-<script th:src="@{/js/main.js}"></script>
 <script>
     $(document).ready(function() {
         $('.drumkit-card').click(function() {
@@ -234,6 +237,5 @@
         }
     });
 </script>
-<script th:src="@{/js/main.js}"></script>
 </body>
 </html>
