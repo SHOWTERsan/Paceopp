@@ -17,7 +17,7 @@
             </figure>
             <div class="navbar_left">
                 <a class="nav_link_paceopp" href="#">Услуги</a>
-                <a class="nav_link_paceopp" href="#">Биты</a>
+                <a class="nav_link_paceopp" href="/beats">Биты</a>
                 <a class="nav_link_paceopp" href="#">Киты</a>
                 <a class="nav_link_paceopp" href="#">Написать нам</a>
             </div>
@@ -35,7 +35,6 @@
                         <a href="#">Написать нам</a>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -46,9 +45,8 @@
         <h2 class="section-title">Услуги</h2>
         <div class="services-container">
             <div class="services-container" id="services"></div>
-
             <script type="text/template" id="modalTemplate">
-                <div class="service-item" data-bs-toggle="modal" data-bs-target="#modalService{id}">
+                <div class="service-item" data-bs-toggle="modal" data-id="{id}" data-bs-target="#modalService{id}">
                     <h3 class="service-title">{title}</h3>
                     <div class="service-cost">₽{cost}</div>
                 </div>
@@ -202,15 +200,16 @@
 
     serviceContainer.innerHTML = generatedHTML;
 
+        // Add event listener for each service item
     // Add event listener for each service item
     const serviceItems = document.querySelectorAll('.service-item');
     serviceItems.forEach(serviceItem => {
-        serviceItem.addEventListener('click', function() {
+        serviceItem.addEventListener('click', function () {
             // Get the service id from the clicked service item
             const serviceId = this.dataset.id;
 
             // Filter the items that belong to the clicked service
-            const filteredItems = items.filter(services => services.id === Number(serviceId));
+            const filteredItems = items.filter(item => item.serviceId === Number(serviceId));
 
             // Update the modal content with the filtered items
             const modalBody = document.querySelector('#modalService' + serviceId + ' .modal-body ul');

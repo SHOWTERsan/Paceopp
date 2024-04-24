@@ -14,7 +14,7 @@ html, body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    min-height: 100%;
+    min-height: 80%;
 }
 header {
     padding-top: 5px;
@@ -510,7 +510,6 @@ a, button {
     padding: 10px 0;
 }
 
-
 .dropbtn {
     display: none;
 }
@@ -522,7 +521,7 @@ a, button {
     min-width: 160px;
     z-index: 1;
     right: 0;
-    top: calc(100% + 5px); /* Place dropdown below the menu icon */
+    top: calc(100% + 5px);
     transform-origin: top right;
 }
 
@@ -532,7 +531,6 @@ a, button {
     transform-origin: top left;
 }
 
-
 .show {
     display: block;
 }
@@ -540,8 +538,6 @@ a, button {
 .dropdown {
     position: relative;
 }
-
-
 
 .dropdown-content a {
     color: black;

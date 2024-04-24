@@ -1,0 +1,36 @@
+.main {
+    min-height: 80vh;
+}
+.beat-card {
+    border: 1px solid limegreen;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.beat-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 250, 0, 0.2);
+}
+.beats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.beat-image {
+    width: 270px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.beat-name {
+    font-size: 1.5rem;
+    color: limegreen;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}

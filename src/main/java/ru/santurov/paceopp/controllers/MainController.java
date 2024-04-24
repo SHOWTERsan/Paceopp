@@ -13,10 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.santurov.paceopp.DTO.DrumkitDTO;
 import ru.santurov.paceopp.DTO.EmailMessageDTO;
 import ru.santurov.paceopp.models.Drumkit;
-import ru.santurov.paceopp.services.DrumkitService;
-import ru.santurov.paceopp.services.EmailService;
-import ru.santurov.paceopp.services.ServiceItemService;
-import ru.santurov.paceopp.services.ServiceManagementService;
+import ru.santurov.paceopp.services.*;
 
 import java.util.List;
 
@@ -28,6 +25,7 @@ public class MainController {
     private final DrumkitService drumkitService;
     private final ServiceManagementService serviceManagementService;
     private final ServiceItemService serviceItemService;
+    private final BeatService beatService;
 
     @GetMapping("/")
     public String index(Model model) {
