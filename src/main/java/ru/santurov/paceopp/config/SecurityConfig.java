@@ -35,9 +35,8 @@ public class SecurityConfig  {
                 .headers(headersConfigurer ->
                         headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/SOME ROUTE").hasRole("ADMIN")
                         .requestMatchers("/","/auth/**","/beats","/bad_request","/error","/websocket/**", "/images/**","/js/**", "/styles/**").permitAll()
-                        .anyRequest().hasAnyRole("USER", "ADMIN"))
+                        .anyRequest().hasRole("ADMIN"))
                 .formLogin(form -> form
                         .loginPage("/auth/signin")
                         .loginProcessingUrl("/auth/signin_process")

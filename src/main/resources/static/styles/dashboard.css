@@ -1,0 +1,41 @@
+.admin-panel {
+    background-color: black;
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 15%;
+    background-color: black;
+    color: limegreen;
+    padding: 1rem;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 1rem;
+}
+
+.sidebar ul li a {
+    color: limegreen;
+    text-decoration: none;
+}
+
+.sidebar ul li a:hover {
+    color: white;
+}
+
+.main-content {
+    width: 100%;
+    background-color: black;
+    color: white;
+    padding: 1rem;
+    margin-left: 20%;
+}

@@ -4,23 +4,18 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
+@Table(name = "images")
 @Data
-@Table(name = "beats")
-public class Beat {
+public class Image {
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "bpm")
-    private int bpm;
+    @Column(name = "data",columnDefinition = "bytea")
+    private byte[] data;
 
-    @ManyToOne
-    @JoinColumn(name = "image_id")
-    private Image image;
-
-    @Column(name = "audio_path")
-    private String audioPath;
 }

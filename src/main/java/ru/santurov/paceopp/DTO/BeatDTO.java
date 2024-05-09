@@ -10,5 +10,5 @@ public class BeatDTO {
 
     private int bpm;
 
-    private String imagePath;
+    private String image;
 }
