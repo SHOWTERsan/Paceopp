@@ -3,6 +3,8 @@ package ru.santurov.paceopp.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "beats")
@@ -21,6 +23,6 @@ public class Beat {
     @JoinColumn(name = "image_id")
     private Image image;
 
-    @Column(name = "audio_path")
-    private String audioPath;
+    @OneToMany(mappedBy = "beat", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Audio> audioFiles;
 }

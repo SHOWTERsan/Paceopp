@@ -1,3 +1,13 @@
+function toggleManageBeats() {
+    var manageBeatsElement = document.getElementById('manageBeats');
+    if (manageBeatsElement.style.display === 'none') {
+        loadBeatsAndToggleDisplay();
+        manageBeatsElement.style.display = 'block';
+    } else {
+        manageBeatsElement.style.display = 'none';
+    }
+}
+
 function loadBeatsAndToggleDisplay() {
     fetch('/api/beats')
         .then(response => response.json())
@@ -6,10 +16,16 @@ function loadBeatsAndToggleDisplay() {
             beatsContainer.innerHTML = ''; // Clear previous content
             beats.forEach((beat, index) => {
                 const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-                let imageUrl;
-                if (beat.image && beat.image.data) {
-                    imageUrl = `data:image/jpeg;base64,${beat.image.data}`;
-                }
+                const imageUrl = beat.image ? `data:image/jpeg;base64,${beat.image.data}` : 'default_image.png';
+                let audioHtml = '';
+                beat.audioFiles.forEach(audio => {
+                    audioHtml += `
+                        <audio controls>
+                            <source src="data:audio/${audio.fileFormat};base64,${audio.data}" type="audio/${audio.fileFormat}">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <button onclick="deleteAudio(${beat.id}, ${audio.id})">Удалить</button>`;
+                });
                 beatsContainer.innerHTML += `
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading${index}">
@@ -35,46 +51,85 @@ function loadBeatsAndToggleDisplay() {
                                         <input type="file" id="imageInput${beat.id}" class="form-control">
                                     </div>
                                     <div class="mb-3">
-                                        <label>Аудио:</label>
-                                        <audio controls>
-                                            <source src="${beat.audioPath}" type="audio/mpeg">
-                                            Your browser does not support the audio element.
-                                        </audio>
-                                        <input type="file" id="audioInput${beat.id}" class="form-control">
+                                        <label>Аудио:</label><br>
+                                        ${audioHtml}
+                                        <input type="file" id="audioInput${beat.id}" class="form-control" multiple>
                                     </div>
                                     <button type="button" onclick="updateBeatDetails(${beat.id})" class="btn btn-primary">Сохранить изменения</button>
+                                    <button type="button" onclick="deleteBeat(${beat.id})" class="btn btn-danger">Удалить бит</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 `;
             });
-            toggleManageBeats();
+            beatsContainer.innerHTML += `
+                <button type="button" onclick="createNewBeat()" class="btn btn-primary">Создать новый бит</button>
+            `;
         })
         .catch(error => console.error('Error loading the beats:', error));
 }
-
-function toggleManageBeats() {
-    var manageBeatsElement = document.getElementById('manageBeats');
-    manageBeatsElement.style.display = manageBeatsElement.style.display === 'none' ? 'block' : 'none';
-}
-
-function updateBeatDetails(beatId) {
+function deleteBeat(beatId) {
     const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
     const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-    // Create FormData object to allow file uploading alongside data
+    fetch(`/api/beats/${beatId}`, {
+        method: 'DELETE',
+        headers: {
+            [header]: token
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            console.log('Beat deleted successfully');
+            loadBeatsAndToggleDisplay();
+        })
+        .catch(error => {
+            console.error('Error deleting beat:', error);
+        });
+}
+function deleteAudio(beatId, audioId) {
+    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch(`/api/beats/${beatId}/audio/${audioId}`, {
+        method: 'DELETE',
+        headers: {
+            [header]: token
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            console.log('Audio file deleted successfully');
+            loadBeatsAndToggleDisplay();
+        })
+        .catch(error => {
+            console.error('Error deleting audio file:', error);
+        });
+}
+
+
+function updateBeatDetails(beatId) {
+    if (!validateBeatForm(beatId)) {
+        // If the validateBeatForm function returns false, prevent form submission
+        return;
+    }
+
+    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
     const formData = new FormData();
     const name = document.getElementById(`name${beatId}`).value;
     const bpm = document.getElementById(`bpm${beatId}`).value;
     const imageFile = document.getElementById(`imageInput${beatId}`).files[0];
-    const audioFile = document.getElementById(`audioInput${beatId}`).files[0];
 
-    // Append fields and files to FormData
     formData.append('name', name);
     formData.append('bpm', bpm);
     if (imageFile) formData.append('image', imageFile);
-    if (audioFile) formData.append('audio', audioFile);
 
     fetch(`/api/beats/${beatId}`, {
         method: 'POST',
@@ -87,24 +142,178 @@ function updateBeatDetails(beatId) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
+            else {
+                uploadAudioFiles(beatId);
+            }
             return response.json();
         })
         .then(data => {
-            console.log('Success:', data);
+            console.log('Beat updated successfully:', data);
             alert('Beat updated successfully!');
-            // Optionally refresh part of your website or re-fetch beat data to update the UI
+
+            // Optionally reload only the expanded beat section
+            loadBeatsAndToggleDisplay();
+
+            // Alternatively, reload the entire page
+            // window.location.reload();
+
         })
-        .catch((error) => {
-            console.error('Error:', error);
+        .catch(error => {
+            console.error('Error updating beat:', error);
+            alert('Failed to update beat');
         });
 }
 
-function createNewBeat() {
-    // Optionally add form or modal dialog to capture new beat details
-}
 
-function deleteBeat(beatId) {
-    // Optionally call an API to delete a beat
+function uploadAudioFiles(beatId) {
+    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    const formData = new FormData();
+    const audioFiles = document.getElementById(`audioInput${beatId}`).files;
+
+    Array.from(audioFiles).forEach(file => {
+        formData.append('audio', file);
+    });
+
+    fetch(`/api/beats/${beatId}/audio`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            [header]: token
+        }
+    })
+        .then(response => response.ok ? response.json() : Promise.reject('Failed to upload audio files'))
+        .then(data => {
+            console.log('Audio files uploaded successfully:', data);
+        })
+        .catch(error => {
+            console.error('Error uploading audio files:', error);
+        });
+}
+function createNewBeat() {
+    const beatsContainer = document.getElementById('beatsContainer');
+    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const newBeatHtml = `
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingNew">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNew" aria-expanded="false" aria-controls="collapseNew">
+                    New Beat
+                </button>
+            </h2>
+            <div id="collapseNew" class="accordion-collapse collapse" aria-labelledby="headingNew" data-bs-parent="#beatsContainer">
+                <div class="accordion-body">
+                    <form id="beatFormNew">
+                        <input type="hidden" name="_csrf" value="${token}">
+                        <div class="mb-3">
+                            <label for="nameNew" class="form-label">Название:</label>
+                            <input type="text" class="form-control" id="nameNew">
+                        </div>
+                        <div class="mb-3">
+                            <label for="bpmNew" class="form-label">БПМ:</label>
+                            <input type="number" class="form-control" id="bpmNew">
+                        </div>
+                        <div class="mb-3">
+                            <label>Изображение:</label>
+                            <input type="file" id="imageInputNew" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label>Аудио:</label><br>
+                            <input type="file" id="audioInputNew" class="form-control" multiple>
+                        </div>
+                        <button type="button" onclick="submitNewBeat()" class="btn btn-primary">Создать</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const createBeatButton = beatsContainer.querySelector('button[onclick="createNewBeat()"]');
+    createBeatButton.insertAdjacentHTML('beforebegin', newBeatHtml);
+}
+function submitNewBeat() {
+    if (!validateBeatForm('New')) {
+        // If the validateBeatForm function returns false, prevent form submission
+        return;
+    }
+    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    const formData = new FormData();
+    const name = document.getElementById(`nameNew`).value;
+    const bpm = document.getElementById(`bpmNew`).value;
+    const imageFile = document.getElementById(`imageInputNew`).files[0];
+
+    formData.append('name', name);
+    formData.append('bpm', bpm);
+    if (imageFile) formData.append('image', imageFile);
+
+    fetch(`/api/beats/new`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            [header]: token
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            else {
+                uploadAudioFiles(response.id);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Beat created successfully:', data);
+            alert('Beat created successfully!');
+
+            // Reload the beats
+            loadBeatsAndToggleDisplay();
+        })
+        .catch(error => {
+            console.error('Error creating beat:', error);
+            alert('Failed to create beat');
+        });
+}
+function validateBeatForm(beatId) {
+    const name = document.getElementById(`name${beatId}`).value;
+    const bpm = document.getElementById(`bpm${beatId}`).value;
+    const imageFile = document.getElementById(`imageInput${beatId}`).files[0];
+    const audioFiles = document.getElementById(`audioInput${beatId}`).files;
+
+    // Check if name is not empty
+    if (!name.trim()) {
+        alert('Name is required');
+        return false;
+    }
+
+    // Check if bpm is not empty and is a number
+    if (!bpm || isNaN(bpm)) {
+        alert('BPM is required and should be a number');
+        return false;
+    }
+
+    // Check if image file is not empty and is a jpg or png file
+    if (imageFile) {
+        const imageFileType = imageFile.type;
+        if (imageFileType !== 'image/jpeg' && imageFileType !== 'image/png') {
+            alert('Image file should be a jpg or png file');
+            return false;
+        }
+    }
+
+    // Check if audio files are not empty and are mp3 or wav files
+    for (let i = 0; i < audioFiles.length; i++) {
+        const audioFileType = audioFiles[i].type;
+        if (audioFileType !== 'audio/mpeg' && audioFileType !== 'audio/wav') {
+            alert('Audio files should be mp3 or wav files');
+            return false;
+        }
+    }
+
+    // If all checks pass, proceed with form submission
+    return true;
 }
 
 function toggleManageServices() {

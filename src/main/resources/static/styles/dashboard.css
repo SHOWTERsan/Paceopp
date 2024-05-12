@@ -31,11 +31,16 @@
 .sidebar ul li a:hover {
     color: white;
 }
-
+.form-control {
+    width: 90%;
+}
 .main-content {
     width: 100%;
     background-color: black;
     color: white;
     padding: 1rem;
     margin-left: 20%;
+}
+.btn {
+    margin-bottom: 15px;
 }

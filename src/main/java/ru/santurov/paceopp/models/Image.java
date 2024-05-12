@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class Image {
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
