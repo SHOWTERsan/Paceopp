@@ -17,8 +17,4 @@ public class ServiceItem {
 
     @Column(name = "item")
     private String item;
-
-    @ManyToOne
-    @JoinColumn(name = "service_id",insertable=false, updatable=false)
-    private Service service;
 }

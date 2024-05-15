@@ -17,5 +17,13 @@ public class ServiceManagementService {
         return serviceRepository.findAll();
     }
 
+    public ru.santurov.paceopp.models.Service updateService(Long id, ru.santurov.paceopp.models.Service updatedService) {
+        ru.santurov.paceopp.models.Service service = serviceRepository.findById(id).orElseThrow(() ->  new RuntimeException("Service not found with id " + id));
 
+        service.setName(updatedService.getName());
+        service.setPrice(updatedService.getPrice());
+        service.setItems(updatedService.getItems());
+
+        return serviceRepository.save(service);
+    }
 }

@@ -183,7 +183,7 @@ footer {
 }
 .btn_paceopp:before {
     font-size: 14px;
-    content: 'SEND';
+    content: 'Отправить';
     position: relative;
     z-index: 2;
 }

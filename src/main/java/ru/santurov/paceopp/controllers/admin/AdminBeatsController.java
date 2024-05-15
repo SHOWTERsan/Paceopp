@@ -20,7 +20,7 @@ public class AdminBeatsController {
 
     @GetMapping("")
     public ResponseEntity<List<Beat>> getBeats() {
-            List<Beat> beats = beatService.findAll();
+        List<Beat> beats = beatService.findAll();
         return ResponseEntity.ok(beats);
     }
 

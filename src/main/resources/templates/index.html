@@ -18,7 +18,7 @@
                 <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
             </figure>
             <div class="navbar_left">
-                <a class="nav_link_paceopp" href="#">Услуги</a>
+                <a class="nav_link_paceopp" href="/">Услуги</a>
                 <a class="nav_link_paceopp" href="/beats">Биты</a>
                 <a class="nav_link_paceopp" href="#">Киты</a>
                 <a class="nav_link_paceopp" href="#">Написать нам</a>
@@ -26,13 +26,13 @@
             <div class="navbar_right">
                 <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>
                 <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
-                    <button type="submit" class="nav_link_paceopp logout-btn">Logout</button>
+                    <button type="submit" class="nav_link_paceopp logout-btn">Выйти</button>
                 </form>
                 <div class="menu-icon">&#9776;</div>
                 <div class="dropdown" id="dropdown">
                     <div class="dropdown-content">
-                        <a href="#">Услуги</a>
-                        <a href="#">Биты</a>
+                        <a href="/">Услуги</a>
+                        <a href="/beats">Биты</a>
                         <a href="#">Киты</a>
                         <a href="#">Написать нам</a>
                     </div>
@@ -86,7 +86,7 @@
                          th:data-description="${drumkit.description}">
                         <img th:src="${drumkit.imageUrl}" class="img-fluid" alt="Drumkit image" />
                         <h3 class="drumkit-title" th:text="${drumkit.title}">Drumkit Title</h3>
-                        <div class="drumkit-cost" th:text="${'₽' + drumkit.cost}">₽Cost</div>
+                        <div class="drumkit-cost" th:text="'₽' + ${drumkit.cost}" id="drumkitCost">₽Cost</div>
                     </div>
                 </div>
 
@@ -169,7 +169,7 @@
                 Письмо успешно отправлено!
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
             </div>
         </div>
     </div>
@@ -181,41 +181,51 @@
 
     // Get services and items from the model attributes
     var services = /*[[${services}]]*/ [];
-    var items = /*[[${items}]]*/ [];
+
+    // Sort services by price in ascending order
+    services.sort((a, b) => a.price - b.price);
 
     const serviceContainer = document.getElementById('services');
     const modalTemplate = document.getElementById('modalTemplate').innerText;
     let generatedHTML = "";
 
     services.forEach(service => {
-        // Filter items for the current service
-        const serviceItems = items.filter(item => item.service.id === service.id);
-        const itemsHTML = serviceItems.map(item => `<li>${item.item}</li>`).join('');
+        // Get items for the current service
+        const itemsHTML = service.items.map(item => `<li>${item.item}</li>`).join('');
         const modalHTML = modalTemplate
             .replace(/{id}/g, service.id)
             .replace(/{title}/g, service.name)
-            .replace(/{cost}/g, service.price)
+            .replace(/{cost}/g, service.price.toLocaleString('en-US', { maximumFractionDigits: 0 }))
             .replace('{items}', itemsHTML);
         generatedHTML += modalHTML;
     });
 
     serviceContainer.innerHTML = generatedHTML;
 
-    const serviceItems = document.querySelectorAll('.service-item');
-    serviceItems.forEach(serviceItem => {
-        serviceItem.addEventListener('click', function() {
-            // Get the service id from the clicked service item
-            const serviceId = this.dataset.id;
+    // Add event listeners to the "Оформить" buttons
+    services.forEach(service => {
+        const serviceId = service.id;
+        const primaryButton = document.querySelector(`#modalService${serviceId} .btn-primary`);
 
-            // Filter the items that belong to the clicked service
-            const filteredItems = items.filter(services => services.id === Number(serviceId));
-
-            // Update the modal content with the filtered items
-            const modalBody = document.querySelector('#modalService' + serviceId + ' .modal-body ul');
-            modalBody.innerHTML = filteredItems.map(item => `<li>${item.item}</li>`).join('');
+        primaryButton.addEventListener('click', function() {
+            if (serviceId !== 19) {
+                window.location.href = "/beats";
+            }
         });
     });
     /*]]>*/
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var costElement = document.getElementById('drumkitCost');
+        var costValue = costElement.textContent.trim().replace('₽', ''); // Remove currency symbol
+
+        // Convert to integer and format
+        var formattedCost = parseInt(costValue).toLocaleString('en-US', { maximumFractionDigits: 0 });
+
+        // Update the text content of the element with the formatted cost
+        costElement.textContent = '₽' + formattedCost;
+    });
 </script>
 <script>
     $(document).ready(function() {

@@ -29,7 +29,7 @@
             <div class="navbar_right">
                 <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>
                 <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
-                    <button type="submit" class="nav_link_paceopp logout-btn">Logout</button>
+                    <button type="submit" class="nav_link_paceopp logout-btn">Выйти</button>
                 </form>
                 <div class="menu-icon">&#9776;</div>
                 <div class="dropdown" id="dropdown">
@@ -55,6 +55,9 @@
         <div class="main-content">
             <div id="manageBeats" class="container" style="display: none;">
                 <div id="beatsContainer" class="accordion"></div>
+            </div>
+            <div id="manageServices" class="container" style="display: none;">
+                <div id="servicesContainer" class="accordion"></div>
             </div>
         </div>
     </div>

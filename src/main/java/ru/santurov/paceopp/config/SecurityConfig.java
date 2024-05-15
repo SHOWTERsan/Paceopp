@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import ru.santurov.paceopp.security.CustomAuthenticationFailureHandler;
 
 import javax.sql.DataSource;
@@ -36,6 +35,7 @@ public class SecurityConfig  {
                         headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/","/auth/**","/beats","/bad_request","/error","/websocket/**", "/images/**","/js/**", "/styles/**").permitAll()
+                        .requestMatchers("/contact").hasRole("USER")
                         .anyRequest().hasRole("ADMIN"))
                 .formLogin(form -> form
                         .loginPage("/auth/signin")

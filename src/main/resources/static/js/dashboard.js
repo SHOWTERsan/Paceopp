@@ -1,14 +1,14 @@
 function toggleManageBeats() {
     var manageBeatsElement = document.getElementById('manageBeats');
     if (manageBeatsElement.style.display === 'none') {
-        loadBeatsAndToggleDisplay();
+        loadBeats();
         manageBeatsElement.style.display = 'block';
     } else {
         manageBeatsElement.style.display = 'none';
     }
 }
 
-function loadBeatsAndToggleDisplay() {
+function loadBeats() {
     fetch('/api/beats')
         .then(response => response.json())
         .then(beats => {
@@ -84,7 +84,7 @@ function deleteBeat(beatId) {
                 throw new Error('Network response was not ok');
             }
             console.log('Beat deleted successfully');
-            loadBeatsAndToggleDisplay();
+            loadBeats();
         })
         .catch(error => {
             console.error('Error deleting beat:', error);
@@ -105,7 +105,7 @@ function deleteAudio(beatId, audioId) {
                 throw new Error('Network response was not ok');
             }
             console.log('Audio file deleted successfully');
-            loadBeatsAndToggleDisplay();
+            loadBeats();
         })
         .catch(error => {
             console.error('Error deleting audio file:', error);
@@ -152,7 +152,7 @@ function updateBeatDetails(beatId) {
             alert('Beat updated successfully!');
 
             // Optionally reload only the expanded beat section
-            loadBeatsAndToggleDisplay();
+            loadBeats();
 
             // Alternatively, reload the entire page
             // window.location.reload();
@@ -269,7 +269,7 @@ function submitNewBeat() {
             alert('Beat created successfully!');
 
             // Reload the beats
-            loadBeatsAndToggleDisplay();
+            loadBeats();
         })
         .catch(error => {
             console.error('Error creating beat:', error);
@@ -319,8 +319,90 @@ function validateBeatForm(beatId) {
 function toggleManageServices() {
     var manageServicesElement = document.getElementById('manageServices');
     if (manageServicesElement.style.display === 'none') {
+        loadServices();
         manageServicesElement.style.display = 'block';
     } else {
         manageServicesElement.style.display = 'none';
     }
+}
+function loadServices() {
+    fetch('/api/services')
+        .then(response => response.json())
+        .then(services => {
+            const servicesContainer = document.getElementById('servicesContainer');
+            servicesContainer.innerHTML = ''; // Clear previous content
+            services.forEach((service, index) => {
+                let itemsHtml = '';
+                service.items.forEach((item) => {
+                    itemsHtml += `<input type="text" class="form-control" id="item${service.id}-${item.id}" value="${item.item}" style="margin-bottom: 10px">`;
+                });
+                servicesContainer.innerHTML += `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingService${index}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseService${index}" aria-expanded="false" aria-controls="collapseService${index}">
+                                ${service.name}
+                            </button>
+                        </h2>
+                        <div id="collapseService${index}" class="accordion-collapse collapse" aria-labelledby="headingService${index}" data-bs-parent="#servicesContainer">
+                            <div class="accordion-body">
+                                <form id="serviceForm${service.id}">
+                                    <div class="mb-3">
+                                        <label for="name${service.id}" class="form-label">Название:</label>
+                                        <input type="text" class="form-control" id="name${service.id}" value="${service.name}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="price${service.id}" class="form-label">Цена:</label>
+                                        <input type="number" class="form-control" id="price${service.id}" value="${service.price}">
+                                    </div>
+                                    Описание:
+                                        ${itemsHtml}
+                                    <button type="button" onclick="updateServiceDetails(${service.id})" class="btn btn-primary">Сохранить изменения</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+            });
+            servicesContainer.innerHTML += `
+                    <button type="button" onclick="createNewService()" class="btn btn-primary">Создать новую услугу</button>
+                `;
+        })
+        .catch(error => console.error('Error loading the services:', error));
+}
+function updateServiceDetails(serviceId) {
+    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    const name = document.getElementById(`name${serviceId}`).value;
+    const price = document.getElementById(`price${serviceId}`).value;
+    const items = Array.from(document.querySelectorAll(`input[id^="item${serviceId}-"]`)).map(input => {
+        const itemId = input.id.split('-')[1];
+        return { id: itemId, serviceId: serviceId, item: input.value };
+    });
+    const updatedService = {
+        id: serviceId,
+        name: name,
+        price: price,
+        items: items
+    };
+
+    fetch(`/api/services/${serviceId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [header]: token
+        },
+        body: JSON.stringify(updatedService)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            console.log('Service updated successfully');
+            loadServices();
+        })
+        .catch(error => {
+            console.error('Error updating service:', error);
+        });
 }

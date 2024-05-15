@@ -25,7 +25,6 @@ public class MainController {
     private final DrumkitService drumkitService;
     private final ServiceManagementService serviceManagementService;
     private final ServiceItemService serviceItemService;
-    private final BeatService beatService;
 
     @GetMapping("/")
     public String index(Model model) {

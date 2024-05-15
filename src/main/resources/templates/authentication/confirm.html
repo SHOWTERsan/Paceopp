@@ -29,37 +29,6 @@
     </script>
 </head>
 <body onload="startCountdown()">
-<header>
-    <div class="container">
-        <div class="header_inner_paceopp">
-            <figure id="logo">
-                <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
-            </figure>
-            <div class="navbar_left">
-                <a class="nav_link_paceopp" href="#">Услуги</a>
-                <a class="nav_link_paceopp" href="#">Биты</a>
-                <a class="nav_link_paceopp" href="#">Киты</a>
-                <a class="nav_link_paceopp" href="#">Написать нам</a>
-            </div>
-            <div class="navbar_right">
-                <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>
-                <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
-                    <button type="submit" class="nav_link_paceopp logout-btn">Logout</button>
-                </form>
-                <div class="menu-icon">&#9776;</div>
-                <div class="dropdown" id="dropdown">
-                    <div class="dropdown-content">
-                        <a href="#">Услуги</a>
-                        <a href="#">Биты</a>
-                        <a href="#">Киты</a>
-                        <a href="#">Написать нам</a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</header>
     <div class="flex-container">
         <p style="font-size: 2em">Verification successful. Redirecting in <span id="countdown"></span> seconds...</p>
     </div>
