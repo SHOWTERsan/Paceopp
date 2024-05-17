@@ -51,26 +51,25 @@
             <div class="fields-container">
                 <div class="field-container">
                     <label for="userNameInput" class="form-label">Имя:</label>
-                    <input type="text" id="userNameInput" class="form-control translucent" readonly="" name="userName" th:value="${userProfile.userName}">
-                    <button class="btn btn-link pencil-btn" type="button" id="editUsernameBtn" onclick="toggleInput('userNameInput')"><i class="bi bi-pencil"></i></button>
+                    <input type="text" id="userNameInput" class="form-control translucent" readonly=""
+                           name="userName" th:value="${userProfile.userName}">
+                    <button class="btn btn-link pencil-btn" type="button" id="editUsernameBtn"
+                            onclick="toggleInput('userNameInput')"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-secondary tick-btn pencil-btn" type="button" style="display: none;"
+                            onclick="confirmChanges('userNameInput')">✓</button>
+                    <button class="btn btn-secondary cross-btn pencil-btn" type="button" style="display: none;"
+                            onclick="cancelChanges('userNameInput')">✗</button>
                 </div>
                 <div class="field-container">
                     <label for="emailInput" class="form-label">Почта:</label>
-                    <input type="email" id="emailInput" class="form-control translucent" readonly="" name="email" th:value="${userProfile.email}">
-                    <button class="btn btn-link pencil-btn" type="button" id="editEmailBtn" onclick="toggleInput('emailInput')"><i class="bi bi-pencil"></i></button>
-                </div>
-                <div class="field-container">
-                    <label for="passwordInput" class="form-label">Пароль:</label>
-                    <input type="password" id="passwordInput" class="form-control translucent" readonly="" name="password" value="**********">
-                    <button class="btn btn-link pencil-btn" type="button" id="editPasswordBtn" onclick="toggleInput('passwordInput')"><i class="bi bi-pencil"></i></button>
-                </div>
-            </div>
-
-            <!-- Save Changes Button -->
-            <div class="row">
-                <div class="col"></div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary d-none" id="saveChangesBtn">Сохранить изменения</button>
+                    <input type="text" id="emailInput" class="form-control translucent" readonly=""
+                           name="email" th:value="${userProfile.email}">
+                    <button class="btn btn-link pencil-btn" type="button" id="editEmailBtn"
+                            onclick="toggleInput('emailInput')"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-secondary tick-btn pencil-btn" type="button" style="display: none;"
+                            onclick="confirmChanges('emailInput')">✓</button>
+                    <button class="btn btn-secondary cross-btn pencil-btn" type="button" style="display: none;"
+                            onclick="cancelChanges('emailInput')">✗</button>
                 </div>
             </div>
         </form>
@@ -85,27 +84,78 @@
         </div>
     </div>
 </footer>
-</body>
 <script>
+    // Add event listeners to the input fields to store their original values when the page loads
+    window.addEventListener('DOMContentLoaded', function () {
+        var inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(function (input) {
+            input.setAttribute('data-original-value', input.value);
+        });
+    });
+
     // Function to toggle the readonly attribute and style of input fields
     function toggleInput(inputId) {
-        var input = document.getElementById(inputId);
-        var inputs = document.querySelectorAll('.form-control'); // Get all input fields
+    var input = document.getElementById(inputId);
+    var inputs = document.querySelectorAll('.form-control'); // Get all input fields
+
+    // If the input field is already editable, cancel changes
+    if (!input.readOnly) {
+        cancelChanges(inputId);
+    } else {
+        inputs.forEach(function (otherInput) {
+            // Cancel changes on other input fields
+            if (otherInput !== input && !otherInput.readOnly) {
+                cancelChanges(otherInput.id);
+            }
+        });
 
         // Toggle the readonly attribute and translucent class for the clicked input field
         input.readOnly = !input.readOnly;
         input.classList.toggle("translucent");
 
-        // If the input field is editable, ensure all other input fields are grayed out
-        if (!input.readOnly) {
-            inputs.forEach(function (otherInput) {
-                if (otherInput !== input) {
-                    otherInput.readOnly = true;
-                    otherInput.classList.add("translucent");
-                }
-            });
-        }
+        // Show tick, cross, and cancel buttons for the edited input field
+        var parentContainer = input.parentElement;
+        var tickBtn = parentContainer.querySelector('.tick-btn');
+        var crossBtn = parentContainer.querySelector('.cross-btn');
+        tickBtn.style.display = 'inline-block';
+        crossBtn.style.display = 'inline-block';
+
+        // Hide the pencil button
+        var pencilBtn = parentContainer.querySelector('.pencil-btn');
+        pencilBtn.style.display = 'none';
+    }
+}
+
+
+    function cancelChanges(inputId) {
+        var input = document.getElementById(inputId);
+        var originalValue = input.getAttribute('data-original-value');
+        input.value = originalValue;
+
+        // Toggle the readonly attribute and translucent class for the clicked input field
+        input.readOnly = true;
+        input.classList.add("translucent");
+
+        // Hide tick, cross, and cancel buttons
+        var parentContainer = input.parentElement;
+        var tickBtn = parentContainer.querySelector('.tick-btn');
+        var crossBtn = parentContainer.querySelector('.cross-btn');
+        tickBtn.style.display = 'none';
+        crossBtn.style.display = 'none';
+
+        // Show the pencil button
+        var pencilBtn = parentContainer.querySelector('.pencil-btn');
+        pencilBtn.style.display = 'inline-block';
     }
 
+
+    // Function to confirm changes made to the input field
+    function confirmChanges(inputId) {
+        toggleInput(inputId);
+    }
 </script>
+
+
+
+</body>
 </html>
