@@ -1,20 +1,19 @@
 package ru.santurov.paceopp.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.santurov.paceopp.DTO.UserProfileDTO;
 import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.repositories.UserRepository;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    private  final UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
@@ -36,4 +35,12 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    public void updateUserProfile(User user, UserProfileDTO userProfileDTO) {
+        user.setUsername(userProfileDTO.getUserName());
+        user.setEmail(userProfileDTO.getEmail());
+        if (userProfileDTO.getPassword() != null && !userProfileDTO.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userProfileDTO.getPassword()));
+        }
+        userRepository.save(user);
+    }
 }

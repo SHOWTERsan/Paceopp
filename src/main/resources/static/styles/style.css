@@ -86,7 +86,6 @@ header {
 main{
     display: flex;
     flex-direction: column;
-    justify-content: center;
     min-height: 100vh;
 }
 .container {
@@ -269,6 +268,7 @@ a, button {
     text-align: center;
     width: 100%;
     padding-top: 1.6rem;
+    padding-bottom: 1.6rem;
 }
 
 .services-container {
@@ -278,7 +278,6 @@ a, button {
     flex-wrap: wrap;
     justify-content: center;
     gap: 2rem;
-    padding: 2rem 0;
 }
 
 .service-item {
@@ -360,9 +359,6 @@ a, button {
     margin-top: 10px;
 }
 
-.drumkits-container {
-    padding: 2rem;
-}
 
 .drumkit-card {
     width: 250px;
@@ -572,3 +568,46 @@ a, button {
     }
 }
 
+.fields-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+}
+
+.field-container {
+    padding: 15px;
+    margin: 0 10px 10px 0; /* Add margin between field containers and at the bottom */
+    display: flex;
+    gap: 10px; /* Add gap between elements inside field container */
+    align-items: center; /* Center items vertically */
+}
+
+.form-label {
+    margin: 0;
+}
+
+.pencil-btn {
+    background: local;
+    height: 100%;
+    width: fit-content;
+    font-size: 16px;
+}
+.pencil-btn:hover {
+    color: #00f700;
+}
+
+.form-control {
+    min-width: 250px;
+    max-width: 0px;
+    color: #999; /* Set text color to gray */
+    background-color: #f2f2f2; /* Set background color to lighter gray */
+}
+
+.translucent {
+    opacity: 0.6; /* Adjust opacity for a translucent effect */
+}
+
+@media (max-width: 768px) {
+    .field-container {
+        flex-basis: calc(50% - 20px); /* Adjust width for smaller screens */
+    }
+}

@@ -22,6 +22,7 @@
                 <a class="nav_link_paceopp" href="/beats">Биты</a>
                 <a class="nav_link_paceopp" href="#">Киты</a>
                 <a class="nav_link_paceopp" href="#">Написать нам</a>
+                <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" href="/user/profile">Личный кабинет</a>
             </div>
             <div class="navbar_right">
                 <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>

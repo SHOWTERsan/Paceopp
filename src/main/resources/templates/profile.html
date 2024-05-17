@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>Paceopp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header_inner_paceopp">
+            <figure id="logo">
+                <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
+            </figure>
+            <div class="navbar_left">
+                <a class="nav_link_paceopp" href="/">Услуги</a>
+                <a class="nav_link_paceopp" href="/beats">Биты</a>
+                <a class="nav_link_paceopp" href="#">Киты</a>
+                <a class="nav_link_paceopp" href="#">Написать нам</a>
+                <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" href="/user/profile">Личный кабинет</a>
+            </div>
+            <div class="navbar_right">
+                <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>
+                <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
+                    <button type="submit" class="nav_link_paceopp logout-btn">Выйти</button>
+                </form>
+                <div class="menu-icon">&#9776;</div>
+                <div class="dropdown" id="dropdown">
+                    <div class="dropdown-content">
+                        <a href="/">Услуги</a>
+                        <a href="/beats">Биты</a>
+                        <a href="#">Киты</a>
+                        <a href="#">Написать нам</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<main>
+    <div class="container mt-5">
+        <h2 class="section-title">Личный кабинет</h2>
+        <form th:action="@{/user/profile}" th:object="${userProfile}" th:method="POST">
+            <!-- Username, Email, and Password Fields -->
+            <div class="fields-container">
+                <div class="field-container">
+                    <label for="userNameInput" class="form-label">Имя:</label>
+                    <input type="text" id="userNameInput" class="form-control translucent" readonly="" name="userName" th:value="${userProfile.userName}">
+                    <button class="btn btn-link pencil-btn" type="button" id="editUsernameBtn" onclick="toggleInput('userNameInput')"><i class="bi bi-pencil"></i></button>
+                </div>
+                <div class="field-container">
+                    <label for="emailInput" class="form-label">Почта:</label>
+                    <input type="email" id="emailInput" class="form-control translucent" readonly="" name="email" th:value="${userProfile.email}">
+                    <button class="btn btn-link pencil-btn" type="button" id="editEmailBtn" onclick="toggleInput('emailInput')"><i class="bi bi-pencil"></i></button>
+                </div>
+                <div class="field-container">
+                    <label for="passwordInput" class="form-label">Пароль:</label>
+                    <input type="password" id="passwordInput" class="form-control translucent" readonly="" name="password" value="**********">
+                    <button class="btn btn-link pencil-btn" type="button" id="editPasswordBtn" onclick="toggleInput('passwordInput')"><i class="bi bi-pencil"></i></button>
+                </div>
+            </div>
+
+            <!-- Save Changes Button -->
+            <div class="row">
+                <div class="col"></div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary d-none" id="saveChangesBtn">Сохранить изменения</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+
+<footer>
+    <div class="container">
+        <div class="footer-bottom">
+            <p>&copy; 2023 Paceopp</p>
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    // Function to toggle the readonly attribute and style of input fields
+    function toggleInput(inputId) {
+        var input = document.getElementById(inputId);
+        var inputs = document.querySelectorAll('.form-control'); // Get all input fields
+
+        // Toggle the readonly attribute and translucent class for the clicked input field
+        input.readOnly = !input.readOnly;
+        input.classList.toggle("translucent");
+
+        // If the input field is editable, ensure all other input fields are grayed out
+        if (!input.readOnly) {
+            inputs.forEach(function (otherInput) {
+                if (otherInput !== input) {
+                    otherInput.readOnly = true;
+                    otherInput.classList.add("translucent");
+                }
+            });
+        }
+    }
+
+</script>
+</html>
