@@ -11,9 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.santurov.paceopp.models.TokenType;
 import ru.santurov.paceopp.models.User;
-import ru.santurov.paceopp.repositories.UserRepository;
-
-import java.util.concurrent.CompletableFuture;
 
 
 @Service
@@ -50,7 +47,10 @@ public class EmailService {
     public void sendValidateMessage(User user) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("transferpaceopp@gmail.com");
-        message.setTo(user.getEmail());
+        if (user.isVerified())
+            message.setTo(user.getTempEmail());
+        else
+            message.setTo(user.getEmail());
         message.setSubject("Подтверждение почты");
         String vtoken = token.generateToken(user, TokenType.EMAIL_VERIFICATION);
         message.setText("Подтвердите почту перейдя по ссылке: http://localhost:8080/auth/confirmEmail?token=" + vtoken +

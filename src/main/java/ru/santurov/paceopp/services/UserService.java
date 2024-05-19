@@ -34,13 +34,7 @@ public class UserService {
     public void delete(User user) {
         userRepository.delete(user);
     }
-
-    public void updateUserProfile(User user, UserProfileDTO userProfileDTO) {
-        user.setUsername(userProfileDTO.getUserName());
-        user.setEmail(userProfileDTO.getEmail());
-        if (userProfileDTO.getPassword() != null && !userProfileDTO.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userProfileDTO.getPassword()));
-        }
-        userRepository.save(user);
+    public Optional<User> findById(long id) {
+        return userRepository.findById(id);
     }
 }

@@ -12,7 +12,7 @@ $(document).ready(function() {
 
         // Comparison only occurs when both fields are filled
         if(password && confirmPassword) {
-            $('#password-message').html(`${(password === confirmPassword) ? 'Passwords match' : 'Passwords do not match'}`)
+            $('#password-message').html(`${(password === confirmPassword) ? 'Пароли совпадают' : 'Пароли не совпадают'}`)
                 .css('color', `${(password === confirmPassword) ? 'green' : 'red'}`);
         }
     });
@@ -20,7 +20,7 @@ $(document).ready(function() {
     $('#signup-form').on('submit', function(e) {
         if ($('#password').val() !== $('#confirm-password').val()) {
             e.preventDefault();
-            alert('Passwords do not match. Please, make sure you enter the same password in both fields.');
+            alert('Пароли не совпадают. Пожалуйста,убедитесь что пароль одинаков в обоих полях.');
         }
     });
     // Check if there's a password error message

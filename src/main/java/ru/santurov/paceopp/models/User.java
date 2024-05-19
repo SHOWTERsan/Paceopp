@@ -39,6 +39,9 @@ public class User {
     @Column(name = "is_verified")
     private boolean isVerified;
 
+    @Column(name = "temp_email")
+    private String tempEmail;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<VerificationToken> tokens;
 }

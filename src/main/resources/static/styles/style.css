@@ -567,12 +567,14 @@ a, button {
         display: inline-block;
     }
 }
+.error-container{
+    margin-bottom: 30px;
+}
 .field-container {
-    padding: 15px;
-    margin: 0 10px 10px 0; /* Add margin between field containers and at the bottom */
+    position: relative;
     display: flex;
-    gap: 10px; /* Add gap between elements inside field container */
-    align-items: center; /* Center items vertically */
+    gap: 10px;
+    align-items: center;
 }
 
 .form-label {
@@ -583,6 +585,7 @@ a, button {
     background: local;
     height: 100%;
     width: 40px;
+    height: 40px;
     font-size: 16px;
 }
 
@@ -594,12 +597,12 @@ a, button {
 .form-control {
     min-width: 250px;
     max-width: 0px;
-    color: #999; /* Set text color to gray */
-    background-color: #f2f2f2; /* Set background color to lighter gray */
+    color: #999;
+    background-color: #f2f2f2;
 }
 
 .translucent {
-    opacity: 0.6; /* Adjust opacity for a translucent effect */
+    opacity: 0.6;
 }
 
 .cancel-btn,
@@ -609,7 +612,12 @@ a, button {
     font-size: 16px;
     display: none;
 }
-
+/* Position error and success messages */
+#usernameError,
+#usernameSuccess {
+    position: absolute;
+    width: 100%; /* Make the message span the full width */
+}
 @media (max-width: 768px) {
     .field-container {
         flex-basis: calc(50% - 20px); /* Adjust width for smaller screens */

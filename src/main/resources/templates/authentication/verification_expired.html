@@ -48,10 +48,11 @@
                 <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
             </figure>
             <div class="navbar_left">
-                <a class="nav_link_paceopp" href="#">Услуги</a>
-                <a class="nav_link_paceopp" href="#">Биты</a>
-                <a class="nav_link_paceopp" href="#">Киты</a>
-                <a class="nav_link_paceopp" href="#">Написать нам</a>
+                <a class="nav_link_paceopp" href="/">Услуги</a>
+                <a class="nav_link_paceopp" href="/beats">Биты</a>
+                <a class="nav_link_paceopp" href="/#kits">Киты</a>
+                <a class="nav_link_paceopp" href="/#write-to-us">Написать нам</a>
+                <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" href="/user/profile">Личный кабинет</a>
             </div>
             <div class="navbar_right">
                 <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>
@@ -61,21 +62,21 @@
                 <div class="menu-icon">&#9776;</div>
                 <div class="dropdown" id="dropdown">
                     <div class="dropdown-content">
-                        <a href="#">Услуги</a>
-                        <a href="#">Биты</a>
-                        <a href="#">Киты</a>
-                        <a href="#">Написать нам</a>
+                        <a href="/">Услуги</a>
+                        <a href="/beats">Биты</a>
+                        <a class="nav_link_paceopp" href="/#kits">Киты</a>
+                        <a class="nav_link_paceopp" href="/#write-to-us">Написать нам</a>
+                        <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" href="/user/profile">Личный кабинет</a>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </header>
     <div class="flex-container">
-        <h1>Your verification link has expired</h1>
-        <p>Your verification link has expired. Please register again to receive a new link.</p>
-        <a href="/auth/signup" class="register-button">Register again</a>
+        <h1>Срок действия вашей проверочной ссылки истек</h1>
+        <p>Срок действия вашей проверочной ссылки истек. Пожалуйста, зарегистрируйтесь снова, чтобы получить новую ссылку.</p>
+        <a href="/auth/signup" class="register-button">Зарегистрироваться заного</a>
     </div>
 
     <script th:src="@{/js/main.js}"></script>

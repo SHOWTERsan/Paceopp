@@ -57,13 +57,13 @@ public class MainController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.emailMessage", bindingResult);
             redirectAttributes.addFlashAttribute("emailMessage", emailMessageDTO);
-            return "redirect:/";
+            return "redirect:/#write-to-us";
         }
 
         emailService.sendMessage(emailMessageDTO.getSubject(), emailMessageDTO.getMessage());
         redirectAttributes.addFlashAttribute("showSuccessModal", true);
 
-        return "redirect:/";
+        return "redirect:/#write-to-us";
     }
 
 }

@@ -31,13 +31,23 @@ public class TokenVerificationController {
         String status = "not_verified";
         if (optionalToken.isPresent()) {
             VerificationToken vtoken = optionalToken.get();
-            if (vtoken.isExpired()) {
-                userService.delete(vtoken.getUser());
-                status = "expired";
-            }
-            else if (vtoken.getUser().isVerified()) {
+            if (user.get().isVerified()) {
+                if (vtoken.isExpired()) {
+                    status = "expired";
+                }
+                else {
+                    status = "verified";
+                }
+
                 tokenService.delete(vtoken);
-                status = "verified";
+            }
+            else {
+                status = "not_verified";
+                if (vtoken.isExpired()) {
+                    userService.delete(vtoken.getUser());
+                    tokenService.delete(vtoken);
+                    status = "expired";
+                }
             }
         }
         else {

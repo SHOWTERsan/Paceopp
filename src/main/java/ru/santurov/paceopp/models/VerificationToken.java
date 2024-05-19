@@ -19,6 +19,7 @@ public class VerificationToken {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "user_id")
+    @ToString.Exclude
     private User user;
 
     @Column(name = "token",nullable = false)

@@ -30,7 +30,7 @@ public class SignUpValidator implements Validator {
 
         passwordValidator.validate("password", signupFormDTO.getPassword(), errors);
         if (userService.findByUsername(signupFormDTO.getUsername()).isPresent())
-            errors.rejectValue("username","","Человек с таким имене уже существует");
+            errors.rejectValue("username","","Человек с таким именем уже существует");
         if (userService.findByEmail(signupFormDTO.getEmail()).isPresent())
             errors.rejectValue("email","","Человек с таким email уже существует");
     }

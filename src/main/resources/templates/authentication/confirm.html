@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
 </head>
 <body onload="startCountdown()">
     <div class="flex-container">
-        <p style="font-size: 2em">Verification successful. Redirecting in <span id="countdown"></span> seconds...</p>
+        <p style="font-size: 2em">Успешно подтверждено. Перенаправление через <span id="countdown"></span>...</p>
     </div>
 <script th:src="@{/js/main.js}"></script>
 </body>

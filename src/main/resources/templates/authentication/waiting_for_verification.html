@@ -65,8 +65,8 @@
 <body>
 
 <div class="flex-container">
-    <h1>Waiting for Email Verification</h1>
-    <p>Please check your email and click on the confirmation link to verify your account.</p>
+    <h1>Ожидание подтвреждения почты</h1>
+    <p>Пожалуйста проверьте свою почту и кликните на ссылку в сообщении.</p>
     <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
 </div>
 
@@ -95,8 +95,6 @@
         stompClient.subscribe('/topic/checkVerificationStatus/'+uuid, function(message) {
             stompClient.send("/app/checkVerification", {}, uuid);
         })
-
-        stompClient.send("/app/checkVerification", {}, uuid);
     });
     /*]]>*/
 </script>

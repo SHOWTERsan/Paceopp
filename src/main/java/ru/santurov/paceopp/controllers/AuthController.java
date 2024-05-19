@@ -71,7 +71,7 @@ public class AuthController {
                                 HttpSession session) {
         signUpValidator.validate(signupForm, bindingResult);
         if (!signupForm.getPassword().equals(signupForm.getPasswordConfirm())) {
-            bindingResult.rejectValue("passwordConfirm", "error.passwordConfirm", "Passwords do not match");
+            bindingResult.rejectValue("passwordConfirm", "error.passwordConfirm", "Пароли не совпадают");
         }
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.signupForm", bindingResult);
@@ -181,13 +181,26 @@ public class AuthController {
     private String processEmailConfirmation(VerificationToken verificationToken) {
         User user = verificationToken.getUser();
         if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            userService.delete(user);
+            if (!user.isVerified())
+                userService.delete(user);
             return "redirect:/auth/verification_expired";
         }
-        user.setVerified(true);
-        userService.save(user);
-        simpMessagingTemplate.convertAndSend("/topic/checkVerificationStatus/" + user.getUuid(), "updated");
-        return "authentication/confirm";
+        if (!user.isVerified()) {
+            user.setVerified(true);
+            userService.save(user);
+            simpMessagingTemplate.convertAndSend("/topic/checkVerificationStatus/" + user.getUuid(), "updated");
+
+            return "authentication/confirm";
+        }
+        else {
+            user.setEmail(user.getTempEmail());
+            user.setTempEmail(null);
+            userService.save(user);
+            simpMessagingTemplate.convertAndSend("/topic/checkVerificationStatus/" + user.getUuid(), "updated");
+
+            return "redirect:/user/profile";
+        }
+
     }
 
     @GetMapping("/waiting_for_verification")
