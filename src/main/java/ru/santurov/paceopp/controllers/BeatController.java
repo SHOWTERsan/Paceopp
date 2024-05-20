@@ -28,7 +28,7 @@ public class BeatController {
         return "beats";
     }
     private BeatDTO toBeatDTO(Beat futureBeat) {
-            BeatDTO beatDTO = modelMapper.map(futureBeat, BeatDTO.class);
+        BeatDTO beatDTO = modelMapper.map(futureBeat, BeatDTO.class);
         if (futureBeat.getImage() != null && futureBeat.getImage().getData() != null) {
             String base64Encoded = Base64.getEncoder().encodeToString(futureBeat.getImage().getData());
             beatDTO.setImage(base64Encoded);

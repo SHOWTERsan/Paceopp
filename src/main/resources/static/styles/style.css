@@ -28,6 +28,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size:18px;
 }
 .navbar_paceopp {
     font-size: 18px;
@@ -255,12 +256,11 @@ a, button {
 .logout-btn {
     background: none;
     border: none;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     cursor:pointer;
     padding: 5px 12px;
     font-weight: normal;
     color: white;
-    font-size: 16px;
+    font-size: 18px;
     text-decoration: none;
 }
 
@@ -360,7 +360,7 @@ a, button {
 }
 
 
-.drumkit-card {
+.kit-card {
     width: 250px;
     background-color: black;
     border: 1px solid limegreen;
@@ -371,28 +371,28 @@ a, button {
     cursor: pointer;
 }
 
-.drumkit-card img {
+.kit-card img {
     object-fit: cover;
     border-radius: 10px;
     margin-bottom: 1rem;
 }
 
-.drumkit-card:hover {
+.kit-card:hover {
     transform: scale(1.05);
     background-color: limegreen;
 }
 
-.drumkit-card:hover .drumkit-title,
-.drumkit-card:hover .drumkit-cost {
+.kit-card:hover .kit-title,
+.kit-card:hover .kit-cost {
     color: black;
 }
 
-.drumkit-title {
+.kit-title {
     font-size: 18px;
     margin-bottom: 0.5rem;
 }
 
-.drumkit-cost {
+.kit-cost {
     font-size: 14px;
 }
 
@@ -550,23 +550,7 @@ a, button {
     display: none;
 }
 
-@media screen and (max-width: 600px) {
-    .navbar_left {
-        display: none;
-    }
-    .dropbtn {
-        display: block;
-    }
-    .navbar_right {
-        position: relative;
-    }
-    .menu-icon {
-        margin: 0 10px 0 0;
-        padding: 5px 10px;
-        font-size: 18px;
-        display: inline-block;
-    }
-}
+
 .error-container{
     margin-bottom: 30px;
 }
@@ -612,6 +596,8 @@ a, button {
     font-size: 16px;
     display: none;
 }
+
+
 /* Position error and success messages */
 #usernameError,
 #usernameSuccess {
@@ -621,5 +607,36 @@ a, button {
 @media (max-width: 768px) {
     .field-container {
         flex-basis: calc(50% - 20px); /* Adjust width for smaller screens */
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .navbar_left {
+        display: none;
+    }
+    .dropbtn {
+        display: block;
+    }
+    .navbar_right {
+        position: relative;
+    }
+    .menu-icon {
+        margin: 0 10px 0 0;
+        padding: 5px 10px;
+        font-size: 18px;
+        display: inline-block;
+    }
+    .footer-content .footer-section {
+        padding:0 5px;
+        font-size:14px;
+    }
+    .field-container {
+        font-size: 14px;
+    }
+    .form-control{
+        min-width: 150px;
+    }
+    .main-content {
+    padding: 0px;
     }
 }

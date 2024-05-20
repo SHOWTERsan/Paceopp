@@ -6,11 +6,11 @@ create table service
 );
 
 INSERT INTO service (id, name, price) VALUES
-                                      (15, 'WAV leasing', 850),
-                                      (16, 'MP3 Leasing', 450),
-                                      (17, 'Trackout', 1500),
-                                      (18, 'Exclusive', 5000),
-                                      (19, 'Custom beat', 1500);
+                                      (15, 'WAV Лизинг', 850),
+                                      (16, 'MP3 Лизинг', 450),
+                                      (17, 'Трекаут', 1500),
+                                      (18, 'Эксклюзив', 5000),
+                                      (19, 'Бит на заказ', 1500);
 
 CREATE TABLE service_items (
                                id BIGSERIAL PRIMARY KEY,

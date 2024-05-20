@@ -11,6 +11,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <script th:src="@{/js/main.js}"></script>
     <meta name="viewport" content="width=device-width" />
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
@@ -39,9 +40,9 @@
                     <div class="dropdown-content">
                         <a href="/">Услуги</a>
                         <a href="/beats">Биты</a>
-                        <a class="nav_link_paceopp" href="/#kits">Киты</a>
-                        <a class="nav_link_paceopp" href="/#write-to-us">Написать нам</a>
-                        <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" href="/user/profile">Личный кабинет</a>
+                        <a href="/#kits">Киты</a>
+                        <a href="/#write-to-us">Написать нам</a>
+                        <a sec:authorize="isAuthenticated()" href="/user/profile">Личный кабинет</a>
                     </div>
                 </div>
             </div>
@@ -54,46 +55,70 @@
         <form th:action="@{/user/profile}" th:object="${userProfile}" th:method="POST">
             <!-- Username, Email, and Password Fields -->
             <div class="fields-container">
-                <div class="fields-container">
-                    <div class="error-container">
-                        <div class="field-container">
-                            <label for="userNameInput" class="form-label">Имя:</label>
-                            <input type="text" id="userNameInput" class="form-control translucent" readonly=""
-                                   name="userName" th:value="${userProfile.userName}">
-                            <button class="btn btn-link pencil-btn" type="button" id="editUsernameBtn"
-                                    onclick="toggleInput('userNameInput')"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-secondary tick-btn pencil-btn" type="button" style="display: none;"
-                                    onclick="confirmUsernameChanges('userNameInput')">✓</button>
-                            <button class="btn btn-secondary cross-btn pencil-btn" type="button" style="display: none;"
-                                    onclick="cancelChanges('userNameInput')">✗</button>
-                        </div>
-                        <div id="usernameError" style="color: red;"></div>
-                        <div id="usernameSuccess" style="color: green;"></div>
+                <div class="error-container">
+                    <div class="field-container">
+                        <label for="userNameInput" class="form-label">Имя:</label>
+                        <input type="text" id="userNameInput" class="form-control translucent" readonly=""
+                               name="userName" th:value="${userProfile.userName}">
+                        <button class="btn btn-link pencil-btn" type="button" id="editUsernameBtn"
+                                onclick="toggleInput('userNameInput')"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-secondary tick-btn pencil-btn" type="button" style="display: none;"
+                                onclick="confirmUsernameChanges('userNameInput')">✓</button>
+                        <button class="btn btn-secondary cross-btn pencil-btn" type="button" style="display: none;"
+                                onclick="cancelChanges('userNameInput')">✗</button>
                     </div>
-                    <div class="error-container">
-                        <div class="field-container">
-                            <label for="emailInput" class="form-label">Почта:</label>
-                            <input type="text" id="emailInput" class="form-control translucent" readonly=""
-                                   name="email" th:value="${userProfile.email}">
-                            <button class="btn btn-link pencil-btn" type="button" id="editEmailBtn"
-                                    onclick="toggleInput('emailInput')"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-secondary tick-btn pencil-btn" type="button" style="display: none;"
-                                    onclick="confirmEmailChanges('emailInput')">✓</button>
-                            <button class="btn btn-secondary cross-btn pencil-btn" type="button" style="display: none;"
-                                    onclick="cancelChanges('emailInput')">✗</button>
-                        </div>
-                        <div id="emailError" style="color: red;"></div>
-                        <div id="emailSuccess" style="color: green;"></div>
+                    <div id="usernameError" style="color: red;"></div>
+                    <div id="usernameSuccess" style="color: green;"></div>
+                </div>
+                <div class="error-container">
+                    <div class="field-container">
+                        <label for="emailInput" class="form-label">Почта:</label>
+                        <input type="text" id="emailInput" class="form-control translucent" readonly=""
+                               name="email" th:value="${userProfile.email}">
+                        <button class="btn btn-link pencil-btn" type="button" id="editEmailBtn"
+                                onclick="toggleInput('emailInput')"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-secondary tick-btn pencil-btn" type="button" style="display: none;"
+                                onclick="confirmEmailChanges('emailInput')">✓</button>
+                        <button class="btn btn-secondary cross-btn pencil-btn" type="button" style="display: none;"
+                                onclick="cancelChanges('emailInput')">✗</button>
                     </div>
+                    <div id="emailError" style="color: red;"></div>
+                    <div id="emailSuccess" style="color: green;"></div>
                 </div>
             </div>
         </form>
     </div>
 </main>
 
-<!--если пользователь ввел новую почту то как ее подтвердить в поле?-->
 <footer>
     <div class="container">
+        <div class="footer-content">
+            <div class="footer-section about">
+                <h2 class="footer-title">О нас</h2>
+                <p>Наша компания предлагает лучшие услуги в своей области. Мы стремимся к качеству и удовлетворению потребностей наших клиентов.</p>
+            </div>
+            <div class="footer-section links">
+                <h2 class="footer-title">Ссылки</h2>
+                <ul>
+                    <li><a href="/">Услуги</a></li>
+                    <li><a href="/beats">Биты</a></li>
+                    <li><a href="/#kits">Киты</a></li>
+                    <li><a href="/#write-to-us">Написать нам</a></li>
+                    <li><a sec:authorize="isAuthenticated()" href="/user/profile">Личный кабинет</a></li>
+                </ul>
+            </div>
+            <div class="footer-section social">
+                <h2 class="footer-title">Соц. сети</h2>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/paceopp" target="_blank">
+                        <img src="/images/instagram-icon.ico" alt="Instagram">
+                    </a>
+                    <a href="https://www.vk.com/paceoppbeats" target="_blank">
+                        <img src="/images/vk-icon.ico" alt="VK">
+                    </a>
+                </div>
+            </div>
+        </div>
         <div class="footer-bottom">
             <p>&copy; 2023 Paceopp</p>
         </div>

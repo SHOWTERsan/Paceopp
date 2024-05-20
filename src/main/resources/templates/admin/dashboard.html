@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/dashboard.css}">
     <script th:src="@{/js/dashboard.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
     <meta name="viewport" content="width=device-width" />
     <meta name="_csrf" th:content="${_csrf.token}"/>
@@ -37,9 +38,9 @@
                     <div class="dropdown-content">
                         <a href="/">Услуги</a>
                         <a href="/beats">Биты</a>
-                        <a class="nav_link_paceopp" href="/#kits">Киты</a>
-                        <a class="nav_link_paceopp" href="/#write-to-us">Написать нам</a>
-                        <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" href="/user/profile">Личный кабинет</a>
+                        <a href="/#kits">Киты</a>
+                        <a href="/#write-to-us">Написать нам</a>
+                        <a sec:authorize="isAuthenticated()" href="/user/profile">Личный кабинет</a>
                     </div>
                 </div>
             </div>
@@ -52,6 +53,7 @@
             <ul class="nav flex-column">
                 <li class="nav-item"><a href="#" class="nav-link" onclick="event.preventDefault(); toggleManageServices();">Услуги</a></li>
                 <li class="nav-item"><a href="#" class="nav-link" onclick="event.preventDefault(); toggleManageBeats();">Биты</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="event.preventDefault(); toggleManageKits();">Киты</a></li>
             </ul>
         </div>
         <div class="main-content">
@@ -60,6 +62,9 @@
             </div>
             <div id="manageServices" class="container" style="display: none;">
                 <div id="servicesContainer" class="accordion"></div>
+            </div>
+            <div id="manageKits" class="container" style="display: none;">
+                <div id="kitsContainer" class="accordion"></div>
             </div>
         </div>
     </div>

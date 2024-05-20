@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
+    <script th:src="@{/js/main.js}"></script>
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ссылка просрочена</title>
@@ -64,9 +65,9 @@
                     <div class="dropdown-content">
                         <a href="/">Услуги</a>
                         <a href="/beats">Биты</a>
-                        <a class="nav_link_paceopp" href="/#kits">Киты</a>
-                        <a class="nav_link_paceopp" href="/#write-to-us">Написать нам</a>
-                        <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" href="/user/profile">Личный кабинет</a>
+                        <a href="/#kits">Киты</a>
+                        <a href="/#write-to-us">Написать нам</a>
+                        <a sec:authorize="isAuthenticated()" href="/user/profile">Личный кабинет</a>
                     </div>
                 </div>
             </div>

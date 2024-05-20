@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/reg_style.css}">
+    <script th:src="@{/js/main.js}"></script>
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
     <meta name="viewport" content="width=device-width" />
 </head>
@@ -34,9 +35,9 @@
                     <div class="dropdown-content">
                         <a href="/">Услуги</a>
                         <a href="/beats">Биты</a>
-                        <a class="nav_link_paceopp" href="/#kits">Киты</a>
-                        <a class="nav_link_paceopp" href="/#write-to-us">Написать нам</a>
-                        <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" href="/user/profile">Личный кабинет</a>
+                        <a href="/#kits">Киты</a>
+                        <a href="/#write-to-us">Написать нам</a>
+                        <a sec:authorize="isAuthenticated()" href="/user/profile">Личный кабинет</a>
                     </div>
                 </div>
             </div>

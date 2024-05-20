@@ -1,14 +1,27 @@
 .admin-panel {
-    background-color: black;
+
     display: flex;
     height: 100vh;
 }
+.body {
+    background: linear-gradient(to bottom, black, #038e03);
+}
+.accordion-item {
+    border:none;
+}
+.accordion-button {
+    background:grey;
+    color: black;
+}
 
+.accordion-button:not(.collapsed) {
+    background:grey;
+    color:black;
+}
 .sidebar {
-    width: 15%;
-    background-color: black;
+    width: fit-content;
     color: limegreen;
-    padding: 1rem;
+    padding: 0.5rem;
     position: fixed;
     height: 100%;
     overflow: auto;
@@ -36,7 +49,6 @@
 }
 .main-content {
     width: 100%;
-    background-color: black;
     color: white;
     padding: 1rem;
     margin-left: 20%;
@@ -44,3 +56,24 @@
 .btn {
     margin-bottom: 15px;
 }
+.accordion-body {
+    background: gray;
+}
+.input-group>.form-control {
+    min-width: 250px;
+    margin-right: 10px;
+}
+@media screen and (max-width: 600px) {
+    .sidebar {
+        font-size: 14px;
+        padding: 0px;
+    }
+    .input-group>.form-control {
+        min-width: 150px;
+        width:90%;
+    }
+    .main-content {
+        width:80%;
+    }
+}
+

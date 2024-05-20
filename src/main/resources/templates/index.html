@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
+    <script th:src="@{/js/main.js}"></script>
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
     <meta name="viewport" content="width=device-width" />
 </head>
@@ -34,9 +35,9 @@
                     <div class="dropdown-content">
                         <a href="/">Услуги</a>
                         <a href="/beats">Биты</a>
-                        <a class="nav_link_paceopp" href="/#kits">Киты</a>
-                        <a class="nav_link_paceopp" href="/#write-to-us">Написать нам</a>
-                        <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" href="/user/profile">Личный кабинет</a>
+                        <a href="/#kits">Киты</a>
+                        <a href="/#write-to-us">Написать нам</a>
+                        <a sec:authorize="isAuthenticated()" href="/user/profile">Личный кабинет</a>
                     </div>
                 </div>
             </div>
@@ -78,34 +79,34 @@
             </script>
         </div>
         <h2 id="kits" class="section-title">Киты</h2>
-        <div class="container drumkits-container">
+        <div class="container kits-container">
             <div class="row">
-                <div th:each="drumkit : ${drumkits}" class="col-lg-4 col-md-6 mb-4">
-                    <div class="drumkit-card" data-toggle="modal"
-                         data-target="#drumkitModal"
-                         th:data-title="${drumkit.title}"
-                         th:data-cost="${drumkit.cost}"
-                         th:data-description="${drumkit.description}">
-                        <img th:src="${drumkit.imageUrl}" class="img-fluid" alt="Drumkit image" />
-                        <h3 class="drumkit-title" th:text="${drumkit.title}">Drumkit Title</h3>
-                        <div class="drumkit-cost" th:text="'₽' + ${drumkit.cost}" id="drumkitCost">₽Cost</div>
+                <div th:each="kits : ${kit}" class="col-lg-4 col-md-6 mb-4">
+                    <div class="kit-card" data-toggle="modal"
+                         data-target="#kitModal"
+                         th:data-title="${kit.title}"
+                         th:data-cost="${kit.cost}"
+                         th:data-description="${kit.description}">
+                        <img th:src="@{'data:image/jpeg;base64,'+${kit.image}}"  alt="Kit image" class="img-fluid">
+                        <h3 class="kit-title" th:text="${kit.title}">Kit Title</h3>
+                        <div class="kit-cost" th:text="'₽' + ${kit.cost}" id="kitCost">₽Cost</div>
                     </div>
                 </div>
 
             </div>
         </div>
 
-        <div class="modal fade" id="drumkitModal" tabindex="-1" aria-labelledby="drumkitModalLabel" aria-hidden="true">
+        <div class="modal fade" id="kitModal" tabindex="-1" aria-labelledby="kitModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title" id="drumkitModalLabel">Drumkit Title</h3>
+                        <h3 class="modal-title" id="kitModalLabel">Kit Title</h3>
                         <button type="button" class="modal-close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        Drumkit Description
+                        Kit Description
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-buy">Buy</button>
@@ -138,11 +139,15 @@
             <div class="footer-section links">
                 <h2 class="footer-title">Ссылки</h2>
                 <ul>
-                    <li><a href="#">Услуги</a></li>
+                    <li><a href="/">Услуги</a></li>
+                    <li><a href="/beats">Биты</a></li>
+                    <li><a href="/#kits">Киты</a></li>
+                    <li><a href="/#write-to-us">Написать нам</a></li>
+                    <li><a sec:authorize="isAuthenticated()" href="/user/profile">Личный кабинет</a></li>
                 </ul>
             </div>
             <div class="footer-section social">
-                <h2 class="footer-title">Социальные сети</h2>
+                <h2 class="footer-title">Соц. сети</h2>
                 <div class="social-links">
                     <a href="https://www.instagram.com/paceopp" target="_blank">
                         <img src="/images/instagram-icon.ico" alt="Instagram">
@@ -177,7 +182,6 @@
     </div>
 </div>
 <input type="hidden" th:value="${showSuccessModal}" id="showSuccessModal">
-<script th:src="@{/js/main.js}"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
 
@@ -220,7 +224,7 @@
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var costElement = document.getElementById('drumkitCost');
+        var costElement = document.getElementById('kitCost');
         var costValue = costElement.textContent.trim().replace('₽', ''); // Remove currency symbol
 
         // Convert to integer and format
@@ -232,11 +236,11 @@
 </script>
 <script>
     $(document).ready(function() {
-        $('.drumkit-card').click(function() {
+        $('.kit-card').click(function() {
             let title = $(this).data('title');
             let cost = $(this).data('cost');
             let description = $(this).data('description');
-            $('#drumkitModalLabel').text(title);
+            $('#kitModalLabel').text(title);
             $('.modal-body').text(description);
             $('.btn-buy').text('Buy for ' + cost);
         });

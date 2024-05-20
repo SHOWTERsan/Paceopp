@@ -22,7 +22,8 @@ create table users
     social_name varchar(255),
     username    varchar(255),
     uuid        varchar(255)
-        unique
+        unique,
+    temp_email varchar(255)
 );
 
 alter table users

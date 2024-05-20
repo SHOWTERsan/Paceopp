@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.santurov.paceopp.DTO.DrumkitDTO;
 import ru.santurov.paceopp.DTO.EmailMessageDTO;
-import ru.santurov.paceopp.models.Drumkit;
+import ru.santurov.paceopp.DTO.KitDTO;
+import ru.santurov.paceopp.models.Kit;
 import ru.santurov.paceopp.services.*;
 
+import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -22,34 +23,42 @@ import java.util.List;
 public class MainController {
     private final EmailService emailService;
     private final ModelMapper modelMapper;
-    private final DrumkitService drumkitService;
     private final ServiceManagementService serviceManagementService;
     private final ServiceItemService serviceItemService;
+    private final KitService kitService;
 
     @GetMapping("/")
     public String index(Model model) {
         if (!model.containsAttribute("emailMessage")) {
             model.addAttribute("emailMessage", new EmailMessageDTO());
         }
-        List<DrumkitDTO> drumkits = drumkitService.findAll()
+        List<KitDTO> kits = kitService.findAllKitsDTO()
                 .stream()
-                .map(this::toDrumkitDTO)
+                .map(this::toKitDTO)
                 .toList();
-        model.addAttribute("drumkits", drumkits);
+        model.addAttribute("kits", kits);//TODO Make it work
         model.addAttribute("services", serviceManagementService.findAll());
         model.addAttribute("items", serviceItemService.findAll());
 
         return "index";
     }
 
-    private DrumkitDTO toDrumkitDTO(Drumkit drumkit) {
-        return modelMapper.map(drumkit, DrumkitDTO.class);
+    private KitDTO toKitDTO(Kit futureKit) {
+        KitDTO kitDTO = modelMapper.map(futureKit, KitDTO.class);
+        if (futureKit.getImage() != null && futureKit.getImage().getData() != null) {
+            String base64Encoded = Base64.getEncoder().encodeToString(futureKit.getImage().getData());
+            kitDTO.setImage(base64Encoded);
+        } else {
+            kitDTO.setImage(null);
+        }
+        return kitDTO;
     }
 
     @GetMapping("/bad_request")
     public String badRequest() {
         return "bad_request";
     }
+
     @PostMapping("/contact")
     public String sendEmail(@ModelAttribute("emailMessage") @Valid EmailMessageDTO emailMessageDTO,
                             BindingResult bindingResult,
