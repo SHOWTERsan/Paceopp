@@ -1,31 +1,56 @@
 package ru.santurov.paceopp.services;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import ru.santurov.paceopp.models.Audio;
 import ru.santurov.paceopp.models.TokenType;
 import ru.santurov.paceopp.models.User;
 
+import java.io.File;
+import java.util.List;
+
 
 @Service
+@RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender mailSender;
     private final UserService userService;
     private final TokenService token;
 
-    @Autowired
-    public EmailService(JavaMailSender mailSender, UserService userService, TokenService token) {
-        this.mailSender = mailSender;
-        this.userService = userService;
-        this.token = token;
-    }
+    public void sendMessage(String subject, String text, String toEmail, List<Audio> audioFiles) {
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setFrom("transferpaceopp@gmail.com");
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+            helper.setText(text);
 
+            for (Audio audio : audioFiles) {
+                ByteArrayResource byteArrayResource = new ByteArrayResource(audio.getData());
+                helper.addAttachment(audio.getBeat().getName(), byteArrayResource);
+            }
+        };
+
+        try {
+            mailSender.send(messagePreparator);
+        } catch (MailException e) {
+            throw new MailSendException("Ошибка отправки письма!", e);
+        }
+    }
     public void sendMessage(String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("transferpaceopp@gmail.com");

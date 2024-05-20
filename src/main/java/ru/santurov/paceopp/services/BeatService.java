@@ -13,6 +13,7 @@ import ru.santurov.paceopp.repositories.ImageRepository;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,9 @@ public class BeatService {
     public List<Beat> findAll() {
         return beatRepository.findAll();
     }
-
+    public Optional<Beat> findById(int id) {
+        return beatRepository.findById(id);
+    }
 
     public Beat updateBeat(int id, String name, int bpm, MultipartFile imageFile) throws IOException {
         Beat beat = beatRepository.findById(id).orElseThrow(() -> new RuntimeException("Beat not found with id " + id));

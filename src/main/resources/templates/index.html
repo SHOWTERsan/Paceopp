@@ -70,7 +70,8 @@
                                 <div class="service-cost">₽{cost}</div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary service-btn-primary">{buttonText}</button>
+                                <button type="button" class="btn btn-primary service-btn-primary"
+                                        data-service-id="{id}" data-service-title="{title}" data-service-cost="{cost}">{buttonText}</button>
                                 <button type="button" class="btn btn-secondary service-btn-primary" data-bs-dismiss="modal">Закрыть</button>
                             </div>
                         </div>
@@ -209,14 +210,24 @@
 
     serviceContainer.innerHTML = generatedHTML;
 
-    // Add event listeners to the "Оформить" buttons
+    // Add event listeners to the "Выбрать бит" and "Оформить" buttons
     services.forEach(service => {
         const serviceId = service.id;
         const primaryButton = document.querySelector(`#modalService${serviceId} .btn-primary`);
 
         primaryButton.addEventListener('click', function() {
+            // Сохраняем данные услуги в Local Storage
+            localStorage.setItem('selectedService', JSON.stringify({
+                id: service.id,
+                title: service.name,
+                cost: service.price
+            }));
+
             if (serviceId !== 19) {
                 window.location.href = "/beats";
+            } else {
+                // Действие для "Оформить" (если есть)
+                window.location.href = "/order";
             }
         });
     });

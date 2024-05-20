@@ -47,6 +47,12 @@
 .form-control {
     width: 90%;
 }
+.form-control {
+    min-width: 250px;
+    max-width: 0px;
+    color: #999;
+    background-color: #f2f2f2;
+}
 .main-content {
     width: 100%;
     color: white;

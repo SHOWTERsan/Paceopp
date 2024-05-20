@@ -1,0 +1,27 @@
+.card {
+    background: unset;
+    color:white;
+    min-width: 250px;
+    max-width: 0;
+}
+.form-control {
+    width:90%;
+}
+main{
+    min-height: 0vh;
+}
+.btn {
+    height:fit-content;
+    background-image: linear-gradient(to right, #00ff67 0%, #2d9c4a 51%, #83ff83 100%);
+    border: none;
+    transition: 0.5s;
+    background-size: 200% auto;
+}
+.btn.btn.btn-primary:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+}
+.right {
+    width:300px;
+}

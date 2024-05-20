@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>Paceopp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/payment.css}">
+    <script th:src="@{/js/main.js}"></script>
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <meta name="viewport" content="width=device-width" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header_inner_paceopp">
+            <figure id="logo">
+                <a href="/"><img th:src="@{/images/logo.png}" alt="Logo"></a>
+            </figure>
+            <div class="navbar_left">
+                <a class="nav_link_paceopp" href="/">Услуги</a>
+                <a class="nav_link_paceopp" href="/beats">Биты</a>
+                <a class="nav_link_paceopp" href="/#kits">Киты</a>
+                <a class="nav_link_paceopp" href="/#write-to-us">Написать нам</a>
+                <a sec:authorize="isAuthenticated()" class="nav_link_paceopp" href="/user/profile">Личный кабинет</a>
+            </div>
+            <div class="navbar_right">
+                <a sec:authorize="!isAuthenticated()" class="nav_link_paceopp" th:href="@{/auth/signin}">Войти / Зарегистрироваться</a>
+                <form sec:authorize="isAuthenticated()" id="logout-form" th:action="@{/logout}" th:method="post" style="display: inline-block; margin:0; padding: 0;">
+                    <button type="submit" class="nav_link_paceopp logout-btn">Выйти</button>
+                </form>
+                <div class="menu-icon">&#9776;</div>
+                <div class="dropdown" id="dropdown">
+                    <div class="dropdown-content">
+                        <a href="/">Услуги</a>
+                        <a href="/beats">Биты</a>
+                        <a href="/#kits">Киты</a>
+                        <a href="/#write-to-us">Написать нам</a>
+                        <a sec:authorize="isAuthenticated()" href="/user/profile">Личный кабинет</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <div class="container p-0">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card px-4">
+                        <div class="row gx-3">
+                            <p class="h5 py-3">Данные банковской карты</p>
+                            <div class="col-12 position-relative">
+                                <div class="d-flex flex-column">
+                                    <p class="text mb-1">Фамилия Имя</p>
+                                    <input class="form-control mb-3" id="name" type="text" placeholder="Иванов Иван">
+                                    <div class="error-message text-danger" id="nameError"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 position-relative">
+                                <div class="d-flex flex-column">
+                                    <p class="text mb-1">Номер карты</p>
+                                    <input class="form-control mb-3" id="cardNumber" type="text" placeholder="1234 5678 435678" maxlength="19">
+                                    <div class="error-message text-danger" id="cardNumberError"></div>
+                                </div>
+                            </div>
+                            <div class="col-6 position-relative">
+                                <div class="d-flex flex-column">
+                                    <p class="text mb-1">Действует до</p>
+                                    <div class="d-flex">
+                                        <input class="form-control mb-3 me-2" id="expMonth" type="text" placeholder="ММ" maxlength="2">
+                                        <input class="form-control mb-3" id="expYear" type="text" placeholder="ГГГГ" maxlength="4">
+                                    </div>
+                                    <div class="error-message text-danger" id="expDateError"></div>
+                                </div>
+                            </div>
+                            <div class="col-6 position-relative">
+                                <div class="d-flex flex-column">
+                                    <p class="text mb-1">CVV/CVC</p>
+                                    <input class="form-control mb-3 pt-2" id="cvv" type="password" placeholder="***" maxlength="3">
+                                    <div class="error-message text-danger" id="cvvError"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary mb-3" id="payButton" onclick="submitPaymentForm()">
+                                    <span class="ps-3">Оплатить</span>
+                                    <span class="fw-bold" id="totalPrice"></span>
+                                    <span>₽</span>
+                                    <span class="fas fa-arrow-right"></span>
+                                </button>
+                            </div>
+
+                            <form id="paymentForm" method="post" action="/payment/success">
+                                <input type="hidden" name="serviceId" id="serviceIdInput" />
+                                <input type="hidden" name="beatId" id="beatIdInput" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <p class="h5 py-3">Сводка заказа</p>
+                    <div class="row gx-3">
+                        <div class="col-12">
+                            <div class="d-flex flex-column">
+                                <p class="text mb-1">Выбранная услуга:</p>
+                                <p class="fw-bold mb-3" id="serviceDetails"></p>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex flex-column">
+                                <p class="text mb-1">Выбранный бит:</p>
+                                <p class="fw-bold mb-3" id="beatDetails"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    function submitPaymentForm() {
+        const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        var selectedService = JSON.parse(localStorage.getItem('selectedService'));
+        var selectedBeat = JSON.parse(localStorage.getItem('selectedBeat'));
+
+        var formData = new FormData();
+        formData.append('serviceId', selectedService.id);
+        formData.append('beatId', selectedBeat.id);
+
+        fetch('/payment/success', {
+            method: 'POST',
+            headers: {
+                    [header]: token
+                },
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(response => {
+            console.log('Success:', response);
+            // Redirect to the payment page if needed
+            window.location.href = '/payment';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle errors here
+        });
+    }
+</script>
+
+<script>
+    const selectedService = JSON.parse(localStorage.getItem('selectedService'));
+    const selectedBeat = JSON.parse(localStorage.getItem('selectedBeat'));
+
+    document.getElementById('serviceDetails').innerText = `${selectedService.title} - ${selectedService.cost} ₽`;
+    document.getElementById('beatDetails').innerText = selectedBeat.name;
+    document.getElementById('totalPrice').innerText = `${selectedService.cost}`;
+
+    document.getElementById('payButton').addEventListener('click', function(event) {
+        event.preventDefault();
+
+        document.querySelectorAll('.error-message').forEach(el => el.innerText = '');
+
+        let valid = true;
+
+        const name = document.getElementById('name').value.trim();
+        const cardNumber = document.getElementById('cardNumber').value.trim();
+        const expMonth = document.getElementById('expMonth').value.trim();
+        const expYear = document.getElementById('expYear').value.trim();
+        const cvv = document.getElementById('cvv').value.trim();
+
+        if (!name) {
+            document.getElementById('nameError').innerText = 'Введите Фамилию и Имя';
+            valid = false;
+        }
+        if (!cardNumber || !/^\d{16}$/.test(cardNumber.replace(/\s+/g, ''))) {
+            document.getElementById('cardNumberError').innerText = 'Введите корректный номер карты';
+            valid = false;
+        }
+        if (!expMonth || !/^(0[1-9]|1[0-2])$/.test(expMonth)) {
+            document.getElementById('expDateError').innerText = 'Введите корректный месяц';
+            valid = false;
+        }
+        if (!expYear || !/^\d{4}$/.test(expYear)) {
+            document.getElementById('expDateError').innerText = 'Введите корректный год';
+            valid = false;
+        }
+        if (!cvv || !/^\d{3}$/.test(cvv)) {
+            document.getElementById('cvvError').innerText = 'Введите корректный CVV/CVC';
+            valid = false;
+        }
+
+        if (valid) {
+            alert('Форма успешно отправлена!');
+        }
+    });
+
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.nextElementSibling.innerText = '';
+        });
+    });
+
+    // Автоформатирование полей
+    document.getElementById('cardNumber').addEventListener('input', function(event) {
+        let value = event.target.value.replace(/\D/g, '');
+        if (value.length > 16) {
+            value = value.slice(0, 16);
+        }
+        event.target.value = value.replace(/(.{4})/g, '$1 ').trim();
+    });
+
+    document.getElementById('expMonth').addEventListener('input', function(event) {
+        let value = event.target.value.replace(/\D/g, '');
+        if (value.length > 2) {
+            value = value.slice(0, 2);
+        }
+        event.target.value = value;
+    });
+
+    document.getElementById('expYear').addEventListener('input', function(event) {
+        let value = event.target.value.replace(/\D/g, '');
+        if (value.length > 4) {
+            value = value.slice(0, 4);
+        }
+        event.target.value = value;
+    });
+</script>
+
+</body>
+</html>

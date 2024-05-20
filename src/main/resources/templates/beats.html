@@ -44,18 +44,20 @@
         </div>
     </div>
 </header>
-    <main>
-        <div class="container">
-            <div class="beats">
-                <div th:each="beat : ${beats}">
-                    <div class="beat-card">
-                        <img th:src="@{'data:image/jpeg;base64,'+${beat.image}}"  alt="Beat Image" class="beat-image">
-                        <h2 th:text="${beat.name}" class="beat-name"></h2>
-                    </div>
+<main>
+    <div class="container">
+        <div class="beats">
+            <!-- Loop through beats -->
+            <div th:each="beat : ${beats}">
+                <!-- Use Thymeleaf attributes to set data-beat-id and data-beat-name -->
+                <div class="beat-card" th:attr="data-beat-id=${beat.id}, data-beat-name=${beat.name}" onclick="selectBeat(this)">
+                    <img th:src="@{'data:image/jpeg;base64,'+${beat.image}}" alt="Beat Image" class="beat-image">
+                    <h2 th:text="${beat.name}" class="beat-name"></h2>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 <footer>
     <div class="container">
         <div class="footer-content">
@@ -90,5 +92,21 @@
         </div>
     </div>
 </footer>
+<script>
+    function selectBeat(element) {
+        // Retrieve data-beat-id and data-beat-name attributes
+        const beatId = element.getAttribute('data-beat-id');
+        const beatName = element.getAttribute('data-beat-name');
+
+        // Save beat data to local storage
+        localStorage.setItem('selectedBeat', JSON.stringify({
+            id: beatId,
+            name: beatName
+        }));
+
+        // Redirect to payment page
+        window.location.href = '/payment';
+    }
+</script>
 </body>
 </html>

@@ -578,12 +578,7 @@ a, button {
     background: transparent;
 }
 
-.form-control {
-    min-width: 250px;
-    max-width: 0px;
-    color: #999;
-    background-color: #f2f2f2;
-}
+
 
 .translucent {
     opacity: 0.6;
