@@ -3,6 +3,7 @@ package ru.santurov.paceopp.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.santurov.paceopp.DTO.EmailMessageDTO;
 import ru.santurov.paceopp.DTO.KitDTO;
 import ru.santurov.paceopp.models.Kit;
+import ru.santurov.paceopp.security.UserDetails;
 import ru.santurov.paceopp.services.*;
 
 import java.util.Base64;
@@ -36,7 +38,7 @@ public class MainController {
                 .stream()
                 .map(this::toKitDTO)
                 .toList();
-        model.addAttribute("kits", kits);//TODO Make it work
+        model.addAttribute("kits", kits);
         model.addAttribute("services", serviceManagementService.findAll());
         model.addAttribute("items", serviceItemService.findAll());
 
@@ -60,7 +62,8 @@ public class MainController {
     }
 
     @PostMapping("/contact")
-    public String sendEmail(@ModelAttribute("emailMessage") @Valid EmailMessageDTO emailMessageDTO,
+    public String sendEmail(@AuthenticationPrincipal UserDetails userDetails,
+                            @ModelAttribute("emailMessage") @Valid EmailMessageDTO emailMessageDTO,
                             BindingResult bindingResult,
                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {

@@ -19,7 +19,7 @@ public class Beat {
     @Column(name = "bpm")
     private int bpm;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
     private Image image;
 

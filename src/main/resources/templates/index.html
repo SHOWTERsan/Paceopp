@@ -79,7 +79,9 @@
                 </div>
             </script>
         </div>
+
         <h2 id="kits" class="section-title">Киты</h2>
+
         <div class="container kits-container">
             <div class="row">
                 <div th:each="kit : ${kits}" class="col-lg-4 col-md-6 mb-4">
@@ -88,12 +90,11 @@
                          th:data-title="${kit.title}"
                          th:data-cost="${kit.cost}"
                          th:data-description="${kit.description}">
-                        <img th:src="@{'data:image/jpeg;base64,'+${kit.image}}"  alt="Kit image" class="img-fluid">
+                        <img alt="Kit image" class="img-fluid kit-image">
                         <h3 class="kit-title" th:text="${kit.title}">Kit Title</h3>
                         <div class="kit-cost" th:text="'₽' + ${kit.cost}" id="kitCost">₽Cost</div>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -116,18 +117,19 @@
                 </div>
             </div>
         </div>
-<!--        <h2 id="write-to-us" class="section-title">Написать нам</h2>-->
-<!--        <form  class="form_paceopp" th:method="post"  th:object="${emailMessage}" th:action="@{/contact}">-->
-<!--            <div class="input-message-container">-->
-<!--                <input class="contact_input" type="text" onfocus="hideError(this)" th:field="*{subject}" placeholder="Тема">-->
-<!--                <div class="error-message"  th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>-->
-<!--            </div>-->
-<!--            <div class="input-message-container">-->
-<!--                <textarea class="contact_textarea" onfocus="hideError(this)" th:field="*{message}" placeholder="Сообщение" rows="4"></textarea>-->
-<!--                <div class="error-message" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>-->
-<!--            </div>-->
-<!--            <button class="btn_paceopp" type="submit"></button>-->
-<!--        </form>-->
+
+        <h2 id="write-to-us" class="section-title">Написать нам</h2>
+        <form  class="form_paceopp" th:method="post"  th:object="${emailMessage}" th:action="@{/contact}">
+            <div class="input-message-container">
+                <input class="contact_input" type="text" onfocus="hideError(this)" th:field="*{subject}" placeholder="Тема">
+                <div class="error-message"  th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
+            </div>
+            <div class="input-message-container">
+                <textarea class="contact_textarea" onfocus="hideError(this)" th:field="*{message}" placeholder="Сообщение" rows="4"></textarea>
+                <div class="error-message" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>
+            </div>
+            <button class="btn_paceopp" type="submit"></button>
+        </form>
     </div>
 </main>
 <footer>
@@ -144,7 +146,7 @@
                     <li><a href="/beats">Биты</a></li>
                     <li><a href="/#kits">Киты</a></li>
                     <li><a href="/#write-to-us">Написать нам</a></li>
-                    <li><a sec:authorize="isAuthenticated()" href="/user/profile">Личный кабинет</a></li>
+                    <li sec:authorize="isAuthenticated()"><a href="/user/profile">Личный кабинет</a></li>
                 </ul>
             </div>
             <div class="footer-section social">
@@ -183,6 +185,17 @@
     </div>
 </div>
 <input type="hidden" th:value="${showSuccessModal}" id="showSuccessModal">
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var kits = /*[[${kits}]]*/ [];
+    var kitCards = document.querySelectorAll('.kit-card');
+    kitCards.forEach(function(kitCard, index) {
+        var kit = kits[index];
+        var imageElement = kitCard.querySelector('img');
+        imageElement.src = 'data:image/jpeg;base64,' + kit.image;
+    });
+    /*]]>*/
+</script>
 <script th:inline="javascript">
     /*<![CDATA[*/
 
