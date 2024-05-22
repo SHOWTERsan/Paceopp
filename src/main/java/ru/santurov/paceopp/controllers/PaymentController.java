@@ -12,6 +12,7 @@ import ru.santurov.paceopp.models.Beat;
 import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.services.BeatService;
 import ru.santurov.paceopp.services.EmailService;
+import ru.santurov.paceopp.services.OrderService;
 import ru.santurov.paceopp.services.UserService;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class PaymentController {
     private final EmailService emailService;
     private final BeatService beatService;
     private final UserService userService;
+    private final OrderService orderService;
 
     @GetMapping("/payment")
     public String getPayment() {
@@ -41,6 +43,8 @@ public class PaymentController {
         String text = "Спасибо за вашу покупку. Ваши файлы во вложении.";
 
         emailService.sendMessage(subject, text, email, audioFiles);
+
+        orderService.saveOrder(username, serviceId, beat);
 
         return "redirect:/payment";
     }

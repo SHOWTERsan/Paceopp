@@ -1,0 +1,8 @@
+CREATE TABLE orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    service_id INT NOT NULL,
+    beat_id INT NOT NULL,
+    order_date TIMESTAMP NOT NULL,
+    FOREIGN KEY (beat_id) REFERENCES beats(id)
+);

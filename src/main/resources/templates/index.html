@@ -82,7 +82,7 @@
         <h2 id="kits" class="section-title">Киты</h2>
         <div class="container kits-container">
             <div class="row">
-                <div th:each="kits : ${kit}" class="col-lg-4 col-md-6 mb-4">
+                <div th:each="kit : ${kits}" class="col-lg-4 col-md-6 mb-4">
                     <div class="kit-card" data-toggle="modal"
                          data-target="#kitModal"
                          th:data-title="${kit.title}"
@@ -116,18 +116,18 @@
                 </div>
             </div>
         </div>
-        <h2 id="write-to-us" class="section-title">Написать нам</h2>
-        <form  class="form_paceopp" th:method="post"  th:object="${emailMessage}" th:action="@{/contact}">
-            <div class="input-message-container">
-                <input class="contact_input" type="text" onfocus="hideError(this)" th:field="*{subject}" placeholder="Тема">
-                <div class="error-message"  th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
-            </div>
-            <div class="input-message-container">
-                <textarea class="contact_textarea" onfocus="hideError(this)" th:field="*{message}" placeholder="Сообщение" rows="4"></textarea>
-                <div class="error-message" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>
-            </div>
-            <button class="btn_paceopp" type="submit"></button>
-        </form>
+<!--        <h2 id="write-to-us" class="section-title">Написать нам</h2>-->
+<!--        <form  class="form_paceopp" th:method="post"  th:object="${emailMessage}" th:action="@{/contact}">-->
+<!--            <div class="input-message-container">-->
+<!--                <input class="contact_input" type="text" onfocus="hideError(this)" th:field="*{subject}" placeholder="Тема">-->
+<!--                <div class="error-message"  th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>-->
+<!--            </div>-->
+<!--            <div class="input-message-container">-->
+<!--                <textarea class="contact_textarea" onfocus="hideError(this)" th:field="*{message}" placeholder="Сообщение" rows="4"></textarea>-->
+<!--                <div class="error-message" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>-->
+<!--            </div>-->
+<!--            <button class="btn_paceopp" type="submit"></button>-->
+<!--        </form>-->
     </div>
 </main>
 <footer>

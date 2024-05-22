@@ -11,12 +11,12 @@
 }
 .accordion-button {
     background:grey;
-    color: black;
+     color:white;
 }
 
 .accordion-button:not(.collapsed) {
     background:grey;
-    color:black;
+    color:white;
 }
 .sidebar {
     width: fit-content;
@@ -68,6 +68,14 @@
 .input-group>.form-control {
     min-width: 250px;
     margin-right: 10px;
+}
+
+label {
+    color: white;
+}
+
+.mb-3 a {
+    color:white;
 }
 @media screen and (max-width: 600px) {
     .sidebar {

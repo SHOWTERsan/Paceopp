@@ -182,10 +182,18 @@
         const expYear = document.getElementById('expYear').value.trim();
         const cvv = document.getElementById('cvv').value.trim();
 
+
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth() + 1;
         if (!name) {
             document.getElementById('nameError').innerText = 'Введите Фамилию и Имя';
             valid = false;
         }
+        if (!name || !/^([А-Яа-яЁёA-Za-z]+)\s([А-Яа-яЁёA-Za-z]+)$/.test(name)) {
+            document.getElementById('nameError').innerText = 'Введите корректные Фамилию и Имя (два слова на кириллице или латинице)';
+            valid = false;
+        }
+
         if (!cardNumber || !/^\d{16}$/.test(cardNumber.replace(/\s+/g, ''))) {
             document.getElementById('cardNumberError').innerText = 'Введите корректный номер карты';
             valid = false;
@@ -194,8 +202,8 @@
             document.getElementById('expDateError').innerText = 'Введите корректный месяц';
             valid = false;
         }
-        if (!expYear || !/^\d{4}$/.test(expYear)) {
-            document.getElementById('expDateError').innerText = 'Введите корректный год';
+        if (!expYear || !/^\d{4}$/.test(expYear) || parseInt(expYear) < currentYear || (parseInt(expYear) === currentYear && parseInt(expMonth) < currentMonth)) {
+            document.getElementById('expDateError').innerText = 'Введите корректную дату (не раньше текущей)';
             valid = false;
         }
         if (!cvv || !/^\d{3}$/.test(cvv)) {

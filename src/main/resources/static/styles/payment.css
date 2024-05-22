@@ -25,3 +25,8 @@ main{
 .right {
     width:300px;
 }
+
+.row {
+    gap: 0px;
+    justify-content: unset;
+}
