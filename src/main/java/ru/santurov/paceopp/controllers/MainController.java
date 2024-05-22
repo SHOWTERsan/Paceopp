@@ -34,7 +34,7 @@ public class MainController {
         if (!model.containsAttribute("emailMessage")) {
             model.addAttribute("emailMessage", new EmailMessageDTO());
         }
-        List<KitDTO> kits = kitService.findAllKitsDTO()
+        List<KitDTO> kits = kitService.findAll()
                 .stream()
                 .map(this::toKitDTO)
                 .toList();

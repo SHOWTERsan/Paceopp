@@ -6,12 +6,10 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.santurov.paceopp.DTO.AdminKitDTO;
-import ru.santurov.paceopp.DTO.KitDTO;
 import ru.santurov.paceopp.models.Kit;
 import ru.santurov.paceopp.services.KitService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,8 +29,8 @@ public class AdminKitsController {
                                          @RequestParam(value = "archive", required = false) MultipartFile archive,
                                          @RequestParam(value = "description", required = false) String description) {
         try {
-            Kit updatedKit = kitService.updateKit(id, title, cost, image, archive, description);
-            return ResponseEntity.ok(updatedKit);
+            kitService.updateKit(id, title, cost, image, archive, description);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -58,8 +56,8 @@ public class AdminKitsController {
                                          @RequestParam(value = "archive", required = false) MultipartFile archive,
                                          @RequestParam(value = "description", required = false) String description) {
         try {
-            Kit newKit = kitService.createKit(title, cost, image, archive, description);
-            return ResponseEntity.ok(newKit);
+            kitService.createKit(title, cost, image, archive, description);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

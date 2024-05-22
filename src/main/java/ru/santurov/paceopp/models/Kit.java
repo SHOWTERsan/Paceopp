@@ -3,9 +3,11 @@ package ru.santurov.paceopp.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
-@Table(name = "drumkit")
+@Table(name = "kit")
 public class Kit {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
@@ -17,9 +19,13 @@ public class Kit {
     private Double cost;
     @Column(name = "description")
     private String description;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
     private Image image;
-    @Column(name = "data",columnDefinition = "bytea")
-    private byte[] data;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "archive_id")
+    private KitArchive kitArchive;
+
 }
+//todo удаление при обновлении картинки
+//эффективность скорее всего связано с тем что чтоб сделать дто нужно достать ориг ФАЙЛ
