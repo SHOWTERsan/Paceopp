@@ -9,5 +9,4 @@ public class KitDTO {
     private double cost;
     private String description;
     private String image;
-    private boolean hasArchive;
 }

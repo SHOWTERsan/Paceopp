@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.santurov.paceopp.DTO.BeatDTO;
 import ru.santurov.paceopp.models.Beat;
-import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.services.BeatService;
 
 import java.util.Base64;

@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.santurov.paceopp.DTO.AdminBeatDTO;
 import ru.santurov.paceopp.models.Audio;
 import ru.santurov.paceopp.models.Beat;
 import ru.santurov.paceopp.models.Image;
@@ -14,6 +15,7 @@ import ru.santurov.paceopp.repositories.ImageRepository;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,21 @@ public class BeatService {
 
     public List<Beat> findAll() {
         return beatRepository.findAll();
+    }
+
+    public List<AdminBeatDTO> findALlAdminBeatsDTO() {
+        List<Beat> beats = beatRepository.findAll();
+        return beats.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+    private AdminBeatDTO convertToDTO(Beat beat) {
+        AdminBeatDTO dto = new AdminBeatDTO();
+        dto.setId(beat.getId());
+        dto.setBpm(beat.getBpm());
+        dto.setImage(beat.getImage());
+        dto.setName(beat.getName());
+        dto.setHasAudios(beat.getAudioFiles() != null);
+
+        return dto;
     }
     public Optional<Beat> findById(int id) {
         return beatRepository.findById(id);
