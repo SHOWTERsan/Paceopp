@@ -22,15 +22,16 @@ public class AdminKitsController {
         return ResponseEntity.ok(kitService.findAllAdminKitsDTO());
     }
     @PostMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Kit> updateKit(@PathVariable long id,
+    public ResponseEntity<AdminKitDTO> updateKit(@PathVariable long id,
                                          @RequestParam("title") String title,
                                          @RequestParam("cost") double cost,
                                          @RequestParam(value = "image", required = false) MultipartFile image,
                                          @RequestParam(value = "archive", required = false) MultipartFile archive,
                                          @RequestParam(value = "description", required = false) String description) {
         try {
-            kitService.updateKit(id, title, cost, image, archive, description);
-            return ResponseEntity.ok().build();
+            //todo всеравно возвращает не lazy
+            AdminKitDTO updatedKit = kitService.updateKit(id, title, cost, image, archive, description);
+            return ResponseEntity.ok(updatedKit);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -50,14 +51,14 @@ public class AdminKitsController {
                 .body(archiveResource);
     }
     @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Kit> createKit(@RequestParam("title") String title,
+    public ResponseEntity<AdminKitDTO> createKit(@RequestParam("title") String title,
                                          @RequestParam("cost") double cost,
                                          @RequestParam(value = "image", required = false) MultipartFile image,
                                          @RequestParam(value = "archive", required = false) MultipartFile archive,
                                          @RequestParam(value = "description", required = false) String description) {
         try {
-            kitService.createKit(title, cost, image, archive, description);
-            return ResponseEntity.ok().build();
+            AdminKitDTO createdKit = kitService.createKit(title, cost, image, archive, description);
+            return ResponseEntity.ok(createdKit);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

@@ -92,7 +92,7 @@
                          th:data-description="${kit.description}">
                         <img alt="Kit image" class="img-fluid kit-image">
                         <h3 class="kit-title" th:text="${kit.title}">Kit Title</h3>
-                        <div class="kit-cost" th:text="'₽' + ${kit.cost}" id="kitCost">₽Cost</div>
+                        <div class="kit-cost" th:text="'₽' + ${kit.cost}">₽Cost</div>
                     </div>
                 </div>
             </div>
@@ -248,14 +248,17 @@
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var costElement = document.getElementById('kitCost');
-        var costValue = costElement.textContent.trim().replace('₽', ''); // Remove currency symbol
+        var costElements = document.querySelectorAll('.kit-cost');
 
-        // Convert to integer and format
-        var formattedCost = parseInt(costValue).toLocaleString('en-US', { maximumFractionDigits: 0 });
+        costElements.forEach(function(costElement) {
+            var costValue = costElement.textContent.trim().replace('₽', ''); // Remove currency symbol
 
-        // Update the text content of the element with the formatted cost
-        costElement.textContent = '₽' + formattedCost;
+            // Convert to integer and format
+            var formattedCost = parseInt(costValue).toLocaleString('en-US', { maximumFractionDigits: 0 });
+
+            // Update the text content of the element with the formatted cost
+            costElement.textContent = '₽' + formattedCost;
+        });
     });
 </script>
 <script>

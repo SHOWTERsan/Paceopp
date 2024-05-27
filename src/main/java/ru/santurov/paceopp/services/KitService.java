@@ -13,10 +13,17 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.santurov.paceopp.DTO.AdminKitDTO;
 import ru.santurov.paceopp.models.Image;
 import ru.santurov.paceopp.models.Kit;
+import ru.santurov.paceopp.models.KitArchive;
 import ru.santurov.paceopp.repositories.ImageRepository;
+import ru.santurov.paceopp.repositories.KitArchiveRepository;
 import ru.santurov.paceopp.repositories.KitRepository;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +32,7 @@ import java.util.stream.Collectors;
 public class KitService {
     private final KitRepository kitRepository;
     private final ImageRepository imageRepository;
+    private final KitArchiveRepository kitArchiveRepository;
 
     public List<Kit> findAll() {
         return kitRepository.findAll();
@@ -48,18 +56,18 @@ public class KitService {
         return kitRepository.findById(kitId)
                 .orElseThrow(() -> new RuntimeException("Kit not found with id: " + kitId));
     }
-    public Kit updateKit(long id, String title, double cost, MultipartFile imageFile, MultipartFile archiveFile, String description) throws IOException {
+    public AdminKitDTO updateKit(long id, String title, double cost, MultipartFile imageFile, MultipartFile archiveFile, String description) throws IOException {
         Kit kit = kitRepository.findById(id).orElseThrow(() -> new RuntimeException("Kit not found with id " + id));
 
         kit.setTitle(title);
         kit.setCost(cost);
         kit.setDescription(description);
-        if (kit.getImage() != null) {
-            imageRepository.deleteById(kit.getImage().getId());
-            kit.setImage(null);
-        }
 
         if (imageFile != null && !imageFile.isEmpty()) {
+            if (kit.getImage() != null) {
+                imageRepository.deleteById(kit.getImage().getId());
+                kit.setImage(null);
+            }
             Image image = new Image();
             image.setName(imageFile.getOriginalFilename());
             image.setData(compressImage(imageFile.getBytes(), 0.5f));
@@ -69,33 +77,52 @@ public class KitService {
 
         // Assign archive file data directly to the kit's data field
         if (archiveFile != null && !archiveFile.isEmpty()) {
-            kit.getKitArchive().setData(archiveFile.getBytes());
+            KitArchive archive = new KitArchive();
+            archive.setData(archiveFile.getBytes());
+            kitArchiveRepository.save(archive);
+            kit.setKitArchive(archive);
         }
 
-        return kitRepository.save(kit);
+        return convertToDTO(kitRepository.save(kit));
     }
 
 
     public static byte[] compressImage(byte[] imageData, float compressionQuality) throws IOException {
-        // Convert bytea data to BufferedImage
+        // Convert byte array data to BufferedImage
         ByteArrayInputStream bis = new ByteArrayInputStream(imageData);
         BufferedImage bufferedImage = ImageIO.read(bis);
 
+        // Get an ImageWriter for JPG format
+        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+        if (!writers.hasNext()) {
+            throw new IllegalStateException("No writers found");
+        }
+        ImageWriter writer = writers.next();
+
+        // Set the compression quality
+        ImageWriteParam param = writer.getDefaultWriteParam();
+        if (param.canWriteCompressed()) {
+            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            param.setCompressionQuality(compressionQuality); // Compression quality from 0.0 to 1.0
+        }
+
         // Create output stream to store compressed image
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageOutputStream ios = ImageIO.createImageOutputStream(bos);
+        writer.setOutput(ios);
 
-        // Write compressed image to output stream
-        ImageIO.write(bufferedImage, "jpg", bos);
-
-        // Get the compressed image data
-        byte[] compressedImageData = bos.toByteArray();
+        // Write the image with the specified compression
+        writer.write(null, new IIOImage(bufferedImage, null, null), param);
 
         // Close streams
-        bis.close();
+        ios.close();
         bos.close();
+        writer.dispose();
 
-        return compressedImageData;
+        // Get the compressed image data
+        return bos.toByteArray();
     }
+
 
 
     public Resource getKitArchive(long kitId) {
@@ -108,7 +135,7 @@ public class KitService {
         return resource;
     }
 
-    public Kit createKit(String title, double cost, MultipartFile imageFile, MultipartFile archiveFile, String description) throws IOException {
+    public AdminKitDTO createKit(String title, double cost, MultipartFile imageFile, MultipartFile archiveFile, String description) throws IOException {
         Kit kit = new Kit();
         kit.setTitle(title);
         kit.setCost(cost);
@@ -124,10 +151,13 @@ public class KitService {
 
         // Process and save the archive file
         if (archiveFile != null && !archiveFile.isEmpty()) {
-            kit.getKitArchive().setData(archiveFile.getBytes());
+            KitArchive archive = new KitArchive();
+            archive.setData(archiveFile.getBytes());
+            kitArchiveRepository.save(archive);
+            kit.setKitArchive(archive);
         }
 
-        return kitRepository.save(kit);
+        return convertToDTO(kitRepository.save(kit));
     }
 
     @Transactional

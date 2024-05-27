@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.santurov.paceopp.DTO.AdminBeatDTO;
+import ru.santurov.paceopp.models.Audio;
 import ru.santurov.paceopp.models.Beat;
 import ru.santurov.paceopp.services.BeatService;
 
@@ -19,8 +21,8 @@ public class AdminBeatsController {
     private final BeatService beatService;
 
     @GetMapping("")
-    public ResponseEntity<List<Beat>> getBeats() {
-        List<Beat> beats = beatService.findAll();
+    public ResponseEntity<List<AdminBeatDTO>> getBeats() {
+        List<AdminBeatDTO> beats = beatService.findALlAdminBeatsDTO();
         return ResponseEntity.ok(beats);
     }
 
@@ -34,6 +36,16 @@ public class AdminBeatsController {
             return ResponseEntity.ok(updatedBeat);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/{beatId}/audio")
+    public ResponseEntity<List<Audio>> getAudios(@PathVariable int beatId) {
+        try {
+            Beat beat = beatService.findById(beatId).orElseThrow(() -> new RuntimeException("Beat not found with id " + beatId));
+            List<Audio> audios = beat.getAudioFiles();
+            return ResponseEntity.ok(audios);
+        } catch (Exception e) {
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

@@ -65,7 +65,7 @@ function loadKits() {
             kitsContainer.innerHTML = ''; // Clear previous content
             kits.forEach((kit, index) => {
                 const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-                const imageUrl = kit.image ? `data:image/jpeg;base64,${kit.image.data}` : 'default_image.png';
+                const imageUrl = kit.image ? `data:image/jpeg;base64,${kit.image.data}` : ' ';
 
                 const kitHtml = `
                     <div class="accordion-item">
@@ -319,16 +319,10 @@ function loadBeats() {
             beatsContainer.innerHTML = ''; // Clear previous content
             beats.forEach((beat, index) => {
                 const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-                const imageUrl = beat.image ? `data:image/jpeg;base64,${beat.image.data}` : 'default_image.png';
-                let audioHtml = '';
-                beat.audioFiles.forEach(audio => {
-                    audioHtml += `
-                        <audio controls>
-                            <source src="data:audio/${audio.fileFormat};base64,${audio.data}" type="audio/${audio.fileFormat}">
-                            Your browser does not support the audio element.
-                        </audio>
-                        <button onclick="deleteAudio(${beat.id}, ${audio.id})">Удалить</button>`;
-                });
+                const imageUrl = beat.image ? `data:image/jpeg;base64,${beat.image.data}` : ' ';
+                let audioHtml = beat.hasAudios ? `
+                    <button type="button" onclick="loadAudio(${beat.id})">Загрузить аудио</button>
+                    <div id="audioContainer${beat.id}"></div>` : '';
                 beatsContainer.innerHTML += `
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading${index}">
@@ -356,7 +350,6 @@ function loadBeats() {
                                     <div class="mb-3">
                                         <label>Аудио:</label><br>
                                         ${audioHtml}
-                                        <input type="file" id="audioInput${beat.id}" class="form-control" multiple>
                                     </div>
                                     <button type="button" onclick="updateBeatDetails(${beat.id})" class="btn btn-primary">Сохранить изменения</button>
                                     <button type="button" onclick="deleteBeat(${beat.id})" class="btn btn-danger">Удалить бит</button>
@@ -371,6 +364,26 @@ function loadBeats() {
             `;
         })
         .catch(error => console.error('Error loading the beats:', error));
+}
+function loadAudio(beatId) {
+    fetch(`/api/beats/${beatId}/audio`)
+        .then(response => response.json())
+        .then(audioFiles => {
+            const audioContainer = document.getElementById(`audioContainer${beatId}`);
+            audioContainer.innerHTML = ''; // Clear previous content
+            audioFiles.forEach(audio => {
+                audioContainer.innerHTML += `
+                    <div class="audio-file">
+                        <p>Формат: ${audio.fileFormat}</p>
+                        <audio controls>
+                            <source src="data:audio/${audio.fileFormat};base64,${audio.data}" type="audio/${audio.fileFormat}">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <button onclick="deleteAudio(${beatId}, ${audio.id})">Удалить</button>
+                    </div>`;
+            });
+        })
+        .catch(error => console.error('Error loading the audio files:', error));
 }
 function deleteBeat(beatId) {
     const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');

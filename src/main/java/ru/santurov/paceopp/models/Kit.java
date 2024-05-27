@@ -1,9 +1,9 @@
 package ru.santurov.paceopp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 @Entity
@@ -24,8 +24,11 @@ public class Kit {
     private Image image;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "archive_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private KitArchive kitArchive;
 
+    @JsonProperty("kitArchive")
+    public KitArchive getKitArchive() {
+        return kitArchive != null ? kitArchive : null;
+    }
 }
-//todo удаление при обновлении картинки
-//эффективность скорее всего связано с тем что чтоб сделать дто нужно достать ориг ФАЙЛ
