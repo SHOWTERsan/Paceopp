@@ -1,6 +1,5 @@
 package ru.santurov.paceopp.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -11,6 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "verification_token")
 public class VerificationToken {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
