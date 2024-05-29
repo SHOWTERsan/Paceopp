@@ -11,6 +11,7 @@ import ru.santurov.paceopp.models.Audio;
 import ru.santurov.paceopp.models.Beat;
 import ru.santurov.paceopp.services.BeatService;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,16 +28,14 @@ public class AdminBeatsController {
     }
 
     @PostMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Beat> updateBeat(@PathVariable int id,
+    public ResponseEntity<AdminBeatDTO> updateBeat(@PathVariable int id,
                                            @RequestParam("name") String name,
                                            @RequestParam("bpm") int bpm,
-                                           @RequestParam(value = "image", required = false) MultipartFile image) {
-        try {
-            Beat updatedBeat = beatService.updateBeat(id, name, bpm, image);
+                                           @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
+
+            AdminBeatDTO updatedBeat = beatService.updateBeat(id, name, bpm, image);
             return ResponseEntity.ok(updatedBeat);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+
     }
     @GetMapping("/{beatId}/audio")
     public ResponseEntity<List<Audio>> getAudios(@PathVariable int beatId) {
@@ -67,11 +66,11 @@ public class AdminBeatsController {
     }
 
     @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Beat> createBeat(@RequestParam("name") String name,
+    public ResponseEntity<AdminBeatDTO> createBeat(@RequestParam("name") String name,
                                            @RequestParam("bpm") int bpm,
                                            @RequestParam(value = "image", required = false) MultipartFile image) {
         try {
-            Beat newBeat = beatService.createBeat(name, bpm, image);
+            AdminBeatDTO newBeat = beatService.createBeat(name, bpm, image);
             return ResponseEntity.ok(newBeat);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

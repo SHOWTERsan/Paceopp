@@ -3,7 +3,6 @@ package ru.santurov.paceopp.services;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
 
 import org.springframework.core.io.ByteArrayResource;
@@ -18,14 +17,11 @@ import ru.santurov.paceopp.repositories.ImageRepository;
 import ru.santurov.paceopp.repositories.KitArchiveRepository;
 import ru.santurov.paceopp.repositories.KitRepository;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static ru.santurov.paceopp.utils.ImageCompressor.compressImage;
 
 @Service
 @RequiredArgsConstructor
@@ -64,11 +60,14 @@ public class KitService {
         kit.setDescription(description);
 
         if (imageFile != null && !imageFile.isEmpty()) {
+            Image image;
             if (kit.getImage() != null) {
-                imageRepository.deleteById(kit.getImage().getId());
-                kit.setImage(null);
+                Optional<Image> optionalImage = imageRepository.findById(kit.getImage().getId());
+                image = optionalImage.orElseGet(Image::new);
             }
-            Image image = new Image();
+            else {
+                image = new Image();
+            }
             image.setName(imageFile.getOriginalFilename());
             image.setData(compressImage(imageFile.getBytes(), 0.5f));
             image = imageRepository.save(image); // Save and get updated image with ID
@@ -77,7 +76,14 @@ public class KitService {
 
         // Assign archive file data directly to the kit's data field
         if (archiveFile != null && !archiveFile.isEmpty()) {
-            KitArchive archive = new KitArchive();
+            KitArchive archive;
+            if (kit.getKitArchive() != null) {
+                Optional<KitArchive> optionalArchive = kitArchiveRepository.findById(kit.getKitArchive().getId());
+                archive = optionalArchive.orElseGet(KitArchive::new);
+            }
+            else {
+                archive = new KitArchive();
+            }
             archive.setData(archiveFile.getBytes());
             kitArchiveRepository.save(archive);
             kit.setKitArchive(archive);
@@ -85,45 +91,6 @@ public class KitService {
 
         return convertToDTO(kitRepository.save(kit));
     }
-
-
-    public static byte[] compressImage(byte[] imageData, float compressionQuality) throws IOException {
-        // Convert byte array data to BufferedImage
-        ByteArrayInputStream bis = new ByteArrayInputStream(imageData);
-        BufferedImage bufferedImage = ImageIO.read(bis);
-
-        // Get an ImageWriter for JPG format
-        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-        if (!writers.hasNext()) {
-            throw new IllegalStateException("No writers found");
-        }
-        ImageWriter writer = writers.next();
-
-        // Set the compression quality
-        ImageWriteParam param = writer.getDefaultWriteParam();
-        if (param.canWriteCompressed()) {
-            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            param.setCompressionQuality(compressionQuality); // Compression quality from 0.0 to 1.0
-        }
-
-        // Create output stream to store compressed image
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ImageOutputStream ios = ImageIO.createImageOutputStream(bos);
-        writer.setOutput(ios);
-
-        // Write the image with the specified compression
-        writer.write(null, new IIOImage(bufferedImage, null, null), param);
-
-        // Close streams
-        ios.close();
-        bos.close();
-        writer.dispose();
-
-        // Get the compressed image data
-        return bos.toByteArray();
-    }
-
-
 
     public Resource getKitArchive(long kitId) {
         // Retrieve the kit entity from the database

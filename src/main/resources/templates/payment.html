@@ -202,10 +202,7 @@
             document.getElementById('expDateError').innerText = 'Введите корректный месяц';
             valid = false;
         }
-        if (!expYear || !/^\d{4}$/.test(expYear) || parseInt(expYear) < currentYear || (parseInt(expYear) === currentYear && parseInt(expMonth) < currentMonth)) {
-            document.getElementById('expDateError').innerText = 'Введите корректную дату (не раньше текущей)';
-            valid = false;
-        }
+
         if (!cvv || !/^\d{3}$/.test(cvv)) {
             document.getElementById('cvvError').innerText = 'Введите корректный CVV/CVC';
             valid = false;

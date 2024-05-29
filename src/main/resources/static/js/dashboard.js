@@ -321,6 +321,7 @@ function loadBeats() {
                 const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
                 const imageUrl = beat.image ? `data:image/jpeg;base64,${beat.image.data}` : ' ';
                 let audioHtml = beat.hasAudios ? `
+                    <input type="file" id="audioInput${beat.id}" class="form-control" multiple>
                     <button type="button" onclick="loadAudio(${beat.id})">Загрузить аудио</button>
                     <div id="audioContainer${beat.id}"></div>` : '';
                 beatsContainer.innerHTML += `
@@ -457,6 +458,7 @@ function updateBeatDetails(beatId) {
                 throw new Error('Network response was not ok');
             }
             else {
+
                 uploadAudioFiles(beatId);
             }
             return response.json();
@@ -465,12 +467,7 @@ function updateBeatDetails(beatId) {
             console.log('Beat updated successfully:', data);
             alert('Бит успешно обновлен!');
 
-            // Optionally reload only the expanded beat section
             loadBeats();
-
-            // Alternatively, reload the entire page
-            // window.location.reload();
-
         })
         .catch(error => {
             console.error('Error updating beat:', error);
@@ -488,7 +485,9 @@ function uploadAudioFiles(beatId) {
 
     const formData = new FormData();
     const audioFiles = audioInputElement.files;
-
+    if(audioFiles.length == 0) {
+        return;
+    }
     Array.from(audioFiles).forEach(file => {
         formData.append('audio', file);
     });
@@ -594,7 +593,8 @@ function validateBeatForm(beatId) {
     const name = document.getElementById(`name${beatId}`).value;
     const bpm = document.getElementById(`bpm${beatId}`).value;
     const imageFile = document.getElementById(`imageInput${beatId}`).files[0];
-    const audioFiles = document.getElementById(`audioInput${beatId}`).files;
+    const audioInputElement = document.getElementById(`audioInput${beatId}`);
+    const audioFiles = audioInputElement ? audioInputElement.files : [];
 
     // Check if name is not empty
     if (!name.trim()) {

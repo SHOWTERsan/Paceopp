@@ -2,6 +2,7 @@ package ru.santurov.paceopp.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class Beat {
     @JoinColumn(name = "image_id")
     private Image image;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "beat", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Audio> audioFiles;
 }

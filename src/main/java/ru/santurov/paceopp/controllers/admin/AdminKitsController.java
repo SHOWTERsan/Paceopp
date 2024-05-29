@@ -29,7 +29,6 @@ public class AdminKitsController {
                                          @RequestParam(value = "archive", required = false) MultipartFile archive,
                                          @RequestParam(value = "description", required = false) String description) {
         try {
-            //todo всеравно возвращает не lazy
             AdminKitDTO updatedKit = kitService.updateKit(id, title, cost, image, archive, description);
             return ResponseEntity.ok(updatedKit);
         } catch (Exception e) {

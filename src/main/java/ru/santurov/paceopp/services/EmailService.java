@@ -41,7 +41,9 @@ public class EmailService {
 
             for (Audio audio : audioFiles) {
                 ByteArrayResource byteArrayResource = new ByteArrayResource(audio.getData());
-                helper.addAttachment(audio.getBeat().getName(), byteArrayResource);
+                String fileName = audio.getBeat().getName();
+                String fileExtension = audio.getFileFormat();
+                helper.addAttachment(fileName + "." + fileExtension, byteArrayResource);
             }
         };
 
