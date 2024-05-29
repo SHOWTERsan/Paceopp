@@ -5,6 +5,8 @@
     <title>Beats</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/beats.css}">
     <script th:src="@{/js/main.js}"></script>
@@ -48,10 +50,8 @@
     <div class="container">
         <h2 class="section-title">Биты</h2>
         <div class="beats">
-            <!-- Loop through beats -->
             <div th:each="beat : ${beats}">
-                <!-- Use Thymeleaf attributes to set data-beat-id and data-beat-name -->
-                <div class="beat-card" th:attr="data-beat-id=${beat.id}, data-beat-name=${beat.name}" onclick="selectBeat(this)">
+                <div class="beat-card" th:attr="data-beat-id=${beat.id}, data-beat-name=${beat.name}, data-beat-bpm=${beat.bpm}" onclick="selectBeat(this)">
                     <img th:src="@{'data:image/jpeg;base64,'+${beat.image}}" alt="Beat Image" class="beat-image">
                     <h2 th:text="${beat.name}" class="beat-name"></h2>
                 </div>
@@ -59,6 +59,75 @@
         </div>
     </div>
 </main>
+
+<!-- Modal -->
+<div class="modal fade" id="beatModal" tabindex="-1" role="dialog" aria-labelledby="beatModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalBeatName"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modalBeatBpm"></p>
+                <img id="modalBeatImage" src="" alt="Beat Image" class="img-fluid">
+                <audio id="modalBeatAudio" controls class="mt-3">
+                    <source id="modalBeatAudioSource" src="" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="buyButton">Купить</button>
+                <button type="button" class="btn btn-secondary service-btn-primary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function selectBeat(element) {
+        const beatId = $(element).data("beat-id");
+        const beatName = $(element).data("beat-name");
+        const beatBpm = $(element).data("beat-bpm");
+        const beatImageSrc = $(element).find("img").attr("src");
+
+        $("#modalBeatName").text(beatName);
+        $("#modalBeatBpm").text("BPM: " + beatBpm);
+        $("#modalBeatImage").attr("src", beatImageSrc);
+        $("#buyButton").attr("onclick", "buyBeat(" + beatId + ", '" + beatName + "')");
+
+        $.ajax({
+            url: "/beats/" + beatId + "/audio",
+            method: "GET",
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(data) {
+                if (data) {
+                    const audioUrl = URL.createObjectURL(data);
+                    $("#modalBeatAudioSource").attr("src", audioUrl);
+                    $("#modalBeatAudio")[0].load();
+                }
+            }
+        });
+
+        $("#beatModal").modal("show");
+    }
+
+    function buyBeat(beatId,beatName) {
+        localStorage.setItem('selectedBeat', JSON.stringify({
+            id: beatId,
+            name: beatName
+        }));
+        window.location.href = "/payment";
+    }
+
+    $(window).click(function(event) {
+        if (event.target.id === "beatModal") {
+            $("#beatModal").modal("hide");
+        }
+    });
+</script>
 <footer>
     <div class="container">
         <div class="footer-content">
@@ -93,21 +162,6 @@
         </div>
     </div>
 </footer>
-<script>
-    function selectBeat(element) {
-        // Retrieve data-beat-id and data-beat-name attributes
-        const beatId = element.getAttribute('data-beat-id');
-        const beatName = element.getAttribute('data-beat-name');
 
-        // Save beat data to local storage
-        localStorage.setItem('selectedBeat', JSON.stringify({
-            id: beatId,
-            name: beatName
-        }));
-
-        // Redirect to payment page
-        window.location.href = '/payment';
-    }
-</script>
 </body>
 </html>
