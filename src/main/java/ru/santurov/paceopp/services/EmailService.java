@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
@@ -16,6 +17,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.santurov.paceopp.models.Audio;
 import ru.santurov.paceopp.models.TokenType;
 import ru.santurov.paceopp.models.User;
@@ -30,11 +32,13 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final UserService userService;
     private final TokenService token;
+    @Value("${mail.from.address}")
+    private String fromAddress;
 
     public void sendMessage(String subject, String text, String toEmail, List<Audio> audioFiles) {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-            helper.setFrom("transferpaceopp@gmail.com");
+            helper.setFrom(fromAddress);
             helper.setTo(toEmail);
             helper.setSubject(subject);
             helper.setText(text);
@@ -55,7 +59,7 @@ public class EmailService {
     }
     public void sendMessage(String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("transferpaceopp@gmail.com");
+        message.setFrom(fromAddress);
         message.setTo("santurovs866@gmail.com");
         message.setSubject(subject);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -71,16 +75,17 @@ public class EmailService {
 
 
     @Async
-    public void sendValidateMessage(User user) {
+    public void sendValidateMessage(User user, String baseUrl) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("transferpaceopp@gmail.com");
+        message.setFrom(fromAddress);
         if (user.isVerified())
             message.setTo(user.getTempEmail());
         else
             message.setTo(user.getEmail());
         message.setSubject("Подтверждение почты");
         String vtoken = token.generateToken(user, TokenType.EMAIL_VERIFICATION);
-        message.setText("Подтвердите почту перейдя по ссылке: http://localhost:8080/auth/confirmEmail?token=" + vtoken +
+        String confirmationUrl = baseUrl + "/auth/confirmEmail?token=" + vtoken;
+        message.setText("Подтвердите почту перейдя по ссылке:" +  confirmationUrl +
                 "\nСсылка будет активна в течении 30 минут.");
         try {
             mailSender.send(message);
@@ -91,13 +96,14 @@ public class EmailService {
 
 
     @Async
-    public void sendForgotPasswordMessage(User user) {
+    public void sendForgotPasswordMessage(User user, String baseUrl) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("transferpaceopp@gmail.com");
+        message.setFrom(fromAddress);
         message.setTo(user.getEmail());
         message.setSubject("Сброс пароля");
         String vtoken = token.generateToken(user, TokenType.PASSWORD_RESET);
-        message.setText("Сбросьте пароль перейдя по ссылке: http://localhost:8080/auth/resetPassword?token=" + vtoken +
+        String confirmationUrl = baseUrl + "/auth/resetPassword?token=" + vtoken;
+        message.setText("Сбросьте пароль перейдя по ссылке: " + confirmationUrl +
                 "\nЕсли вы не запрашивали сброс пароля, то просто проигнорируйте это письмо.");
         try {
             mailSender.send(message);

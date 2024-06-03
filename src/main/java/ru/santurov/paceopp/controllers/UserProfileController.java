@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.santurov.paceopp.DTO.UserProfileDTO;
 import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.services.EmailService;
@@ -64,7 +65,8 @@ public class UserProfileController {
 
         user.setTempEmail(newEmail);
         userService.save(user);
-        emailService.sendValidateMessage(user);
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        emailService.sendValidateMessage(user, baseUrl);
         response.put("uuid", user.getUuid());
         return ResponseEntity.ok(response);
     }

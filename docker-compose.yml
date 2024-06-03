@@ -2,6 +2,7 @@ version: '3.8'
 services:
   db:
     image: postgres:latest
+    restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 30s
@@ -12,15 +13,17 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=qwerty123@A
       - POSTGRES_DB=paceopp
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   app:
     build:
       context: .
       dockerfile: Dockerfile
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/paceopp
-      spring.jpa.hibernate.ddl-auto: update
     depends_on:
-      - db
+      db:
+        condition: service_started
   nginx:
     image: nginx:latest
     volumes:

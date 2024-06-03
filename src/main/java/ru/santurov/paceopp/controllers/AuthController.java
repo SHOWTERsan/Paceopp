@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.santurov.paceopp.DTO.ForgotPasswordRequestDTO;
 import ru.santurov.paceopp.DTO.ResetPasswordRequestDTO;
 import ru.santurov.paceopp.DTO.SignupFormDTO;
@@ -80,7 +81,9 @@ public class AuthController {
         }
         User user = toUser(signupForm);
         signupService.createUser(user);
-        emailService.sendValidateMessage(user);
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+
+        emailService.sendValidateMessage(user, baseUrl);
         session.setAttribute("canAccessWaitingForVerification", true);
         return "redirect:/auth/waiting_for_verification?uuid=" + user.getUuid();
     }
@@ -117,8 +120,9 @@ public class AuthController {
 
     private void processForgotPasswordRequest(ForgotPasswordRequestDTO forgotPasswordRequest) {
         String email = forgotPasswordRequest.getEmail();
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         Optional<User> userOptional = userService.findByEmail(email);
-        userOptional.ifPresent(emailService::sendForgotPasswordMessage);
+        userOptional.ifPresent(user -> emailService.sendForgotPasswordMessage(user, baseUrl));
     }
 
     @GetMapping("/resetPassword")
