@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -40,6 +42,8 @@ public class AuthController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ResetPasswordValidator resetPasswordValidator;
     private final PasswordEncoder passwordEncoder;
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @GetMapping("/verificationExpired")
     public String verificationExpired() {
@@ -81,7 +85,6 @@ public class AuthController {
         }
         User user = toUser(signupForm);
         signupService.createUser(user);
-        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 
         emailService.sendValidateMessage(user, baseUrl);
         session.setAttribute("canAccessWaitingForVerification", true);
@@ -120,7 +123,6 @@ public class AuthController {
 
     private void processForgotPasswordRequest(ForgotPasswordRequestDTO forgotPasswordRequest) {
         String email = forgotPasswordRequest.getEmail();
-        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         Optional<User> userOptional = userService.findByEmail(email);
         userOptional.ifPresent(user -> emailService.sendForgotPasswordMessage(user, baseUrl));
     }

@@ -11,7 +11,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        request.getSession().setAttribute("error", "Your username or password is invalid.");
+        request.getSession().setAttribute("error", "Ваш никнейм или пароль не верны.");
         request.getSession().setAttribute("username", request.getParameter("username"));
 
         response.sendRedirect("/auth/signin");

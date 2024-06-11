@@ -9,10 +9,10 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost") // Allow requests from the Docker Compose network
-                .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE", "PATCH") // Allow all HTTP methods
-                .allowedHeaders("*") // Allow all headers
-                .allowCredentials(false) // Do not allow credentials (cookies, authorization headers)
-                .maxAge(3600); // Cache preflight requests for 1 hour
+                .allowedOrigins("http://localhost", "http://83.166.235.56")
+                .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE", "PATCH")
+                .allowedHeaders("*")
+                .allowCredentials(false)
+                .maxAge(3600);
     }
 }

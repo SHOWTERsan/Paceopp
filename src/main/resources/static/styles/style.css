@@ -213,6 +213,7 @@ footer {
      border: none;
      box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
      overflow: hidden;
+     width: 90%;
  }
 
 .modal-header {
@@ -446,7 +447,6 @@ a, button {
 }
 .social-links {
     display: flex;
-    justify-content: center;
     gap: 10px;
 }
 

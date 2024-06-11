@@ -14,7 +14,5 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findByUuid(String uuid);
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.tokens t WHERE u.uuid = :uuid")
     Optional<User> findByUuidAndFetchTokensEagerly(@Param("uuid") String uuid);
-
     Optional<User> findByEmail(String email);
-
 }
