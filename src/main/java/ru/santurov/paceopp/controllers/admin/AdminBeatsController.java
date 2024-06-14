@@ -12,7 +12,9 @@ import ru.santurov.paceopp.models.Beat;
 import ru.santurov.paceopp.services.BeatService;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/beats")
@@ -55,7 +57,9 @@ public class AdminBeatsController {
                 String fileFormat = getFileExtension(file.getOriginalFilename());
                 beatService.addAudioToBeat(beatId, file, fileFormat);
             }
-            return ResponseEntity.ok("Audio files uploaded successfully.");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Audio files uploaded successfully.");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

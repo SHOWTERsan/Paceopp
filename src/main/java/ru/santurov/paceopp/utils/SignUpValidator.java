@@ -7,6 +7,8 @@ import org.springframework.validation.Validator;
 import ru.santurov.paceopp.DTO.SignupFormDTO;
 import ru.santurov.paceopp.services.UserService;
 
+import java.util.Locale;
+
 @Component
 public class SignUpValidator implements Validator {
 
@@ -29,9 +31,9 @@ public class SignUpValidator implements Validator {
         SignupFormDTO signupFormDTO =(SignupFormDTO) target;
 
         passwordValidator.validate("password", signupFormDTO.getPassword(), errors);
-        if (userService.findByUsername(signupFormDTO.getUsername()).isPresent())
+        if (userService.findByUsername(signupFormDTO.getUsername().toLowerCase()).isPresent())
             errors.rejectValue("username","","Человек с таким именем уже существует");
-        if (userService.findByEmail(signupFormDTO.getEmail()).isPresent())
+        if (userService.findByEmail(signupFormDTO.getEmail().toLowerCase()).isPresent())
             errors.rejectValue("email","","Человек с таким email уже существует");
     }
 }

@@ -144,5 +144,6 @@
     .login-container form input {
         font-size: 1em;
         padding: 7px;
+        margin-top: 5px;
     }
 }

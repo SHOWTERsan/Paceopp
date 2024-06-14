@@ -44,7 +44,7 @@ public class BeatService {
         dto.setBpm(beat.getBpm());
         dto.setImage(beat.getImage());
         dto.setName(beat.getName());
-        dto.setHasAudios(beat.getAudioFiles() != null);
+        dto.setHasAudios(beat.getAudioFiles() != null && !beat.getAudioFiles().isEmpty());
 
         return dto;
     }

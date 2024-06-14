@@ -30,3 +30,8 @@ main{
     gap: 0px;
     justify-content: unset;
 }
+@media screen and (max-width: 600px) {
+    .form-control{
+        min-width: 50px;
+    }
+}
