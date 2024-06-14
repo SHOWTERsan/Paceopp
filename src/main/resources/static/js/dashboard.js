@@ -5,12 +5,12 @@ function hideAllSections() {
 }
 function toggleManageKits() {
     hideAllSections()
-    var manageBeatsElement = document.getElementById('manageKits');
-    if (manageBeatsElement.style.display === 'none') {
+    var manageKitsElement = document.getElementById('manageKits');
+    if (manageKitsElement.style.display === 'none') {
         loadKits();
-        manageBeatsElement.style.display = 'block';
+        manageKitsElement.style.display = 'block';
     } else {
-        manageBeatsElement.style.display = 'none';
+        manageKitsElement.style.display = 'none';
     }
 }
 function createNewKit() {
@@ -321,7 +321,6 @@ function loadBeats() {
                 const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
                 const imageUrl = beat.image ? `data:image/jpeg;base64,${beat.image.data}` : ' ';
                 let audioHtml = beat.hasAudios ? `
-                    <input type="file" id="audioInput${beat.id}" class="form-control" multiple>
                     <button type="button" onclick="loadAudio(${beat.id})">Загрузить аудио</button>
                     <div id="audioContainer${beat.id}"></div>` : '';
                 beatsContainer.innerHTML += `
@@ -350,6 +349,7 @@ function loadBeats() {
                                     </div>
                                     <div class="mb-3">
                                         <label>Аудио:</label><br>
+                                        <input type="file" id="audioInput${beat.id}" class="form-control" multiple>
                                         ${audioHtml}
                                     </div>
                                     <button type="button" onclick="updateBeatDetails(${beat.id})" class="btn btn-primary">Сохранить изменения</button>
@@ -485,7 +485,7 @@ function uploadAudioFiles(beatId) {
 
     const formData = new FormData();
     const audioFiles = audioInputElement.files;
-    if(audioFiles.length == 0) {
+    if (audioFiles.length == 0) {
         return;
     }
     Array.from(audioFiles).forEach(file => {
@@ -499,7 +499,7 @@ function uploadAudioFiles(beatId) {
             [header]: token
         }
     })
-    .then(response => response.ok ? response.json() : Promise.reject('Failed to upload audio files'))
+    .then(response => response.json())
     .then(data => {
         console.log('Audio files uploaded successfully:', data);
     })

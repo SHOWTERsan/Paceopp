@@ -89,5 +89,14 @@ label {
     .main-content {
         width:80%;
     }
+    .form-control{
+        min-width: 150px;
+    }
+    .main-content {
+        font-size: 14px;
+    }
+    .btn {
+        font-size: small;
+    }
 }
 

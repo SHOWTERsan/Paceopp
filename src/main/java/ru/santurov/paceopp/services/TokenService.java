@@ -49,7 +49,7 @@ public class TokenService {
     public List<VerificationToken> findAllByExpiryDateBeforeNow() {
         return tokenRepository.findAllByExpiryDateBefore(LocalDateTime.now());
     }
-
+    @Transactional
     public void deleteAllUnverifiedUsersWithExpiredTokens() {
         List<VerificationToken> expiredTokens = tokenRepository.findAllByExpiredAndType(true,TokenType.EMAIL_VERIFICATION);
         List<User> usersToDelete = expiredTokens
@@ -60,7 +60,7 @@ public class TokenService {
 
         usersToDelete.forEach(userService::delete);
     }
-
+//TODO Добавить метод для удаления не верифицированных пользователей без токенов.
     @Transactional
     public void deleteExpiredTokens() {
         tokenRepository.deleteAllByExpired(true);

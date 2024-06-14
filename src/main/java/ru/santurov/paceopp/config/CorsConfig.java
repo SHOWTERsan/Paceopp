@@ -9,7 +9,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost", "http://83.166.235.56")
+                .allowedOrigins("http://localhost", "http://83.166.235.56")//TODO ERROR ws: something on wait
                 .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE", "PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(false)

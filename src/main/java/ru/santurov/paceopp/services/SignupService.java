@@ -22,6 +22,7 @@ public class SignupService {
         if (user.getPassword().isEmpty() || user.getPassword().length() < 6 || user.getPassword().length() > 255)
             userService.save(user);
         else {
+            user.setEmail(user.getEmail().toLowerCase());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRole("ROLE_USER");
             user.setUuid(UUID.randomUUID().toString());
