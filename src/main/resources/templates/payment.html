@@ -122,6 +122,12 @@
                                 <p class="fw-bold mb-3" id="beatDetails"></p>
                             </div>
                         </div>
+                        <div class="col-12">
+                            <div class="d-flex flex-column">
+                                <p class="text mb-1">Выбранный кит:</p>
+                                <p class="fw-bold mb-3" id="kitDetails"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -135,16 +141,24 @@
 
         var selectedService = JSON.parse(localStorage.getItem('selectedService'));
         var selectedBeat = JSON.parse(localStorage.getItem('selectedBeat'));
+        var selectedKit = JSON.parse(localStorage.getItem('selectedKit'));
 
         var formData = new FormData();
-        formData.append('serviceId', selectedService.id);
-        formData.append('beatId', selectedBeat.id);
+        if (selectedService) {
+            formData.append('serviceId', selectedService.id);
+        }
+        if (selectedBeat) {
+            formData.append('beatId', selectedBeat.id);
+        }
+        if (selectedKit) {
+            formData.append('kitId', selectedKit.id);
+        }
 
         fetch('/payment/success', {
             method: 'POST',
             headers: {
-                    [header]: token
-                },
+                [header]: token
+            },
             body: formData
         })
         .then(response => {
@@ -166,13 +180,38 @@
 </script>
 
 <script>
-    const selectedService = JSON.parse(localStorage.getItem('selectedService'));
-    const selectedBeat = JSON.parse(localStorage.getItem('selectedBeat'));
+    document.addEventListener('DOMContentLoaded', function() {
+        var selectedService = JSON.parse(localStorage.getItem('selectedService'));
+        var selectedBeat = JSON.parse(localStorage.getItem('selectedBeat'));
+        var selectedKit = JSON.parse(localStorage.getItem('selectedKit'));
 
-    document.getElementById('serviceDetails').innerText = `${selectedService.title} - ${selectedService.cost} ₽`;
-    document.getElementById('beatDetails').innerText = selectedBeat.name;
-    document.getElementById('totalPrice').innerText = `${selectedService.cost}`;
+        function updateSummaryVisibility() {
+            var serviceDetails = document.getElementById('serviceDetails');
+            var beatDetails = document.getElementById('beatDetails');
+            var kitDetails = document.getElementById('kitDetails');
 
+            if (selectedKit) {
+                serviceDetails.parentElement.parentElement.style.display = 'none';
+                beatDetails.parentElement.parentElement.style.display = 'none';
+                kitDetails.parentElement.parentElement.style.display = 'block';
+            } else {
+                serviceDetails.parentElement.parentElement.style.display = 'block';
+                beatDetails.parentElement.parentElement.style.display = 'block';
+                kitDetails.parentElement.parentElement.style.display = 'none';
+            }
+        }
+
+        // Initial update on page load
+        updateSummaryVisibility();
+
+        if(selectedService) {
+            document.getElementById('serviceDetails').innerText = `${selectedService.title} - ${selectedService.cost} ₽`;
+            document.getElementById('beatDetails').innerText = selectedBeat.name;
+            document.getElementById('totalPrice').innerText = `${selectedService.cost}`;
+        } else {
+            document.getElementById('kitDetails').innerText = `${selectedKit.title} - ${selectedKit.cost} ₽`;
+        }
+    });
     document.getElementById('payButton').addEventListener('click', function(event) {
         event.preventDefault();
 

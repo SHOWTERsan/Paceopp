@@ -102,21 +102,22 @@
             </div>
         </div>
 
-        <div class="modal fade" id="kitModal" tabindex="-1" aria-labelledby="kitModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
+        <!-- Inside your existing HTML structure -->
+        <div class="modal fade" id="kitModal">
+            <div class="modal-dialog kit-modal-dialog">
+                <div class="modal-content kit-modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title" id="kitModalLabel">Kit Title</h3>
-                        <button type="button" class="modal-close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <h4 class="modal-title kit-modal-title" th:text="${kitTitle}">Kit Title</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
                     </div>
-                    <div class="modal-body">
-                        Kit Description
+                    <div class="modal-body kit-modal-body">
+                        <img class="img-fluid kit-modal-image" alt="Kit Image">
+                        <p th:text="${kitDescription}">Kit description</p>
+                        <div class="kit-cost" th:text="'₽' + ${kitCost}">₽Cost</div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-buy">Buy</button>
-                        <button type="button" class="btn btn-dismiss" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary kit-btn-primary">Купить</button>
+                        <button type="button" class="btn btn-secondary kit-btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                     </div>
                 </div>
             </div>
@@ -191,17 +192,6 @@
 <input type="hidden" th:value="${showSuccessModal}" id="showSuccessModal">
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var kits = /*[[${kits}]]*/ [];
-    var kitCards = document.querySelectorAll('.kit-card');
-    kitCards.forEach(function(kitCard, index) {
-        var kit = kits[index];
-        var imageElement = kitCard.querySelector('img');
-        imageElement.src = 'data:image/jpeg;base64,' + kit.image;
-    });
-    /*]]>*/
-</script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
 
     // Get services and items from the model attributes
     var services = /*[[${services}]]*/ [];
@@ -234,6 +224,7 @@
 
         primaryButton.addEventListener('click', function() {
             // Сохраняем данные услуги в Local Storage
+            localStorage.removeItem('selectedKit');
             localStorage.setItem('selectedService', JSON.stringify({
                 id: service.id,
                 title: service.name,
@@ -250,37 +241,67 @@
     });
     /*]]>*/
 </script>
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var kits = /*[[${kits}]]*/ [];
+
     document.addEventListener('DOMContentLoaded', function() {
-        var costElements = document.querySelectorAll('.kit-cost');
-
-        costElements.forEach(function(costElement) {
-            var costValue = costElement.textContent.trim().replace('₽', ''); // Remove currency symbol
-
-            // Convert to integer and format
-            var formattedCost = parseInt(costValue).toLocaleString('en-US', { maximumFractionDigits: 0 });
-
-            // Update the text content of the element with the formatted cost
-            costElement.textContent = '₽' + formattedCost;
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('.kit-card').click(function() {
-            let title = $(this).data('title');
-            let cost = $(this).data('cost');
-            let description = $(this).data('description');
-            $('#kitModalLabel').text(title);
-            $('.modal-body').text(description);
-            $('.btn-buy').text('Buy for ' + cost);
+        var kitCards = document.querySelectorAll('.kit-card');
+        kitCards.forEach(function(kitCard, index) {
+            var kit = kits[index];
+            var imageElement = kitCard.querySelector('img');
+            imageElement.src = 'data:image/jpeg;base64,' + kit.image;
+            var costElement = kitCard.querySelector('.kit-cost');
+            costElement.textContent = '₽' + kit.cost.toLocaleString('en-US', { maximumFractionDigits: 0 });
         });
 
-        let showModal = document.querySelector('#showSuccessModal').value === 'true';
-        if (showModal) {
-            $('#successModal').modal('show');
+        // Function to open kit modal
+        function openKitModal(title, cost, description, imageBase64, id) {
+            const modal = document.getElementById('kitModal');
+            modal.querySelector('.kit-modal-title').textContent = title;
+            modal.querySelector('.kit-modal-body p').textContent = description;
+            var modalCost = modal.querySelector('.kit-cost');
+            modalCost.textContent = '₽' + cost;
+            modal.querySelector('.kit-modal-image').src = 'data:image/jpeg;base64,' + imageBase64;
+            $(modal).modal('show'); // Bootstrap modal show method
         }
+
+        // Add event listeners to kit cards for modals
+        kitCards.forEach(function(card) {
+            card.addEventListener('click', function() {
+                var title = card.dataset.title;
+                var cost = card.dataset.cost;
+                var description = card.dataset.description;
+                var imageBase64 = kits.find(kit => kit.title === title).image; // Assuming image is stored in kits array
+                var id = card.dataset.kitId; // Adjust according to your dataset attribute
+
+                openKitModal(title, cost, description, imageBase64, id);
+            });
+        });
+
+        // Handle buy button click
+        var buyButton = document.querySelector('.kit-btn-primary');
+        buyButton.addEventListener('click', function() {
+            localStorage.removeItem('selectedBeat');
+            localStorage.removeItem('selectedService');
+
+
+            localStorage.setItem('selectedKit', JSON.stringify({
+                id: id,
+                title: title,
+                cost: parseInt(cost),
+                description: description
+            }));
+
+            if (selectedKit) {
+                window.location.href = '/payment';
+            } else {
+                console.error('No selected kit found in localStorage.');
+                // Handle the case where no kit is selected (if needed)
+            }
+        });
     });
+    /*]]>*/
 </script>
 </body>
 </html>
