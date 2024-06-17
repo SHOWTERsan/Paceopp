@@ -1,6 +1,8 @@
 package ru.santurov.paceopp.controllers.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.santurov.paceopp.DTO.AdminBeatDTO;
 import ru.santurov.paceopp.models.Audio;
 import ru.santurov.paceopp.models.Beat;
+import ru.santurov.paceopp.services.AudioService;
 import ru.santurov.paceopp.services.BeatService;
 
 import java.io.IOException;
@@ -22,6 +25,7 @@ import java.util.Map;
 public class AdminBeatsController {
 
     private final BeatService beatService;
+    private final AudioService audioService;
 
     @GetMapping("")
     public ResponseEntity<List<AdminBeatDTO>> getBeats() {
@@ -48,6 +52,15 @@ public class AdminBeatsController {
         } catch (Exception e) {
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/audios/download/{id}")
+    public ResponseEntity<Resource> downloadAudio(@PathVariable Long id) {
+        Audio audio = audioService.findById(id).orElseThrow(() -> new RuntimeException("Audio not found with id " + id));
+        Resource file = audioService.loadAsResource(audio);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + audio.getId() + "." + audio.getFileFormat() + "\"")
+                .body(file);
     }
 
     @PostMapping("/{beatId}/audio")

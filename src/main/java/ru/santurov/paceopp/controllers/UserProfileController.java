@@ -10,12 +10,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.santurov.paceopp.DTO.UserProfileDTO;
+import ru.santurov.paceopp.models.Order;
 import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.services.EmailService;
+import ru.santurov.paceopp.services.OrderService;
 import ru.santurov.paceopp.services.UserService;
 
+import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 //TODO add anti spam
 @Controller
 @RequiredArgsConstructor
@@ -23,6 +29,7 @@ public class UserProfileController {
 
     private final UserService userService;
     private final EmailService emailService;
+    private final OrderService orderService;
 
     @GetMapping("/user/profile")
     public String getProfile(@AuthenticationPrincipal(expression = "user") User user, Model model) {
@@ -30,14 +37,14 @@ public class UserProfileController {
             return "redirect:/auth/signin";
         }
 
-        User updatedUser = userService.findById(user.getId()).get();
-
         if (!model.containsAttribute("userProfile")) {
             UserProfileDTO userProfileDTO = new UserProfileDTO();
-            userProfileDTO.setUserName(updatedUser.getUsername());
-            userProfileDTO.setEmail(updatedUser.getEmail());
+            userProfileDTO.setUserName(user.getUsername());
+            userProfileDTO.setEmail(user.getEmail());
             model.addAttribute("userProfile", userProfileDTO);
         }
+        List<Order> userOrders = orderService.findByUsername(user.getUsername());
+        model.addAttribute("userOrders", userOrders);
         return "profile";
     }
 

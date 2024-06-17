@@ -7,16 +7,22 @@ import ru.santurov.paceopp.models.Order;
 import ru.santurov.paceopp.repositories.OrderRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private ServiceManagementService service;
 
-    public void saveOrder(String username, int serviceId, Beat beat) {
+    public List<Order> findByUsername(String username) {
+        return orderRepository.findAllByUsername(username);
+    }
+
+    public void saveOrder(String username, Long serviceId, Beat beat) {
         Order order = new Order();
         order.setUsername(username);
-        order.setServiceId(serviceId);
+        order.setService(service.findById(serviceId).get());
         order.setBeat(beat);
         order.setOrderDate(LocalDateTime.now());
 

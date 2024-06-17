@@ -31,7 +31,7 @@ public class PaymentController {
         return "payment";
     }
     @PostMapping("/payment/success")
-    public String handlePaymentSuccess(@RequestParam int serviceId, @RequestParam int beatId) {
+    public String handlePaymentSuccess(@RequestParam Long serviceId, @RequestParam int beatId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         String email = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found")).getEmail();
@@ -49,7 +49,7 @@ public class PaymentController {
         return "redirect:/payment";
     }
 
-    private List<Audio> getAudioFilesByServiceId(Beat beat, int serviceId) {
+    private List<Audio> getAudioFilesByServiceId(Beat beat, Long serviceId) {
         return beat.getAudioFiles().stream()
                 .filter(audio -> serviceId == 16 ? "mp3".equals(audio.getFileFormat()) : List.of("mp3", "wav").contains(audio.getFileFormat()))
                 .collect(Collectors.toList());

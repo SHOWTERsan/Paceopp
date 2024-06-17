@@ -7,6 +7,7 @@ import ru.santurov.paceopp.repositories.ServiceItemRepository;
 import ru.santurov.paceopp.repositories.ServiceRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,4 +53,7 @@ public class ServiceManagementService {
     }
 
 
+    public Optional<ru.santurov.paceopp.models.Service> findById(Long serviceId) {
+        return serviceRepository.findById(serviceId);
+    }
 }

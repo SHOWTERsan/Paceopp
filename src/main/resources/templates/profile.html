@@ -24,7 +24,23 @@
         @media screen and (max-width: 600px) {
             min-width:150px !important;
         }
-    </style>
+        .order-table {
+        background-color: transparent;
+        color: white;
+        width: 100%;
+        border-collapse: collapse; /* Ensure borders collapse properly */
+    }
+
+    .order-table th, .order-table td {
+        border: 1px solid #ccc; /* Grey borders for th and td */
+        padding: 8px; /* Padding inside cells */
+    }
+
+    .order-table th {
+        background-color: #333; /* Dark background for table headers */
+        color: white;
+    }
+</style>
 </head>
 <body>
 <header>
@@ -102,6 +118,36 @@
                 </div>
             </div>
         </form>
+        <div class="container mt-5">
+            <h2 class="section-title">Ваши заказы</h2>
+            <div th:if="${userOrders.empty}">
+                <p>Здесь пока ничего нет.</p>
+            </div>
+            <div th:each="order : ${userOrders}">
+                <div class="order-item">
+                    <table class="order-table" >
+                        <thead>
+                        <tr>
+                            <th>Услуга</th>
+                            <th>Название</th>
+                            <th>Стоимость</th>
+                            <th>Скачать</th>
+                        </tr>
+                        </thead>
+                        <tbody th:each="audio : ${order.beat.audioFiles}">
+                        <tr>
+                            <td th:text="${order.service.name}"></td>
+                            <td th:text="${order.beat.name}"></td>
+                            <td th:text="${order.service.price}"></td>
+                            <td>
+                                <a th:href="@{/api/beats/audios/download/{id}(id=${audio.id})}">Скачать</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
