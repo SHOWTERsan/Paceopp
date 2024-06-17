@@ -247,6 +247,8 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         var kitCards = document.querySelectorAll('.kit-card');
+        var selectedKit = {};
+
         kitCards.forEach(function(kitCard, index) {
             var kit = kits[index];
             var imageElement = kitCard.querySelector('img');
@@ -264,18 +266,15 @@
             modalCost.textContent = '₽' + cost;
             modal.querySelector('.kit-modal-image').src = 'data:image/jpeg;base64,' + imageBase64;
             $(modal).modal('show'); // Bootstrap modal show method
+
+            selectedKit = { id: id, title: title, cost: parseInt(cost), description: description }; // Update selected kit
         }
 
         // Add event listeners to kit cards for modals
-        kitCards.forEach(function(card) {
+        kitCards.forEach(function(card, index) {
             card.addEventListener('click', function() {
-                var title = card.dataset.title;
-                var cost = card.dataset.cost;
-                var description = card.dataset.description;
-                var imageBase64 = kits.find(kit => kit.title === title).image; // Assuming image is stored in kits array
-                var id = card.dataset.kitId; // Adjust according to your dataset attribute
-
-                openKitModal(title, cost, description, imageBase64, id);
+                var kit = kits[index];
+                openKitModal(kit.title, kit.cost, kit.description, kit.image, kit.id);
             });
         });
 
@@ -285,15 +284,9 @@
             localStorage.removeItem('selectedBeat');
             localStorage.removeItem('selectedService');
 
+            localStorage.setItem('selectedKit', JSON.stringify(selectedKit));
 
-            localStorage.setItem('selectedKit', JSON.stringify({
-                id: id,
-                title: title,
-                cost: parseInt(cost),
-                description: description
-            }));
-
-            if (selectedKit) {
+            if (selectedKit.id) {
                 window.location.href = '/payment';
             } else {
                 console.error('No selected kit found in localStorage.');
