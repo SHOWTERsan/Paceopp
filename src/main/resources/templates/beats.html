@@ -98,22 +98,23 @@
         $("#modalBeatName").text(beatName);
         $("#modalBeatBpm").text("BPM: " + beatBpm);
         $("#modalBeatImage").attr("src", beatImageSrc);
-        $("#buyButton").attr("onclick", "buyBeat(" + beatId + ", '" + beatName + "')");
+        $("#buyButton").attr("onclick", `buyBeat(${beatId}, '${beatName}')`);
 
-        $.ajax({
-            url: "/beats/" + beatId + "/audio",
-            method: "GET",
-            xhrFields: {
-                responseType: 'blob'
-            },
-            success: function(data) {
-                if (data) {
-                    const audioUrl = URL.createObjectURL(data);
-                    $("#modalBeatAudioSource").attr("src", audioUrl);
-                    $("#modalBeatAudio")[0].load();
+        fetch(`/beats/${beatId}/audio`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
-            }
-        });
+                return response.blob();
+            })
+            .then(data => {
+                const audioUrl = URL.createObjectURL(data);
+                $("#modalBeatAudioSource").attr("src", audioUrl);
+                $("#modalBeatAudio")[0].load();
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
 
         $("#beatModal").modal("show");
     }

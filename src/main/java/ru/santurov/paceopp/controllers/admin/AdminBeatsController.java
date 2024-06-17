@@ -6,13 +6,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.santurov.paceopp.DTO.AdminBeatDTO;
 import ru.santurov.paceopp.models.Audio;
 import ru.santurov.paceopp.models.Beat;
+import ru.santurov.paceopp.models.User;
 import ru.santurov.paceopp.services.AudioService;
 import ru.santurov.paceopp.services.BeatService;
+import ru.santurov.paceopp.services.OrderService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,6 +29,7 @@ public class AdminBeatsController {
 
     private final BeatService beatService;
     private final AudioService audioService;
+    private final OrderService orderService;
 
     @GetMapping("")
     public ResponseEntity<List<AdminBeatDTO>> getBeats() {
@@ -55,11 +59,19 @@ public class AdminBeatsController {
     }
 
     @GetMapping("/audios/download/{id}")
-    public ResponseEntity<Resource> downloadAudio(@PathVariable Long id) {
+    public ResponseEntity<Resource> downloadAudio(@AuthenticationPrincipal(expression = "user") User user, @PathVariable Long id) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         Audio audio = audioService.findById(id).orElseThrow(() -> new RuntimeException("Audio not found with id " + id));
+        if (!orderService.hasUserOrderedAudio(user.getUsername(), id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         Resource file = audioService.loadAsResource(audio);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + audio.getId() + "." + audio.getFileFormat() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + audio.getBeat().getName() + "." + audio.getFileFormat() + "\"")
                 .body(file);
     }
 

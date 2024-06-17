@@ -43,6 +43,7 @@ public class ServiceManagementService {
             }
         }
     }
+
     public void deleteServiceItem(Long serviceId, Long itemId) {
         ru.santurov.paceopp.models.Service service = serviceRepository.findById(serviceId).orElseThrow(() -> new RuntimeException("Service not found with id " + serviceId));
         ServiceItem item = serviceItemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Service item not found with id " + itemId));
@@ -51,7 +52,6 @@ public class ServiceManagementService {
         serviceItemRepository.delete(item);
         serviceRepository.save(service);
     }
-
 
     public Optional<ru.santurov.paceopp.models.Service> findById(Long serviceId) {
         return serviceRepository.findById(serviceId);

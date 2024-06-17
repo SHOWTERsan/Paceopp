@@ -30,13 +30,21 @@ public class PaymentController {
     public String getPayment() {
         return "payment";
     }
+
     @PostMapping("/payment/success")
     public String handlePaymentSuccess(@RequestParam Long serviceId, @RequestParam int beatId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        String email = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found")).getEmail();
-
         Beat beat = beatService.findById(beatId).orElseThrow(() -> new RuntimeException("Beat not found"));
+        try {
+            orderService.saveOrder(username, serviceId, beat);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return "redirect:/payment?error=true";
+        }
+
+        String email = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found")).getEmail();
         List<Audio> audioFiles = getAudioFilesByServiceId(beat, serviceId);
 
         String subject = "Ваши биты";
@@ -44,7 +52,6 @@ public class PaymentController {
 
         emailService.sendMessage(subject, text, email, audioFiles);
 
-        orderService.saveOrder(username, serviceId, beat);
 
         return "redirect:/payment";
     }

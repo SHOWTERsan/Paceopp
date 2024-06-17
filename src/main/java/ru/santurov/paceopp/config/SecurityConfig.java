@@ -34,8 +34,8 @@ public class SecurityConfig  {
                 .headers(headersConfigurer ->
                         headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/","/auth/**","/beats","/bad_request","/error","/websocket/**", "/images/**","/js/**", "/styles/**").permitAll()
-                        .requestMatchers("/contact", "/user/profile/**","/logout", "/payment/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/","/auth/**","/beats/**","/bad_request","/error","/websocket/**", "/images/**","/js/**", "/styles/**").permitAll()
+                        .requestMatchers("/contact", "/user/profile/**","/logout", "/payment/**", "/api/beats/audios/download/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().hasRole("ADMIN"))
                 .formLogin(form -> form
                         .loginPage("/auth/signin")
