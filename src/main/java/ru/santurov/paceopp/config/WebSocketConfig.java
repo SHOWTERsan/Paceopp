@@ -9,9 +9,9 @@ import org.springframework.web.socket.config.annotation.*;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/websocket").setAllowedOrigins("http://localhost", "http://83.166.235.56").withSockJS();
-        registry.addEndpoint("/auth/stompEndpoint").setAllowedOrigins("http://localhost", "http://83.166.235.56").withSockJS();
-        registry.addEndpoint("/stompEndpoint").setAllowedOrigins("http://localhost", "http://83.166.235.56").withSockJS();
+        registry.addEndpoint("/websocket").setAllowedOrigins("http://localhost", "http://90.156.218.121").withSockJS();
+        registry.addEndpoint("/auth/stompEndpoint").setAllowedOrigins("http://localhost", "http://90.156.218.121").withSockJS();
+        registry.addEndpoint("/stompEndpoint").setAllowedOrigins("http://localhost", "http://90.156.218.121").withSockJS();
     }
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
